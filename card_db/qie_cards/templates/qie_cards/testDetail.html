@@ -127,7 +127,7 @@
             </table>
             {% if attempt.has_image %}
             {% for image in attempt.get_images %}
-            <a href="/cards/media/{{attempt.image}}/{{image}}"><img src="/cards/media/{{attempt.image}}/{{image}}" style="width:10%"></a>
+            <a href="../media/{{attempt.image}}/{{image}}"><img src="../media/{{attempt.image}}/{{image}}" style="width:10%"></a>
             {% endfor %}
             {% endif %}
         <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.attempt_number}}').classList.toggle('hide')">Show Data</button>

@@ -1,8 +1,9 @@
 {% extends "qie_cards/base.html" %}
+{% load static %}
 
 {% block head %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/static/qie_cards/js/makeplot.js"></script>
+<script src="{% static "qie_cards/js/makeplot.js" %}"></script>
 <style>
 .splitColumns {
     -webkit-column-count: 3;

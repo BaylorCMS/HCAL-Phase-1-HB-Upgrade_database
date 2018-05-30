@@ -27,9 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
 	'localhost',
-	'nbay11.fnal.gov'
 ]
-
 
 # Application definition
 
@@ -52,7 +50,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    ]
 
 ROOT_URLCONF = 'card_db.urls'
 
@@ -67,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'card_db.context_processors.site',
             ],
         },
     },
@@ -125,10 +124,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static-he/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Toggle whether data caching is on 
 # (slower update, but faster webpage load time)
 
-CACHE_DATA = True
+CACHE_DATA = False
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
