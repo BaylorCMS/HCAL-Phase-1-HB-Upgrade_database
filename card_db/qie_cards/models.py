@@ -94,8 +94,10 @@ class QieCard(models.Model):
     bridge_major_ver    = models.CharField(max_length=4, default="", blank=True)    # The major version of the Bridge FPGA
     bridge_minor_ver    = models.CharField(max_length=4, default="", blank=True)    # The minor version of the Bridge FPGA
     bridge_other_ver    = models.CharField(max_length=8, default="", blank=True)    # The other version of the Bridge FPGA
-    igloo_major_ver     = models.CharField(max_length=4, default="", blank=True)    # The major version of the IGLOO FPGA
-    igloo_minor_ver     = models.CharField(max_length=4, default="", blank=True)    # The minor version of the IGLOO FPGA
+    igloo_top_major_ver     = models.CharField(max_length=4, default="", blank=True)    # The major version of the top IGLOO FPGA
+    igloo_bot_major_ver     = models.CharField(max_length=4, default="", blank=True)    # The major version of the bottom IGLOO FPGA
+    igloo_top_minor_ver     = models.CharField(max_length=4, default="", blank=True)    # The minor version of the top IGLOO FPGA
+    igloo_bot_minor_ver     = models.CharField(max_length=4, default="", blank=True)    # The minor version of the bottom IGLOO FPGA
     readout_module      = models.IntegerField('RM №', default=-1)                   # The readout module that the QIE Card is installed (if applicable)
     readout_module_slot = models.IntegerField('RM Slot', default=-1)                # The readout module slot (1-4) that the QIE Card is installed (if applicable)
     calibration_unit    = models.IntegerField('CU №', default=-1)                   # The calibration unit in which the QIE Card is installed (if applicable)
@@ -189,18 +191,32 @@ class QieCard(models.Model):
         other = str(self.bridge_other_ver.zfill(4))[2:].upper()
         return major + "_" + minor + "_" + other
 
-    def get_igloo_ver(self):
-        if self.igloo_major_ver == "" or self.igloo_minor_ver == "":
+    def get_bot_igloo_ver(self):
+        if self.igloo_bot_major_ver == "" or self.igloo_bot_minor_ver == "":
             return "Not Uploaded"
-        major = str(int(self.igloo_major_ver, 16)).upper()
-        minor = str(int(self.igloo_minor_ver, 16)).upper()
+        major = str(int(self.igloo_bot_major_ver, 16)).upper()
+        minor = str(int(self.igloo_bot_minor_ver, 16)).upper()
         return major + "." + minor
 
-    def get_igloo_ver_hex(self):
-        if self.igloo_major_ver == "" or self.igloo_minor_ver == "":
+    def get_top_igloo_ver(self):
+        if self.igloo_top_major_ver == "" or self.igloo_top_minor_ver == "":
             return "Not Uploaded"
-        major = str(self.igloo_major_ver.zfill(2))[2:].upper()
-        minor = str(self.igloo_minor_ver.zfill(2))[2:].upper()
+        major = str(int(self.igloo_top_major_ver, 16)).upper()
+        minor = str(int(self.igloo_top_minor_ver, 16)).upper()
+        return major + "." + minor
+
+    def get_bot_igloo_ver_hex(self):
+        if self.igloo_bot_major_ver == "" or self.igloo_bot_minor_ver == "":
+            return "Not Uploaded"
+        major = str(self.igloo_bot_major_ver.zfill(2))[2:].upper()
+        minor = str(self.igloo_bot_minor_ver.zfill(2))[2:].upper()
+        return major + "_" + minor
+
+    def get_top_igloo_ver_hex(self):
+        if self.igloo_top_major_ver == "" or self.igloo_top_minor_ver == "":
+            return "Not Uploaded"
+        major = str(self.igloo_top_major_ver.zfill(2))[2:].upper()
+        minor = str(self.igloo_top_minor_ver.zfill(2))[2:].upper()
         return major + "_" + minor
 
     def __str__(self):

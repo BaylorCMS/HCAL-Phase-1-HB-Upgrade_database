@@ -19,11 +19,11 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    url(r'^cards/', include('qie_cards.card_urls'), name='cards'),
+    url(r'^cards/', include('qie_cards.card_urls', namespace='cards')),
     url(r'^rm/', include('qie_cards.rm_urls')),
     url(r'^cu/', include('qie_cards.cu_urls')),
     url(r'^sipm/', include('qie_cards.sipm_urls')),
-    url(r'^$', RedirectView.as_view(url='hb/cards/catalog')),
+    url(r'^$', RedirectView.as_view(pattern_name='cards:catalog',permanent=False)),
     url(r'^admin/', admin.site.urls),
 ]
 
