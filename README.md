@@ -1,4 +1,4 @@
-# CMS HB Phase 1 Upgrade Database.
+# CMS HB Phase 1 Upgrade database.
 A web-framework for the CMS HB Phase 1 Upgrade database.
 Initial QIE Card testing was performed at Fermilab, Summer 2016. QIE stands for "charge integrator and encoder."
 Readout Modules (RM) and Calibration Units (CU) were assembled at CERN, Fall 2016.
