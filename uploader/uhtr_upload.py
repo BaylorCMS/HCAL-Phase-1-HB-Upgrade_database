@@ -61,7 +61,10 @@ def moveJsonFile(qie, fileName):
 # Get filename and upload file to dictionary
 fileName = sys.argv[1]
 infile = open(fileName, "r")
-cardData = json.load(infile)
+try:
+    cardData = json.load(infile)
+except:
+    sys.exit("Unable to load json file.")
 
 overwrite = cardData["Overwrite"]
 
