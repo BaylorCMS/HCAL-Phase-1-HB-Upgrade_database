@@ -1,0 +1,24 @@
+{% extends "calibration_units/base.html" %}
+
+{% block title %}Error{% endblock %}
+
+<style>
+  .top-three {
+      margin-bottom: 3cm;
+  }
+</style>
+
+{% block content %}
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>
+        Calibration Unit Not Found 
+    </h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <h6>Please enter a Barcode (up to 3 digits in decimal).</h6>
+    <h6>Please enter a 6 digit hex CU ID. Do not include final 0x70 family code.</h6>
+    <h6>CU Unique IDs are created using QIE unique ids (6 unique hex digits).</h6>
+    <h6>Example: Calibraiton Unit 0601755, CU Unique ID EACD35.</h6>
+    <h6>Enter 755 for barcode or EACD35 for CU Unique ID.</h6>
+</div><br>
+{% endblock %}
+

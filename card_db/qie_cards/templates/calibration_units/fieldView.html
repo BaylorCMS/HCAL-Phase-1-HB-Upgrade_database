@@ -1,0 +1,121 @@
+{% extends "calibration_units/base.html" %}
+
+{% block title %}Field View{% endblock %}
+{% block field %}class="active"{% endblock %}
+{% block head %}
+<style>
+    .forced{
+      color:#2C3E50;
+      background-color:#2ECC71;
+    }
+    .warn{
+      color:#2C3E50;
+      background-color:#F1C40F;
+    }
+    .okay{
+      color:#2ECC71;
+    }
+    .bad{
+      color:#2C3E50;
+      background-color:#E74C3C;
+    }
+    .comments{
+      margin-left:50px;
+      background:#27ae60;
+      width: 400px;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      border-radius: 4px;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+{# Download CSV File #}
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>Download CSV File</h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+</div><br>
+
+<div class="row" style="padding-left:50px;padding-right:50px">
+    <a href="{{ SITE_URL }}/cards/media/csv_files/RMs.csv">Download RM CSV File</a><br>
+</div>
+
+{# Select Fields #}
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>Field Options</h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+</div><br>
+
+<div class="row" align="left" style="padding-left:50px">
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="row">
+  {# Yay for hacky solutions! (No built in Django range function...) I like that sneaky solution. :) #}
+  {% for i in "123456" %}
+    <div style="float:left;width:15%">
+      <label for="sel{{i}}">Row {{i}} field:</label>
+      <select id="sel{{i}}" class="form-control" name="field{{i}}">
+        {% for option in options %}
+        <option>{{option}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endfor %}
+  </div>
+  <input type="submit" class="btn btn-primary" value="Submit" name="formSub">
+</form>
+</div>
+
+{# Field Overview: data for each field #}
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>Field Overview</h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+</div><br>
+
+<div class="row" align="right" style="padding-right:50px;">
+  Search: <input type="text" style="color:#2C3E50" id="searchfield">
+</div>
+<br>
+
+<table id="testsummary" class="table table-bordered" cellspacing="0" width="100%">
+  <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1">
+    <tr data-toggle="collapse" data-target="#accordion" class="clickable">
+      {% for field in fields %}
+      <th>{{field}}<span class="fui-list-numbered" style="float:right"></span></th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    <div id="accordion" class="collapse">
+    {% for item in items %}
+    <tr>
+      {% for field in item.fields %}
+      <td class="{{item.attempt.get_css_class}}">{{field}}</td>
+      {% endfor %}
+    </tr> 
+    {% endfor %}
+  </div>
+  </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-1.12.3.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script>
+$(document).ready(function() {
+    oTable = $('#testsummary').DataTable({
+      "paging":   false,
+      dom: 'lrtp',
+    }
+    );
+    $('#searchfield').keyup(function(){
+          oTable.search($(this).val()).draw();
+    })
+} );
+</script>
+
+
+{% endblock %}
