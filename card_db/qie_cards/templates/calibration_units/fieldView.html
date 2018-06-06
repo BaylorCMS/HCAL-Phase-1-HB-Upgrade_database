@@ -1,6 +1,7 @@
-{% extends "qie_cards/base.html" %}
+{% extends "calibration_units/base.html" %}
 
 {% block title %}Field View{% endblock %}
+{% block field %}class="active"{% endblock %}
 {% block head %}
 <style>
     .forced{
@@ -33,27 +34,30 @@
 {% block content %}
 
 {# Download CSV File #}
-<div class="row" align="center" style="padding-left:50px; padding-right:50px">
-    <h3><a href="{{ SITE_URL }}/cards/media/csv_files/qieCards.csv">Download QIE Card CSV File</a></h3>
-    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
-</div>
-<br>
-
-{# Select Fields #}
-<div class="row" align="center" style="padding-left:50px; padding-right:50px">
-    <h3>Field Options</h3>
-    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>Download CSV File</h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
 </div><br>
 
-<div class="row" style="padding-left:20%;">
+<div class="row" style="padding-left:50px;padding-right:50px">
+    <a href="{{ SITE_URL }}/cards/media/csv_files/RMs.csv">Download RM CSV File</a><br>
+</div>
+
+{# Select Fields #}
+<div class="row" align="left" style="padding-left:50px;">
+    <h3>Field Options</h3>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+</div><br>
+
+<div class="row" align="left" style="padding-left:50px">
 <form action="" method="post">
   {% csrf_token %}
   <div class="row">
   {# Yay for hacky solutions! (No built in Django range function...) I like that sneaky solution. :) #}
-  {% for i in "12345" %}
-    <div style="float:left; width:15%">
-      <label  for="sel{{i}}">Row {{i}} field:</label>
-      <select style="margin-right:5px" id="sel{{i}}" class="form-control" name="field{{i}}">
+  {% for i in "123456" %}
+    <div style="float:left;width:15%">
+      <label for="sel{{i}}">Row {{i}} field:</label>
+      <select id="sel{{i}}" class="form-control" name="field{{i}}">
         {% for option in options %}
         <option>{{option}}</option>
         {% endfor %}
@@ -66,9 +70,9 @@
 </div>
 
 {# Field Overview: data for each field #}
-<div class="row" align="center" style="padding-left:50px; padding-right:50px">
+<div class="row" align="left" style="padding-left:50px;">
     <h3>Field Overview</h3>
-    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
 </div><br>
 
 <div class="row" align="right" style="padding-right:50px;">

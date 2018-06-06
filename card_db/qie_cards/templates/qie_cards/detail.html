@@ -45,17 +45,17 @@ table, td, th {
 {% endblock %}
 
 {% block content %}
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>
         QIE Card Overview
         <div class="divider"></div>
         <a href="calibration" class="btn btn-primary">To Calibration Data</a>
     </h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
 <!-- QIE Card Info Table -->
-<table id="cardinfo" class="info" style="margin-left:50px; font-size:30px;">
+<table id="cardinfo" class="info" style="margin-left:20%; margin-right:20%; font-size:30px;">
     <col width="25%">
     <col width="30%">
     <col width="45%">
@@ -108,24 +108,24 @@ table, td, th {
     </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:50px;width: 100%">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px; width: 100%">
     <h3>Comments:</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C;"></div>
-    <p style="width:100%; white-space: pre-wrap;">{{card.comments | default:"No comment given"}}</p>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C;"></div>
+    <p align="left" style="width:100%; white-space: pre-wrap;">{{card.comments | default:"No comment given"}}</p>
 </div>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25%; width:75%">
     <form action="" method="post">
         {% csrf_token %}
-        <h4>Add a Comment</h4>
-        <textarea name="comment" rows="4" cols="20" class="form-control" placeholder="Comment..."></textarea>
+        <h4>Add a Comment:</h4>
+        <textarea name="comment" rows="4" cols="20" class="form-control" placeholder="Comment..."></textarea><br>
         <input type="submit" class="btn btn-primary" value="Submit" name="comment_add">
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Location History</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     <br>
 </div>
 
@@ -146,18 +146,19 @@ table, td, th {
   </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25% ;width:75%">
     <form action="" method="post">
         {% csrf_token %}
-        <h4>Add a Location</h4>
+        <h4>Add a Location:</h4>
         <input name="location" type="text" class="form-control" placeholder="Location...">
+	<br>
         <input type="submit" class="btn btn-primary" value="Submit" name="location_add">
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Test Results</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     <br>
 </div>
 
