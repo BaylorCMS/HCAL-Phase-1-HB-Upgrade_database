@@ -94,10 +94,14 @@ def fieldView(request):
                "card_2.b_fw",
                "card_3.b_fw",
                "card_4.b_fw",
-               "card_1.i_fw",
-               "card_2.i_fw",
-               "card_3.i_fw",
-               "card_4.i_fw",
+               "card_1.i_top_fw",
+               "card_1.i_bot_fw",
+               "card_2.i_top_fw",
+               "card_2.i_bot_fw",
+               "card_3.i_top_fw",
+               "card_3.i_bot_fw",
+               "card_4.i_top_fw",
+               "card_4.i_bot_fw",
                "comments",
                "last location"]
     
@@ -151,8 +155,10 @@ def fieldView(request):
                 firmware = f_list[1]
                 if firmware == "b_fw":      # Bridge firmware
                     item["fields"].append(card.get_bridge_ver_hex())
-                elif firmware == "i_fw":    # Igloo firmware
-                    item["fields"].append(card.get_igloo_ver_hex())
+                elif firmware == "i_top_fw":    # Igloo firmware
+                    item["fields"].append(card.get_top_igloo_ver_hex())
+                elif firmware == "i_bot_fw":    # Igloo firmware
+                    item["fields"].append(card.get_bot_igloo_ver_hex())
             elif f_list[-1] == "uid":       # Get QIE Card unique id
                 card = getattr(rm, f_list[0])
                 item["fields"].append(card.uid)

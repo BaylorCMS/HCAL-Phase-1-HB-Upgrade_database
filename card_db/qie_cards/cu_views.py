@@ -66,7 +66,7 @@ def error(request):
 
 def fieldView(request):
     """ This displays CU field data. """
-    options = ["cu_number","cu_uid","qie_card","qie_card.uid","qie_card.b_fw","qie_card.i_fw","qie_card.status",
+    options = ["cu_number","cu_uid","qie_card","qie_card.uid","qie_card.b_fw","qie_card.i_top_fw", "qie_card.i_bot_fw","qie_card.status",
                "pulser_board","comments","last location"]
     fields = []
     for i in range(6):
@@ -115,8 +115,10 @@ def fieldView(request):
                 firmware = f_list[1]
                 if firmware == "b_fw":      # Bridge firmware
                     item["fields"].append(card.get_bridge_ver_hex())
-                elif firmware == "i_fw":    # Igloo firmware
-                    item["fields"].append(card.get_igloo_ver_hex())
+                elif firmware == "i_top_fw":    # Igloo top firmware
+                    item["fields"].append(card.get_top_igloo_ver_hex())
+                elif firmware == "i_bot_fw":    # Igloo bot firmware
+                    item["fields"].append(card.get_bot_igloo_ver_hex())
             elif f_list[-1] == "uid":       # Get QIE Card unique id
                 card = getattr(cu, f_list[0])
                 item["fields"].append(card.uid)
