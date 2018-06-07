@@ -34,22 +34,18 @@
 {% block content %}
 
 {# Download CSV File #}
-<div class="row" align="left" style="padding-left:50px;">
-    <h3>Download CSV File</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+<div class="row" align="center" style="padding-left:50px;">
+    <h3><a href="{{ SITE_URL }}/cards/media/csv_files/RMs.csv">Download RM CSV File</a></h3>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
-
-<div class="row" style="padding-left:50px;padding-right:50px">
-    <a href="{{ SITE_URL }}/cards/media/csv_files/RMs.csv">Download RM CSV File</a><br>
-</div>
 
 {# Select Fields #}
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Field Options</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
-<div class="row" align="left" style="padding-left:50px">
+<div class="row" style="padding-left:10%">
 <form action="" method="post">
   {% csrf_token %}
   <div class="row">
@@ -70,9 +66,9 @@
 </div>
 
 {# Field Overview: data for each field #}
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Field Overview</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
 <div class="row" align="right" style="padding-right:50px;">
