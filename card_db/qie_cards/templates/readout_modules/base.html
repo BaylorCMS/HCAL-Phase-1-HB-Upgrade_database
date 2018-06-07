@@ -48,11 +48,11 @@
                 </button>
                 <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="">{% include "snippets/hcal_title.html" %}: RM</a>
                 <span class="dropdown-arrow dropdown-arrow-inverse"></span>
-                <ul class="dropdown-menu" style="background-color: #2c3e50">
-                    <li style="background-color: #34495e"><a href="{{ SITE_URL }}/cards/catalog">QIE Cards</a></li>
-                    <li style="background-color: #34495e"><a href="{{ SITE_URL }}/sipm/catalog">SiPM Cards</a></li>
-                    <li style="background-color: #34495e"><a href="{{ SITE_URL }}/rm/catalog">Readout Modules</a></li>
-                    <li style="background-color: #34495e"><a href="{{ SITE_URL }}/cu/catalog">Calibration Units</a></li>
+                <ul class="dropdown-menu" style="left: auto; top: 40%; background-color: #2c3e50">
+                    <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/cards/catalog">QIE Cards</a></li>
+                    <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/sipm/catalog">SiPM Cards</a></li>
+                    <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/rm/catalog">Readout Modules</a></li>
+                    <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/cu/catalog">Calibration Units</a></li>
                 </ul>
             </div>
             <div class="navbar-collapse collapse">
@@ -101,7 +101,6 @@
     <div class="row" align="center" style="padding-left:50px;padding-right:50px">
         <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     </div>
-    <br>
 
 {% block content %}
 <h1>Default Content</h1>

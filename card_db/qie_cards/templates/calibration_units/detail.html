@@ -19,12 +19,12 @@ table, td, th {
 
 {% block content %}
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Calibration Unit Overview</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
-<table id="cuinfo" class="info" style="margin-left:50px; font-size:30px;">
+<table id="cuinfo" class="table" style="font-size:30px;">
     <col width="40%">
     <col width="60%">
     <tbody>
@@ -112,13 +112,13 @@ table, td, th {
     </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:50px;width: 100%">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px;width: 100%">
     <h3>Comments:</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C;"></div>
-    <p style="width:100%; white-space: pre-wrap;">{{cu.comments | default:"No comment given"}}</p>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C;"></div>
+    <p align="left" style="width:100%; white-space: pre-wrap;">{{cu.comments | default:"No comment given"}}</p>
 </div>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25%;width:75%">
     <form action="" method="post">
         {% csrf_token %}
         <h4>Add a Comment</h4>
@@ -127,9 +127,9 @@ table, td, th {
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Location History</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     <br>
 </div>
 
@@ -150,7 +150,7 @@ table, td, th {
   </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25%;width:75%">
     <form action="" method="post">
         {% csrf_token %}
         <h4>Add a Location</h4>
@@ -159,10 +159,12 @@ table, td, th {
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Uploaded File</h3>
-    <div id="breakLine" style="height:2px;width:20%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
+<center>
 <a href="{{cu.upload.url}}"><img src="{{cu.upload.url}}" style="width:60%;height:60%;"></a>
+</center>
 
 {% endblock %}
