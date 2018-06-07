@@ -24,13 +24,13 @@ table, td, th {
 
 {% block content %}
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Readout Module Overview</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
 <!-- RM Info Table -->
-<table id="rminfo" class="info" style="margin-left:50px; font-size:30px;">
+<table id="rminfo" class="table" style="font-size:30px;">
     <col width="45%">
     <col width="55%">
     <tbody>
@@ -136,13 +136,13 @@ table, td, th {
 </table>
 
 
-<div class="row" align="left" style="padding-left:50px;width: 100%">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px; width: 100%">
     <h3>Comments:</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C;"></div>
-    <p style="width:100%; white-space: pre-wrap;">{{rm.comments | default:"No comment given"}}</p>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C;"></div>
+    <p align="left" style="width:100%; white-space: pre-wrap;">{{rm.comments | default:"No comment given"}}</p>
 </div>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25%;width:75%">
     <form action="" method="post">
         {% csrf_token %}
         <h4>Add a Comment</h4>
@@ -151,9 +151,9 @@ table, td, th {
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Location History</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     <br>
 </div>
 
@@ -174,7 +174,7 @@ table, td, th {
   </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:100px;width:50%">
+<div class="row" align="left" style="padding-left:25%;width:75%">
     <form action="" method="post">
         {% csrf_token %}
         <h4>Add a Location</h4>
@@ -183,27 +183,33 @@ table, td, th {
     </form>
 </div>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>Uploaded File</h3>
-    <div id="breakLine" style="height:2px;width:20%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
-<a href="{{rm.upload.url}}"><img src="{{rm.upload.url}}" style="width:60%;height:60%;"></a>
+
+<!--Couldn't find any other way of centering the image so this will do-->
+<center>
+  <a target="_blank"  href="{{rm.upload.url}}"><img src="{{rm.upload.url}}" style="width:35%;height:35%;"></a>
+</center>
 <br><br>
 
-<div class="row" align="left" style="padding-left:50px;width: 100%">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px;width: 100%">
     <h3>Bias Voltages</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C;"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C;"></div>
 </div><br>
-
-<table id="rmbv" class="bias" style="margin-left:50px; font-size:30px;">
+<center>
+<table id="rmbv" class="table" style="font-size:30px;">
     <col width="30%">
     <col width="70%">
+    <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1">
+        <tr>
+            <th>Channel</th>
+            <th>Bias Voltage (V)</th>
+        </tr>
+    </thead>
     <tbody>
         <div id="accordion" class="collapse">
-        <tr>
-            <td>Channel</td>
-            <td>Bias Voltage (V)</td>
-        </tr>
         <tr>
             <td>1</td>
             <td>{{bv.channel_01}}</td>
@@ -399,5 +405,5 @@ table, td, th {
         </div>
     </tbody>
 </table>
-
+</center>
 {% endblock %}

@@ -19,13 +19,13 @@ table, td, th {
 
 {% block content %}
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>SiPM Control Card Overview</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 
 <!-- SiPM Control Card Info Table -->
-<table id="sipminfo" class="info" style="margin-left:50px; font-size:30px;">
+<table id="sipminfo" class="table" style="font-size:30px;">
     <col width="40%">
     <col width="60%">
     <tbody>
@@ -50,21 +50,23 @@ table, td, th {
     </tbody>
 </table>
 
-<div class="row" align="left" style="padding-left:50px;">
-    <h3>Uploaded File</h3>
-    <div id="breakLine" style="height:2px;width:20%;background-color:#E74C3C"></div>
+<div class="row" align="center" style="padding-left:50px; padding-right:50px;">
+  <br>
+  <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+    <h3><a target="_blank" href="{{sipm.upload.url}}">See Uploaded File</a></h3>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
-<a href="{{sipm.upload.url}}"><img src="{{sipm.upload.url}}" style="width:50%;height:50%;"></a>
 
-<div class="row" align="left" style="padding-left:50px;">
+<div class="row" align="center" style="padding-left:50px; padding-right:50px;">
     <h3>Calibration Results</h3>
-    <div id="breakLine" style="height:2px;width:25%;background-color:#E74C3C"></div>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
     <br>
 </div>
 
 <div class="row" align="right" style="padding-right:50px;">
   Search: <input type="text" style="color:#2C3E50" id="searchfield">
 </div>
+<br>
 
 <table id="testsummary" class="table table-bordered" cellspacing="0" width="100%">
   <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1">
