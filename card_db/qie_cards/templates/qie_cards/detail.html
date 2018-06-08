@@ -83,26 +83,7 @@ table, td, th {
             <td><a href="{{ SITE_URL }}/cu/{{cu}}">{{cu}}</a></td>
             <td></td>
         </tr>
-        <tr>
-            <td>Unique ID:</td>
-            <td>{{card.get_uid_mac}}</td>
-            <td>({{card.get_uid_split}})</td>
-        </tr>
-        <tr>
-            <td>Bridge FW:</td>
-            <td>{{card.get_bridge_ver_hex}}</td>
-            <td>({{card.get_bridge_ver}})</td>
-        </tr>
-        <tr>
-            <td>Igloo Top FW:</td>
-            <td>{{card.get_top_igloo_ver_hex}}</td>
-            <td>({{card.get_top_igloo_ver}})</td>
-        </tr>
-        <tr>
-            <td>Igloo Bottom FW:</td>
-            <td>{{card.get_bot_igloo_ver_hex}}</td>
-            <td>({{card.get_bot_igloo_ver}})</td>
-        </tr>
+        {% include "snippets/fw_and_uid.html" %}
         </div>
     </tbody>
 </table>
