@@ -21,7 +21,7 @@ import django
 from shutil import copyfile
 from django.utils import timezone
 
-sys.path.insert(0, '/home/django/testing_database/card_db')
+sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
 from qie_cards.models import Test, Tester, Attempt, Location, QieCard
