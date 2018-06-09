@@ -20,7 +20,7 @@ import json
 import django
 from shutil import copyfile
 
-sys.path.insert(0, '/home/django/testing_database/card_db')
+sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
 from django.utils import timezone
