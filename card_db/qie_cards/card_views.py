@@ -349,8 +349,10 @@ def fieldView(request):
                "bridge_major_ver",
                "bridge_minor_ver",
                "bridge_other_ver",
-               "igloo_major_ver",
-               "igloo_minor_ver",
+               "igloo_top_major_ver",
+               "igloo_bot_major_ver",
+               "igloo_top_minor_ver",
+               "igloo_bot_minor_ver",
                "comments",
                "last location",
                "Card Status"]
