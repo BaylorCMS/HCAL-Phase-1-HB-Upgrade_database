@@ -66,8 +66,8 @@ class Test(models.Model):
     """ This model stores information about each type of test """
 
     name            = models.CharField(max_length=100, default="")                  # The displayed name of the test
-    abbreviation    = models.CharField(max_length=100, default="", unique=True)     # The abbreviation of the test name (w/out spaces)
-    description     = models.TextField(max_length=1500, default="")                 # The verbose test description
+    abbreviation    = models.CharField(max_length=100, default="", unique=True, blank=True)     # The abbreviation of the test name (w/out spaces)
+    description     = models.TextField(max_length=1500, default="", blank=True)                 # The verbose test description
     required        = models.BooleanField(default=True)                             # Whether the test is required to pass
 
     def __str__(self):

@@ -59,8 +59,11 @@ def loadTests(qie, tester, date, testData, path, overwrite):
         try:
             temp_test = Test.objects.get(abbreviation=test)
         except:
-            sys.exit('Test "%s" not in database' % test)
-    
+            print 'Test "%s" not in database' % test
+            print 'Creating "%s" now' % test
+            temp_test = Test(name=test, abbreviation=test)
+            temp_test.save()
+
         prev_attempts = list(Attempt.objects.filter(card=qie, test_type=temp_test))
         attempt_num = len(prev_attempts) + 1
         if not testData[test] == "na":

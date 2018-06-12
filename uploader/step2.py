@@ -40,8 +40,10 @@ def loadCard(cardData, qie):
     qie.bridge_major_ver    = cardData["FirmwareMaj"]
     qie.bridge_minor_ver    = cardData["FirmwareMin"]
     qie.bridge_other_ver    = cardData["FirmwareOth"]
-    qie.igloo_major_ver     = cardData["IglooMajVer"]
-    qie.igloo_minor_ver     = cardData["IglooMinVer"]
+    qie.igloo_top_major_ver     = cardData["IglooMajVerT"]
+    qie.igloo_top_minor_ver     = cardData["IglooMinVerT"]
+    qie.igloo_bot_major_ver     = cardData["IglooMajVerB"]
+    qie.igloo_bot_minor_ver     = cardData["IglooMinVerB"]
     return qie
     
 def moveJsonFile(qie, fileName):
@@ -90,46 +92,50 @@ card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
 
-test = "Igloo_FPGA_Control"
-try:
-    temp_test = Test.objects.get(abbreviation=test)
-except:
-    sys.exit('Test "%s" not in database' % test)
-
-prev_attempts = list(Attempt.objects.filter(card=qie, test_type=temp_test))
-attempt_num = len(prev_attempts) + 1
-card.save()
-if cardData[test]:
-    temp_attempt = Attempt(card=card,
-                           plane_loc="default",
-                           test_type=temp_test,
-                           attempt_number=attempt_num,
-                           tester=tester,
-                           date_tested=date,
-                           num_passed=1,
-                           num_failed=0,
-                           temperature=-999,
-                           humidity=-999,
-                           log_file=path,
-                           hidden_log_file=path,
-                           )
-else:
-    temp_attempt = Attempt(card=card,
-                           plane_loc="default",
-                           test_type=temp_test,
-                           attempt_number=attempt_num,
-                           tester=tester,
-                           date_tested=date,
-                           num_passed=0,
-                           num_failed=1,
-                           temperature=-999,
-                           humidity=-999,
-                           log_file=path,
-                           hidden_log_file=path,
-                           )
-
-for attempt in prev_attempts:
-    attempt.revoked = True
-    attempt.save()
-
-temp_attempt.save()
+test_list = ["Igloo_FPGA_Control", "Checksum"]
+for test in test_list:
+    try:
+        temp_test = Test.objects.get(abbreviation=test)
+    except:
+        temp_test = Test(name=test, abbreviation=test)
+        print '"%s" test is not in the database' % temp_test
+        print 'Creating "%s" test' % temp_test
+        temp_test.save()
+	
+    prev_attempts = list(Attempt.objects.filter(card=qie, test_type=temp_test))
+    attempt_num = len(prev_attempts) + 1
+    card.save()
+    if cardData[test]:
+        temp_attempt = Attempt(card=card,
+	                       plane_loc="default",
+	                       test_type=temp_test,
+	                       attempt_number=attempt_num,
+	                       tester=tester,
+	                       date_tested=date,
+	                       num_passed=1,
+	                       num_failed=0,
+	                       temperature=-999,
+	                       humidity=-999,
+	                       log_file=path,
+	                       hidden_log_file=path,
+	                       )
+    else:
+        temp_attempt = Attempt(card=card,
+	                       plane_loc="default",
+	                       test_type=temp_test,
+	                       attempt_number=attempt_num,
+	                       tester=tester,
+	                       date_tested=date,
+	                       num_passed=0,
+	                       num_failed=1,
+	                       temperature=-999,
+	                       humidity=-999,
+	                       log_file=path,
+	                       hidden_log_file=path,
+	                       )
+	
+    for attempt in prev_attempts:
+        attempt.revoked = True
+        attempt.save()
+	
+    temp_attempt.save()
