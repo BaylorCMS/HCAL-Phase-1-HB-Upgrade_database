@@ -151,28 +151,7 @@ table, td, th {
     </form>
 </div>
 
-<div class="row" align="center" style="padding-left:50px; padding-right:50px">
-    <h3>Location History</h3>
-    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
-    <br>
-</div>
-
-<table id="rmlocations" class="table">
-  <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1">
-    <tr>
-      <th>Date</th>
-      <th>Location</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for location in locations %}
-    <tr>
-      <th scope="row">{{location.date_received | default:"No date recorded"}}</th>
-      <td>{{location.geo_loc}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% include "snippets/locations.html" %}
 
 <div class="row" align="left" style="padding-left:25%;width:75%">
     <form action="" method="post">

@@ -27,7 +27,7 @@ class QieAdmin(admin.ModelAdmin):
     
     fieldsets = [
         ('QIE information', {'fields': ['barcode', 'readout_module', 'readout_module_slot', 'uid', 'bridge_major_ver', 'bridge_minor_ver', 'bridge_other_ver', 'igloo_top_major_ver', 'igloo_top_minor_ver', 'igloo_bot_major_ver', 'igloo_bot_minor_ver', 'comments']}),
-    ]
+   ]
     
     inlines = [AttemptInLine, LocationsInLine]
     list_display = ('barcode', 'uid',)
@@ -35,7 +35,7 @@ class QieAdmin(admin.ModelAdmin):
     searchfields = ('barcode')
     
     def get_readonly_fields(self, request, obj=None):
-        if obj: # editing an existing object
+        if obj: # editing an existing objectx
             return self.readonly_fields + ('barcode', 'uid') + ('bridge_major_ver', 'bridge_minor_ver') +  ('bridge_other_ver', 'igloo_top_major_ver') + ('igloo_bot_major_ver', 'igloo_top_minor_ver') + ('igloo_bot_minor_ver', None)
         return self.readonly_fields
 
