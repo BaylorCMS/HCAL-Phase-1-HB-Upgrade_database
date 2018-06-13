@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # rmcard.sh - used to remove a card from the local machine and a database
-
+# WARNING:
 # ONLY NESTA SHOULD USE THIS SCRIPT. IF ANYONE NEEDS TO USE IT, PLEASE CONTACT HIM
 ############################################################################################
 
@@ -15,7 +15,6 @@ DEF="\e[39;0m"      # default colors of text
 ########################
 # Paths and variables  #
 ########################
-
 SCRIPTPATH=$(readlink -f $(dirname $0) )    # Local directory where script is located
 JSONPATH=$SCRIPTPATH/temp_json              # Where temporary json files are stored
 CARDPATH=/home/django/testing_database_hb/media/uploads    # Where the QIE Card directories are located
@@ -35,7 +34,6 @@ BARCODECARDPATH=$CARDPATH/$barcode
 ###################################
 # Remove the temporary json files #
 ###################################
-
 if find $BARCODEJSONPATH &> /dev/null; then
     rm -rf $BARCODEJSONPATH
     echo -e "${SUCCESS}JSON file(s) found and succesfully deleted"
@@ -46,7 +44,6 @@ fi
 #######################################################
 # Find and remove the directory for the specific card #
 #######################################################
-
 if find $BARCODECARDPATH &> /dev/null; then
     rm -rf $BARCODECARDPATH
     echo -e "${SUCCESS}Card directory found and succesfully deleted"
@@ -57,3 +54,4 @@ fi
 ######################################################
 # Calling python script to delete card from database #
 ######################################################
+python ${SCRIPTPATH}/rmcard.py $barcode
