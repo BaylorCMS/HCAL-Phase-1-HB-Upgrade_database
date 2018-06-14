@@ -96,30 +96,37 @@ class Tester(models.Model):
        return self.username
 
 
+class Channel(models.Model):
+    """ This model stores information about a specific channel for a QIE Card """
+    
+    # Choice for if this channel is part of the top or bottom igloo
+    POSITION = (
+        ("Top", "Top Igloo Card"),
+        ("Bot", "Bottom Igloo Card")
+    )
+    
+    # Channel number for this specific channel
+    CHANNEL = (
+        (-1, "N/A"),
+        (0, "Channel 0"),
+        (1, "Channel 1"),
+        (2, "Channel 2"),
+        (3, "Channel 3"),
+        (4, "Channel 4"),
+        (5, "Channel 5"),
+        (6, "Channel 6"),
+        (7, "Channel 7"),
+    )
+
+    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)
+    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)
+    
+    def __str__(self):
+        return (self.position + ": Channel " + str(self.number))
+    
+
 class QieCard(models.Model):
     """ This model stores information about a QIE card (charge integrator and encoder)"""
-
-    TOP_CHANNEL = (
-        (0, "Top Channel 0"),
-        (1, "Top Channel 1"),
-        (2, "Top Channel 2"),
-        (3, "Top Channel 3"),
-        (4, "Top Channel 4"),
-        (5, "Top Channel 5"),
-        (6, "Top Channel 6"),
-        (7, "Top Channel 7"),
-    )
-
-    BOT_CHANNEL = (
-        (0, "Bot Channel 0"),
-        (1, "Bot Channel 1"),
-        (2, "Bot Channel 2"),
-        (3, "Bot Channel 3"),
-        (4, "Bot Channel 4"),
-        (5, "Bot Channel 5"),
-        (6, "Bot Channel 6"),
-        (7, "Bot Channel 7"),
-    )
 
     barcode = models.CharField(max_length=7, validators=[validate_card_id], unique=True, default="")    # The data stored on the barcode sticker
     uid     = models.CharField(max_length=21, blank=True, default="")               # The data stored on the UID chip
@@ -135,8 +142,7 @@ class QieCard(models.Model):
     calibration_unit    = models.IntegerField('CU №', default=-1)                   # The calibration unit in which the QIE Card is installed (if applicable)
     comments            = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the
                                                                                                     # testing/appearance of the card
-    top_igloo_channel = models.IntegerField('Top №', choices=TOP_CHANNEL)
-    bot_igloo_channel = models.IntegerField('Bot №', choices=BOT_CHANNEL)
+    channels = models.ManyToManyField(Channel)    # Channels/QIE Chips for the QieCards
 
 
     def update_readout_module(self):
