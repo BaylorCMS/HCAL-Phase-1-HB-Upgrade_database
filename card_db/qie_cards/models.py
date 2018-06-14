@@ -68,7 +68,7 @@ class Variable(models.Model):
     test_pass = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return (self.name + ": " + str(test_pass))
 
 
 class Test(models.Model):
@@ -94,35 +94,6 @@ class Tester(models.Model):
 
     def __str__(self):
        return self.username
-
-
-class Channel(models.Model):
-    """ This model stores information about a specific channel for a QIE Card """
-    
-    # Choice for if this channel is part of the top or bottom igloo
-    POSITION = (
-        ("Top", "Top Igloo Card"),
-        ("Bot", "Bottom Igloo Card")
-    )
-    
-    # Channel number for this specific channel
-    CHANNEL = (
-        (-1, "N/A"),
-        (0, "Channel 0"),
-        (1, "Channel 1"),
-        (2, "Channel 2"),
-        (3, "Channel 3"),
-        (4, "Channel 4"),
-        (5, "Channel 5"),
-        (6, "Channel 6"),
-        (7, "Channel 7"),
-    )
-
-    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)
-    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)
-    
-    def __str__(self):
-        return (self.position + ": Channel " + str(self.number))
     
 
 class QieCard(models.Model):
@@ -142,8 +113,6 @@ class QieCard(models.Model):
     calibration_unit    = models.IntegerField('CU №', default=-1)                   # The calibration unit in which the QIE Card is installed (if applicable)
     comments            = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the
                                                                                                     # testing/appearance of the card
-    channels = models.ManyToManyField(Channel)    # Channels/QIE Chips for the QieCards
-
 
     def update_readout_module(self):
         """ Sets the readout module and slot for a QIE card. """
@@ -269,6 +238,36 @@ class QieCard(models.Model):
             yield (field.name, value)
 
 
+class Channel(models.Model):
+    """ This model stores information about a specific channel for a QIE Card """
+    
+    # Choice for if this channel is part of the top or bottom igloo
+    POSITION = (
+        ("Top", "Top Igloo Card"),
+        ("Bot", "Bottom Igloo Card")
+    )
+    
+    # Channel number for this specific channel
+    CHANNEL = (
+        (-1, "N/A"),
+        (0, "Channel 0"),
+        (1, "Channel 1"),
+        (2, "Channel 2"),
+        (3, "Channel 3"),
+        (4, "Channel 4"),
+        (5, "Channel 5"),
+        (6, "Channel 6"),
+        (7, "Channel 7"),
+    )
+
+    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)
+    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)
+    card = models.ForeignKey(QieCard, on_delete=models.CASCADE, blank=True, null=True)
+    
+    def __str__(self):
+        return (self.position + ": Channel " + str(self.number))
+
+
 def images_location(upload, original_filename):
     cardName    = str(QieCard.objects.get(pk=upload.barcode).barcode) + "/"
     testAbbrev  = str(Test.objects.get(pk=upload.test_type_id).abbreviation) + "/"
@@ -282,6 +281,7 @@ def logs_location(upload, original_filename):
     attemptNum  = str(upload.attempt_number) + "/"
 
     return os.path.join("uploads/", "user_uploaded_logs/", cardName, testAbbrev, attemptNum, original_filename)
+
 
 class Attempt(models.Model):
     """ This model stores information about each testing attempt """
@@ -596,12 +596,12 @@ class QieShuntParams(models.Model):
         return str(self.card)
 
 
-#@receiver(pre_save)
-#def pre_save_full_clean_handler(sender, instance, *args, **kwargs):
-#   """ Force all models to call full_clean before save """
-#   from django.contrib.sessions.models import Session
-#   if sender != Session:
-#       instance.full_clean()
+@receiver(pre_save)
+def pre_save_full_clean_handler(sender, instance, *args, **kwargs):
+   """ Force all models to call full_clean before save """
+   from django.contrib.sessions.models import Session
+   if sender != Session:
+       instance.full_clean()
 
 # An appendage to the delete function
 from django.db.models.signals import pre_delete
