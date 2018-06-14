@@ -48,6 +48,7 @@ then
     do
         echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
         python $scriptLoc/step1.py $file 2> $file.log
+        
 
         if [ $? -eq 0 ]
         then
@@ -55,6 +56,8 @@ then
             rm $file*
         else
             echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
+            error_log=$( cat $file.log )
+            echo -e "      ${FAIL}${error_log}${DEF}"
         fi
     done
 else
@@ -84,6 +87,8 @@ then
             rm $file*
         else
             echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
+            error_log=$( cat $file.log )
+            echo -e "      ${FAIL}${error_log}${DEF}"
         fi
     done
 else
