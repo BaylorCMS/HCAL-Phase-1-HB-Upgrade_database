@@ -90,7 +90,7 @@ class Variable(models.Model):
 
     name = models.CharField(max_length=100, default="", blank=True)    # Name of the variable being tested
     value = models.DecimalField(max_digits=25, decimal_places=15)      # Specific value of this variable
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)           # Which test this variable is a part of
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, blank=True, null=True)           # Which test this variable is a part of
     test_pass = models.BooleanField(default=False)                     # Whether it passed said test or not
 
     def __str__(self):
