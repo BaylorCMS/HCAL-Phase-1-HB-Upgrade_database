@@ -26,7 +26,7 @@ class QieAdmin(admin.ModelAdmin):
     """ Provides the layout for QieCard editing """
     
     fieldsets = [
-        ('QIE information', {'fields': ['barcode', 'readout_module', 'readout_module_slot', 'uid', 'bridge_major_ver', 'bridge_minor_ver', 'bridge_other_ver', 'igloo_top_major_ver', 'igloo_top_minor_ver', 'igloo_bot_major_ver', 'igloo_bot_minor_ver', 'channels', 'comments']}),
+        ('QIE information', {'fields': ['barcode', 'readout_module', 'readout_module_slot', 'uid', 'bridge_major_ver', 'bridge_minor_ver', 'bridge_other_ver', 'igloo_top_major_ver', 'igloo_top_minor_ver', 'igloo_bot_major_ver', 'igloo_bot_minor_ver', 'comments']}),
    ]
     
     inlines = [AttemptInLine, LocationsInLine]
@@ -36,7 +36,7 @@ class QieAdmin(admin.ModelAdmin):
     
     def get_readonly_fields(self, request, obj=None):
         if obj: # editing an existing objectx
-            return self.readonly_fields + ('barcode', 'uid') + ('bridge_major_ver', 'bridge_minor_ver') +  ('bridge_other_ver', 'igloo_top_major_ver') + ('igloo_bot_major_ver', 'igloo_top_minor_ver') + ('igloo_bot_minor_ver', 'channels')
+            return self.readonly_fields + ('barcode', 'uid') + ('bridge_major_ver', 'bridge_minor_ver') +  ('bridge_other_ver', 'igloo_top_major_ver') + ('igloo_bot_major_ver', 'igloo_top_minor_ver') + ('igloo_bot_minor_ver', None)
         return self.readonly_fields
 
 
@@ -52,7 +52,7 @@ class TestAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj: # editing an existing object
-            return self.readonly_fields + ('abbreviation', 'required') 
+            return self.readonly_fields + ('abbreviation', 'required') + ('variables', None) 
         return self.readonly_fields
 
 
@@ -125,7 +125,7 @@ class SipmAdmin(admin.ModelAdmin):
     searchFields = ('sipm_control_card')
 
 # Registration of the models
-admin.site.register(Variable)
+#admin.site.register(Variable)
 admin.site.register(QieCard, QieAdmin)
 admin.site.register(QieShuntParams)
 admin.site.register(Tester)
