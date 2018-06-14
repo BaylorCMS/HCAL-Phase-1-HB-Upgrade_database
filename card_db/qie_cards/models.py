@@ -61,15 +61,6 @@ def validate_uid(uid):
             if not letter.isdigit() and not (letter.lower() >= 'a' and letter.lower() <= 'f'):
                 raise ValidationError("UID may only contain hexadecimal digits")
 
-class Variable(models.Model):
-    """ This model stores the information about each variable for a test """
-    name = models.CharField(max_length=100, default="", blank=True)
-    value = models.DecimalField(max_digits=25, decimal_places=15)
-    test_pass = models.BooleanField(default=False)
-
-    def __str__(self):
-        return (self.name + ": " + str(self.test_pass))
-
 
 class Test(models.Model):
     """ This model stores information about each type of test """
@@ -78,7 +69,6 @@ class Test(models.Model):
     abbreviation    = models.CharField(max_length=100, default="", unique=True, blank=True)     # The abbreviation of the test name (w/out spaces)
     description     = models.TextField(max_length=1500, default="", blank=True)                 # The verbose test description
     required        = models.BooleanField(default=True)                             # Whether the test is required to pass
-    variables       = models.ManyToManyField(Variable)
 
     def __str__(self):
         return self.name
@@ -95,6 +85,17 @@ class Tester(models.Model):
     def __str__(self):
        return self.username
     
+class Variable(models.Model):
+    """ This model stores the information about each variable for a test """
+
+    name = models.CharField(max_length=100, default="", blank=True)    # Name of the variable being tested
+    value = models.DecimalField(max_digits=25, decimal_places=15)      # Specific value of this variable
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)           # Which test this variable is a part of
+    test_pass = models.BooleanField(default=False)                     # Whether it passed said test or not
+
+    def __str__(self):
+        return (self.name + ": " + str(self.test_pass))
+
 
 class QieCard(models.Model):
     """ This model stores information about a QIE card (charge integrator and encoder)"""
