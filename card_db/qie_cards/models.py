@@ -68,7 +68,7 @@ class Variable(models.Model):
     test_pass = models.BooleanField(default=False)
 
     def __str__(self):
-        return (self.name + ": " + str(test_pass))
+        return (self.name + ": " + str(self.test_pass))
 
 
 class Test(models.Model):
