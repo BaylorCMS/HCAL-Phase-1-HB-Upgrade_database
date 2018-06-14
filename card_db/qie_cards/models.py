@@ -99,6 +99,28 @@ class Tester(models.Model):
 class QieCard(models.Model):
     """ This model stores information about a QIE card (charge integrator and encoder)"""
 
+    TOP_CHANNEL = (
+        (0, "Top Channel 0"),
+        (1, "Top Channel 1"),
+        (2, "Top Channel 2"),
+        (3, "Top Channel 3"),
+        (4, "Top Channel 4"),
+        (5, "Top Channel 5"),
+        (6, "Top Channel 6"),
+        (7, "Top Channel 7"),
+    )
+
+    BOT_CHANNEL = (
+        (0, "Bot Channel 0"),
+        (1, "Bot Channel 1"),
+        (2, "Bot Channel 2"),
+        (3, "Bot Channel 3"),
+        (4, "Bot Channel 4"),
+        (5, "Bot Channel 5"),
+        (6, "Bot Channel 6"),
+        (7, "Bot Channel 7"),
+    )
+
     barcode = models.CharField(max_length=7, validators=[validate_card_id], unique=True, default="")    # The data stored on the barcode sticker
     uid     = models.CharField(max_length=21, blank=True, default="")               # The data stored on the UID chip
     bridge_major_ver    = models.CharField(max_length=4, default="", blank=True)    # The major version of the Bridge FPGA
@@ -113,6 +135,9 @@ class QieCard(models.Model):
     calibration_unit    = models.IntegerField('CU №', default=-1)                   # The calibration unit in which the QIE Card is installed (if applicable)
     comments            = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the
                                                                                                     # testing/appearance of the card
+    top_igloo_channel = models.IntegerField('Top №', choices=TOP_CHANNEL)
+    bot_igloo_channel = models.IntegerField('Bot №', choices=BOT_CHANNEL)
+
 
     def update_readout_module(self):
         """ Sets the readout module and slot for a QIE card. """
