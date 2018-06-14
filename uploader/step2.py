@@ -105,7 +105,7 @@ for test in test_list:
     prev_attempts = list(Attempt.objects.filter(card=qie, test_type=temp_test))
     attempt_num = len(prev_attempts) + 1
     card.save()
-    if cardData[test]:
+    if cardData[test] == "Passed":
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
 	                       test_type=temp_test,
