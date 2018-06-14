@@ -61,6 +61,15 @@ def validate_uid(uid):
             if not letter.isdigit() and not (letter.lower() >= 'a' and letter.lower() <= 'f'):
                 raise ValidationError("UID may only contain hexadecimal digits")
 
+class Variable(models.Model):
+    """ This model stores the information about each variable for a test """
+    name = models.CharField(max_length=100, default="", blank=True)
+    value = models.DecimalField(max_digits=25, decimal_places=15)
+    test_pass = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
 
 class Test(models.Model):
     """ This model stores information about each type of test """
@@ -69,6 +78,7 @@ class Test(models.Model):
     abbreviation    = models.CharField(max_length=100, default="", unique=True, blank=True)     # The abbreviation of the test name (w/out spaces)
     description     = models.TextField(max_length=1500, default="", blank=True)                 # The verbose test description
     required        = models.BooleanField(default=True)                             # Whether the test is required to pass
+    variables       = models.ManyToManyField(Variable)
 
     def __str__(self):
         return self.name
