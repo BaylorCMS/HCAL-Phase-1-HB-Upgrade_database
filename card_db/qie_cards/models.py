@@ -261,9 +261,9 @@ class Channel(models.Model):
         (7, "Channel 7"),
     )
 
-    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)
-    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)
-    card = models.ForeignKey(QieCard, on_delete=models.CASCADE, blank=True, null=True)
+    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)    # Corresponding to top or bottom igloo
+    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)    # Number specifying which channel this is
+    card = models.ForeignKey(QieCard, on_delete=models.CASCADE, blank=True, null=True)    # Card this channel is on
     
     def __str__(self):
         return (self.position + ": Channel " + str(self.number))

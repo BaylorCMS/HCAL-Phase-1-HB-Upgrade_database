@@ -46,7 +46,7 @@ class TestAdmin(admin.ModelAdmin):
     ordering = ('name',)
     searchfields = ('name')
     fieldsets = [
-        ('Test Information', {'fields': ['name', 'abbreviation', 'description', 'required', 'variables']}),
+        ('Test Information', {'fields': ['name', 'abbreviation', 'description', 'required']}),
     ]
 
 
