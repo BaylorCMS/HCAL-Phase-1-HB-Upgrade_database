@@ -141,7 +141,7 @@ overwrite = cardData["Overwrite"]
 qie = loadCard(cardData, overwrite)
 
 #load time of test
-date = cardData["DateRun"] + "-06:00"
+date = cardData["DateRun"] + "-05:00"
 
 #find tester account
 try:
