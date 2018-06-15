@@ -160,9 +160,9 @@ def getCardTestStates(cards, tests, attempts):
                 state[attempt.card_id]["states"][testInd] = 1
                 if tests[testInd].required:
                     state[attempt.card_id]["forced"] = True
-            elif not attempt.num_failed == 0:
+            elif attempt.result == False:
                 state[attempt.card_id]["states"][testInd] = 2
-            elif not attempt.num_passed == 0:
+            elif attempt.result == True:
                 state[attempt.card_id]["states"][testInd] = 1
 
     cardStat = []
@@ -236,7 +236,7 @@ def getFailedCardStats(cards, tests, attempts):
     for attempt in attempts:
         if not attempt.revoked:
             cardInd = cardsToInd[attempt.card_id]
-            if not attempt.num_failed == 0:
+            if attempt.result == False:
                 failed[attempt.test_type_id][cardInd] = True
 
     testStat = []

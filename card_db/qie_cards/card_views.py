@@ -226,7 +226,7 @@ def detail(request, card):
                 if last.overwrite_pass:
                     status["passed"] += 1
                     forcedAny = True
-                elif last.passed_all():
+                elif last.passed():
                     status["passed"] += 1
                 else:
                     failedAny = True

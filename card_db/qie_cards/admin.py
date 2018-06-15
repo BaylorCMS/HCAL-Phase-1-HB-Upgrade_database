@@ -52,7 +52,7 @@ class TestAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj: # editing an existing object
-            return self.readonly_fields + ('abbreviation', 'required') + ('variables', None) 
+            return self.readonly_fields + ('abbreviation', 'required') 
         return self.readonly_fields
 
 
@@ -134,3 +134,4 @@ admin.site.register(Test, TestAdmin)
 admin.site.register(ReadoutModule, ReadoutAdmin)
 admin.site.register(CalibrationUnit, CUAdmin)
 admin.site.register(SipmControlCard, SipmAdmin)
+admin.site.register(Attempt)

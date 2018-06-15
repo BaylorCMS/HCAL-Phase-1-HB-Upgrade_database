@@ -132,7 +132,7 @@ table, td, th {
       <th>Test<span class="fui-list-numbered" style="float:right"></span></th>
       <th>Pass/Fail <span class="fui-list-numbered" style="float:right"></span></th>
       <th>Date <span class="fui-list-numbered" style="float:right"></span></th>
-      <th>Historic Pass/Fail</th>
+      <th>Channels Pass/Fail</th>
       <th>More</th>
     </tr>
   </thead>
@@ -148,7 +148,11 @@ table, td, th {
           {% endif %}
       </td>
       <td>{{item.attempt.date_tested}}</td>
-      <td>{{item.attempt.num_passed}}/{{item.attempt.num_failed}}</td>
+      {% if item.attempt.num_channels_passed == 0 and item.attempt.num_channels_failed == 0 %}
+      <td> Full Card Test </td>
+      {% else %}
+      <td>{{item.attempt.num_channels_passed}}/{{item.attempt.num_channels_failed}}</td>
+      {% endif %}
       <td><a href="{{item.attempt.test_type}}">[link to history]</a></td>
     </tr>
     {% else %}

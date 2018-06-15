@@ -293,8 +293,8 @@ class Attempt(models.Model):
     attempt_number  = models.IntegerField(default=1)                        # The number of this attempt on this card
     tester      = models.ForeignKey(Tester, on_delete=models.PROTECT)       # the person who enterd this attempt
     date_tested = models.DateTimeField('date tested')       # The date this test finished
-    num_passed  = models.IntegerField(default=-1)           # The number of times this test passed
-    num_failed  = models.IntegerField(default=-1)           # The number of times this test failed
+    num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
+    num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
     revoked     = models.BooleanField(default=False)        # Whether this test series is revoked
     overwrite_pass  = models.BooleanField(default=False)    # Whether this test was overwritten as a pass
     temperature = models.FloatField(default=-999.9)         # The temperature of the card during the test
@@ -306,9 +306,10 @@ class Attempt(models.Model):
     log_comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the log file
 
     hidden_log_file = models.FileField(upload_to=logs_location, default='default.png')      # The verbose log file, only used for web-page generation
+    result = models.NullBooleanField(blank=True, null=True)    # Whether the specific test passed or failed
 
-    def passed_all(self):
-        return (self.num_failed == 0)
+    def passed(self): 
+        return (self.result == 1)
 
     def has_image(self):
         """ This returns whether the attempt has a specified image """
@@ -323,7 +324,7 @@ class Attempt(models.Model):
             return "REVOKED"
         elif self.overwrite_pass:
             return "PASS (FORCED)"
-        elif self.num_failed == 0:
+        elif self.result:
             return "PASS"
         else:
             return "FAIL"
@@ -334,7 +335,7 @@ class Attempt(models.Model):
             return "warn"
         elif self.overwrite_pass:
             return "forced"
-        elif self.num_failed == 0:
+        elif self.result:
             return "okay"
         else:
             return "bad"
