@@ -562,7 +562,7 @@ class Location(models.Model):
     """ This model stores information about a particular location where a card has been """
 
     card = models.ForeignKey(QieCard, on_delete=models.CASCADE)                 # The card which the location refers to
-    date_received = models.DateTimeField('date received', default=timezone.now) # The date the card was received at this location
+    date_received = models.DateTimeField('date received', default=timezone.localtime(timezone.now())) # The date the card was received at this location
     geo_loc = models.CharField('Location',max_length=200, default="")           # The geographical location of this card
 
 class RmLocation(models.Model):
