@@ -105,15 +105,14 @@ for test in test_list:
     prev_attempts = list(Attempt.objects.filter(card=qie, test_type=temp_test))
     attempt_num = len(prev_attempts) + 1
     card.save()
-    if cardData[test]:
+    if cardData[test] == "Passed":
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
 	                       test_type=temp_test,
 	                       attempt_number=attempt_num,
 	                       tester=tester,
 	                       date_tested=date,
-	                       num_passed=1,
-	                       num_failed=0,
+	                       result=1,
 	                       temperature=-999,
 	                       humidity=-999,
 	                       log_file=path,
@@ -126,8 +125,7 @@ for test in test_list:
 	                       attempt_number=attempt_num,
 	                       tester=tester,
 	                       date_tested=date,
-	                       num_passed=0,
-	                       num_failed=1,
+	                       result=0,
 	                       temperature=-999,
 	                       humidity=-999,
 	                       log_file=path,

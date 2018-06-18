@@ -84,6 +84,17 @@ class Tester(models.Model):
 
     def __str__(self):
        return self.username
+    
+class Variable(models.Model):
+    """ This model stores the information about each variable for a test """
+
+    name = models.CharField(max_length=100, default="", blank=True)    # Name of the variable being tested
+    value = models.DecimalField(max_digits=25, decimal_places=15)      # Specific value of this variable
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, blank=True, null=True)           # Which test this variable is a part of
+    test_pass = models.BooleanField(default=False)                     # Whether it passed said test or not
+
+    def __str__(self):
+        return (self.name + ": " + str(self.test_pass))
 
 
 class QieCard(models.Model):
@@ -228,6 +239,36 @@ class QieCard(models.Model):
             yield (field.name, value)
 
 
+class Channel(models.Model):
+    """ This model stores information about a specific channel for a QIE Card """
+    
+    # Choice for if this channel is part of the top or bottom igloo
+    POSITION = (
+        ("Top", "Top Igloo Card"),
+        ("Bot", "Bottom Igloo Card")
+    )
+    
+    # Channel number for this specific channel
+    CHANNEL = (
+        (-1, "N/A"),
+        (0, "Channel 0"),
+        (1, "Channel 1"),
+        (2, "Channel 2"),
+        (3, "Channel 3"),
+        (4, "Channel 4"),
+        (5, "Channel 5"),
+        (6, "Channel 6"),
+        (7, "Channel 7"),
+    )
+
+    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)    # Corresponding to top or bottom igloo
+    number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)    # Number specifying which channel this is
+    card = models.ForeignKey(QieCard, on_delete=models.CASCADE, blank=True, null=True)    # Card this channel is on
+    
+    def __str__(self):
+        return (self.position + ": Channel " + str(self.number))
+
+
 def images_location(upload, original_filename):
     cardName    = str(QieCard.objects.get(pk=upload.barcode).barcode) + "/"
     testAbbrev  = str(Test.objects.get(pk=upload.test_type_id).abbreviation) + "/"
@@ -242,6 +283,7 @@ def logs_location(upload, original_filename):
 
     return os.path.join("uploads/", "user_uploaded_logs/", cardName, testAbbrev, attemptNum, original_filename)
 
+
 class Attempt(models.Model):
     """ This model stores information about each testing attempt """
 
@@ -251,8 +293,8 @@ class Attempt(models.Model):
     attempt_number  = models.IntegerField(default=1)                        # The number of this attempt on this card
     tester      = models.ForeignKey(Tester, on_delete=models.PROTECT)       # the person who enterd this attempt
     date_tested = models.DateTimeField('date tested')       # The date this test finished
-    num_passed  = models.IntegerField(default=-1)           # The number of times this test passed
-    num_failed  = models.IntegerField(default=-1)           # The number of times this test failed
+    num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
+    num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
     revoked     = models.BooleanField(default=False)        # Whether this test series is revoked
     overwrite_pass  = models.BooleanField(default=False)    # Whether this test was overwritten as a pass
     temperature = models.FloatField(default=-999.9)         # The temperature of the card during the test
@@ -264,9 +306,10 @@ class Attempt(models.Model):
     log_comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the log file
 
     hidden_log_file = models.FileField(upload_to=logs_location, default='default.png')      # The verbose log file, only used for web-page generation
+    result = models.NullBooleanField(blank=True, null=True)    # Whether the specific test passed or failed
 
-    def passed_all(self):
-        return (self.num_failed == 0)
+    def passed(self): 
+        return (self.result == 1)
 
     def has_image(self):
         """ This returns whether the attempt has a specified image """
@@ -281,7 +324,7 @@ class Attempt(models.Model):
             return "REVOKED"
         elif self.overwrite_pass:
             return "PASS (FORCED)"
-        elif self.num_failed == 0:
+        elif self.result:
             return "PASS"
         else:
             return "FAIL"
@@ -292,7 +335,7 @@ class Attempt(models.Model):
             return "warn"
         elif self.overwrite_pass:
             return "forced"
-        elif self.num_failed == 0:
+        elif self.result:
             return "okay"
         else:
             return "bad"
@@ -519,7 +562,7 @@ class Location(models.Model):
     """ This model stores information about a particular location where a card has been """
 
     card = models.ForeignKey(QieCard, on_delete=models.CASCADE)                 # The card which the location refers to
-    date_received = models.DateTimeField('date received', default=timezone.now) # The date the card was received at this location
+    date_received = models.DateTimeField('date received', default=timezone.localtime(timezone.now())) # The date the card was received at this location
     geo_loc = models.CharField('Location',max_length=200, default="")           # The geographical location of this card
 
 class RmLocation(models.Model):
@@ -555,12 +598,12 @@ class QieShuntParams(models.Model):
         return str(self.card)
 
 
-#@receiver(pre_save)
-#def pre_save_full_clean_handler(sender, instance, *args, **kwargs):
-#   """ Force all models to call full_clean before save """
-#   from django.contrib.sessions.models import Session
-#   if sender != Session:
-#       instance.full_clean()
+@receiver(pre_save)
+def pre_save_full_clean_handler(sender, instance, *args, **kwargs):
+   """ Force all models to call full_clean before save """
+   from django.contrib.sessions.models import Session
+   if sender != Session:
+       instance.full_clean()
 
 # An appendage to the delete function
 from django.db.models.signals import pre_delete

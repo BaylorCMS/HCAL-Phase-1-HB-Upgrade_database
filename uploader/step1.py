@@ -74,8 +74,7 @@ def loadTests(qie, tester, date, testData, path, overwrite):
                                        attempt_number=attempt_num,
                                        tester=tester,
                                        date_tested=date,
-                                       num_passed=1,
-                                       num_failed=0,
+                                       result=1,
                                        temperature=-999,
                                        humidity=-999,
                                        log_file=path,
@@ -88,8 +87,7 @@ def loadTests(qie, tester, date, testData, path, overwrite):
                                        attempt_number=attempt_num,
                                        tester=tester,
                                        date_tested=date,
-                                       num_passed=0,
-                                       num_failed=1,
+                                       result=0,
                                        temperature=-999,
                                        humidity=-999,
                                        log_file=path,
@@ -143,7 +141,7 @@ overwrite = cardData["Overwrite"]
 qie = loadCard(cardData, overwrite)
 
 #load time of test
-date = cardData["DateRun"] + "-06:00"
+date = cardData["DateRun"] + "-05:00"
 
 #find tester account
 try:

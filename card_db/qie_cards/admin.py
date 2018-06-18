@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import QieCard, Attempt, Tester, Test, Location, ReadoutModule, QieShuntParams, RMBiasVoltage, CalibrationUnit, SipmControlCard
+from .models import QieCard, Variable, Attempt, Tester, Test, Location, ReadoutModule, QieShuntParams, RMBiasVoltage, CalibrationUnit, SipmControlCard, Channel
 
 # This file describes the layout of the admin pages.
 
@@ -45,10 +45,10 @@ class TestAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     ordering = ('name',)
     searchfields = ('name')
-    
     fieldsets = [
         ('Test Information', {'fields': ['name', 'abbreviation', 'description', 'required']}),
     ]
+
 
     def get_readonly_fields(self, request, obj=None):
         if obj: # editing an existing object
@@ -125,6 +125,7 @@ class SipmAdmin(admin.ModelAdmin):
     searchFields = ('sipm_control_card')
 
 # Registration of the models
+#admin.site.register(Variable)
 admin.site.register(QieCard, QieAdmin)
 admin.site.register(QieShuntParams)
 admin.site.register(Tester)
@@ -133,3 +134,4 @@ admin.site.register(Test, TestAdmin)
 admin.site.register(ReadoutModule, ReadoutAdmin)
 admin.site.register(CalibrationUnit, CUAdmin)
 admin.site.register(SipmControlCard, SipmAdmin)
+admin.site.register(Attempt)
