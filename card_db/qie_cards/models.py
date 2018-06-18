@@ -242,31 +242,32 @@ class QieCard(models.Model):
 class Channel(models.Model):
     """ This model stores information about a specific channel for a QIE Card """
     
-    # Choice for if this channel is part of the top or bottom igloo
-    POSITION = (
-        ("Top", "Top Igloo Card"),
-        ("Bot", "Bottom Igloo Card")
-    )
-    
     # Channel number for this specific channel
     CHANNEL = (
         (-1, "N/A"),
-        (0, "Channel 0"),
-        (1, "Channel 1"),
-        (2, "Channel 2"),
-        (3, "Channel 3"),
-        (4, "Channel 4"),
-        (5, "Channel 5"),
-        (6, "Channel 6"),
-        (7, "Channel 7"),
+        (1, "Top Channel 1"),
+        (2, "Top Channel 2"),
+        (3, "Top Channel 3"),
+        (4, "Top Channel 4"),
+        (5, "Top Channel 5"),
+        (6, "Top Channel 6"),
+        (7, "Top Channel 7"),
+        (8, "Top Channel 8"),
+        (9, "Bot Channel 9"),
+        (10, "Bot Channel 10"),
+        (11, "Bot Channel 11"),
+        (12, "Bot Channel 12"),
+        (13, "Bot Channel 13"),
+        (14, "Bot Channel 14"),
+        (15, "Bot Channel 15"),
+        (16, "Bot Channel 16"),
     )
 
-    position = models.CharField(max_length=3, default="", blank=True, choices=POSITION, null=True)    # Corresponding to top or bottom igloo
     number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)    # Number specifying which channel this is
     card = models.ForeignKey(QieCard, on_delete=models.CASCADE, blank=True, null=True)    # Card this channel is on
     
     def __str__(self):
-        return (self.position + ": Channel " + str(self.number))
+        return str(self.number)
 
 
 def images_location(upload, original_filename):
