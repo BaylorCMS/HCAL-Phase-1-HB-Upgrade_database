@@ -84,17 +84,6 @@ class Tester(models.Model):
 
     def __str__(self):
        return self.username
-    
-class Variable(models.Model):
-    """ This model stores the information about each variable for a test """
-
-    name = models.CharField(max_length=100, default="", blank=True)    # Name of the variable being tested
-    value = models.DecimalField(max_digits=25, decimal_places=15)      # Specific value of this variable
-    test = models.ForeignKey(Test, on_delete=models.CASCADE, blank=True, null=True)           # Which test this variable is a part of
-    test_pass = models.BooleanField(default=False)                     # Whether it passed said test or not
-
-    def __str__(self):
-        return (self.name + ": " + str(self.test_pass))
 
 
 class QieCard(models.Model):
@@ -289,11 +278,12 @@ class Attempt(models.Model):
     """ This model stores information about each testing attempt """
 
     card        = models.ForeignKey(QieCard, on_delete=models.CASCADE)      # The card object which this test is on
-    plane_loc   = models.CharField(max_length=LOCATION_LENGTH, default="")  # The location on the backplane where the test occured
+    plane_loc   = models.CharField(max_length=LOCATION_LENGTH, default="", blank=True)  # The location on the backplane where the test occured
     test_type   = models.ForeignKey(Test, on_delete=models.PROTECT)         # The test object which this test is of
-    attempt_number  = models.IntegerField(default=1)                        # The number of this attempt on this card
-    tester      = models.ForeignKey(Tester, on_delete=models.PROTECT)       # the person who enterd this attempt
-    date_tested = models.DateTimeField('date tested')       # The date this test finished
+    attempt_number  = models.IntegerField(default=0)                        # The number of this attempt on this card
+    tester      = models.ForeignKey(Tester, on_delete=models.PROTECT, blank=True)       # the person who enterd this attempt
+    run         = models.CharField(max_length=4, default="0", blank=True, null=True)        # The run this attempt is associated with
+    date_tested = models.DateTimeField('date tested', blank=True)       # The date this test finished
     num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
     num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
     revoked     = models.BooleanField(default=False)        # Whether this test series is revoked
@@ -307,7 +297,7 @@ class Attempt(models.Model):
     log_comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the log file
 
     hidden_log_file = models.FileField(upload_to=logs_location, default='default.png')      # The verbose log file, only used for web-page generation
-    result = models.NullBooleanField(blank=True, null=True)    # Whether the specific test passed or failed
+    result = models.NullBooleanField(default=None, blank=True, null=True)    # Whether the specific test passed or failed
 
     def passed(self): 
         return (self.result == 1)
@@ -349,6 +339,18 @@ class Attempt(models.Model):
 
     def __str__(self):
         return str(self.test_type)
+
+
+class Variable(models.Model):
+    """ This model stores the information about each variable for a test """
+
+    name = models.CharField(max_length=100, default="", blank=True)    # Name of the variable being tested
+    value = models.FloatField(blank=True, null=True)      # Specific value of this variable
+    attempt = models.ForeignKey(Attempt, on_delete=models.CASCADE, blank=True, null=True)           # Which test this variable is a part of
+    test_pass = models.BooleanField(default=False)                     # Whether it passed said test or not
+
+    def __str__(self):
+        return (self.name + ": " + str(self.test_pass))
 
 
 class ReadoutModule(models.Model):
@@ -563,7 +565,7 @@ class Location(models.Model):
     """ This model stores information about a particular location where a card has been """
 
     card = models.ForeignKey(QieCard, on_delete=models.CASCADE)                 # The card which the location refers to
-    date_received = models.DateTimeField('date received', default=timezone.localtime(timezone.now())) # The date the card was received at this location
+    date_received = models.DateTimeField('date received', default=timezone.now) # The date the card was received at this location
     geo_loc = models.CharField('Location',max_length=200, default="")           # The geographical location of this card
 
 class RmLocation(models.Model):
