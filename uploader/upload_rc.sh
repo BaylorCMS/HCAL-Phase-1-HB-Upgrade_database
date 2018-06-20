@@ -43,7 +43,7 @@ if ls $qcDir &> /dev/null; then
         qieuid="$(basename "${dir}")"    # list of uid directories
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
         uidjsonFile=${dir}/${qieuid}_QC.json
-        python $scriptLoc/qc_test.py $uidjsonFile #2> $logLoc${qieuid}.log 1> $logLoc${qieuid}.txt    # call python script
+        python $scriptLoc/qc_test.py $uidjsonFile $run_num #2> $logLoc${qieuid}.log 1> $logLoc${qieuid}.txt    # call python script
        #for barcode in $logLoc*.txt; do
        ## move files to their associated barcode directories
        #done

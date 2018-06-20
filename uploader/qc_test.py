@@ -32,7 +32,7 @@ def getUID(uid):
 
 # load the json file
 fileName = sys.argv[1]
-
+run_num = sys.argv[2]
 # open the file and read it
 try:
     inFile = open(fileName, "r")
@@ -89,6 +89,7 @@ for position in data[rawUID].keys():
                                        plane_loc="default", 
                                        attempt_number=attempt_num, 
                                        test_type=temp_test,
+                                       run=run_num,
                                        tester=Tester.objects.get(username="Nesta Lenhert"))
                 temp_attempt.save()
                 attemptlist[test] = temp_attempt

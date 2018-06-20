@@ -282,6 +282,7 @@ class Attempt(models.Model):
     test_type   = models.ForeignKey(Test, on_delete=models.PROTECT)         # The test object which this test is of
     attempt_number  = models.IntegerField(default=0)                        # The number of this attempt on this card
     tester      = models.ForeignKey(Tester, on_delete=models.PROTECT, blank=True)       # the person who enterd this attempt
+    run         = models.CharField(max_length=4, default="0", blank=True, null=True)        # The run this attempt is associated with
     date_tested = models.DateTimeField('date tested', blank=True)       # The date this test finished
     num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
     num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
@@ -564,7 +565,7 @@ class Location(models.Model):
     """ This model stores information about a particular location where a card has been """
 
     card = models.ForeignKey(QieCard, on_delete=models.CASCADE)                 # The card which the location refers to
-    date_received = models.DateTimeField('date received', default=timezone.localtime(timezone.now())) # The date the card was received at this location
+    date_received = models.DateTimeField('date received', default=timezone.now) # The date the card was received at this location
     geo_loc = models.CharField('Location',max_length=200, default="")           # The geographical location of this card
 
 class RmLocation(models.Model):

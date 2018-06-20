@@ -85,6 +85,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Date</th>
+                        <th>Run Number</th>
                         <th>Result</th>
                     </tr>
                 </thead>
@@ -92,6 +93,7 @@
                     <tr>
                         <td> {{attempt.tester}} </td>
                         <td> {{attempt.date_tested}} </td>
+                        <td>{{attempt.run}}</td>
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
 			{% else %}
@@ -100,22 +102,23 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <td colspan="2"> {{attempt.comments | default:"None"}} </td>
+                        <td colspan="3"> {{attempt.comments | default:"None"}} </td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
-                        <td colspan="2">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
+                        <td colspan="3">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
                                         {% else %} No image {% endif %}</td>
                     </tr>
                     <tr>
                         <td><b>Log Files:</b></td>
-                        <td colspan="2">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
+                        <td colspan="3">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
                                         {% else %} No file {% endif %}</td>
                     </tr>
 		    {% else %}
 		    <tr>
                         <th>Name</th>
                         <th>Date</th>
+                        <th>Run Number</th>
                         <th>Result</th>
 			<th>Channels Passed</th>
 			<th>Channels Failed</th>
@@ -125,6 +128,7 @@
                     <tr>
                         <td> {{attempt.tester}} </td>
                         <td> {{attempt.date_tested}} </td>
+                        <td>{{attempt.run}}</td>
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
 			{% else %}
@@ -135,16 +139,16 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <td colspan="4"> {{attempt.comments | default:"None"}} </td>
+                        <td colspan="5"> {{attempt.comments | default:"None"}} </td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
-                        <td colspan="4">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
+                        <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
                                         {% else %} No image {% endif %}</td>
                     </tr>
                     <tr>
                         <td><b>Log Files:</b></td>
-                        <td colspan="4">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
+                        <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
                                         {% else %} No file {% endif %}</td>
                     </tr>
 		    {% endif %}
