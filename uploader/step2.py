@@ -92,7 +92,7 @@ card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
 
-test_list = ["Igloo_FPGA_Control", "Checksum"]
+test_list = ["Igloo_FPGA_Control", "Checksum", "SupplyI", "PrgmChk"]
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
@@ -118,6 +118,19 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+    elif cardData[test] == "N/A":
+        temp_attempt = Attempt(card=card,
+	                       plane_loc="default",
+	                       test_type=temp_test,
+	                       attempt_number=attempt_num,
+	                       tester=tester,
+	                       date_tested=date,
+	                       result=None,
+	                       temperature=-999,
+	                       humidity=-999,
+	                       log_file=path,
+	                       hidden_log_file=path,
+	                       ) 
     else:
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
