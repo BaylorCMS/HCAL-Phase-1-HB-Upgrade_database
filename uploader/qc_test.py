@@ -17,7 +17,9 @@ django.setup()
 from qie_cards.models import QieCard, Attempt, Channel, Test, Variable, Tester
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from card_db.settings import MEDIA_ROOT
 
+print MEDIA_ROOT
 CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8},
                   "Bot": {"0": 9, "1": 10, "2": 11, "3": 12, "4": 13, "5": 14, "6": 15, "7": 16}}
 
@@ -51,7 +53,6 @@ except ObjectDoesNotExist:
     sys.exit("UID does not match a QIE Card in the database. Check that the UID is correct or that the QIE Card is in the database.")
 
 attemptlist = {}    # Hold Attempt objects with keys being the test names
-channellist = []
 channels_passed = {}
 channels_failed = {}
 first_channel = True
@@ -61,16 +62,17 @@ for position in data[rawUID].keys():
     for channel in data[rawUID][position].keys():
         newchannel = Channel(number=CHANNEL_MAPPING[position][channel[-1]], card=qiecard)
         newchannel.save()
-        varlist = []
-        failed_channel = False
+        failed_channel = {}
         for test in data[rawUID][position][channel].keys():
             failed_test = False
             try:
                 # Test is in the database
                 temp_test = Test.objects.get(abbreviation=test)
-                if test not in channels_passed.keys() and temp_test not in channels_failed.keys():
+                if test not in channels_passed.keys() and test not in channels_failed.keys():
                     channels_passed[test] = 0
                     channels_failed[test] = 0
+                if test not in failed_channel:
+                    failed_channel[test] = False
             except ObjectDoesNotExist:
                 # Test is not in the database and can be created
                 temp_test = Test(name=test, abbreviation=test)
@@ -82,60 +84,51 @@ for position in data[rawUID].keys():
                 # Only get/create attempts once per card
                 prev_attempts = list(Attempt.objects.filter(card=qiecard, test_type=temp_test))
                 attempt_num = len(prev_attempts) + 1
-                try:
-                    # This attempt for this card and test already exists
-                    temp_attempt = Attempt.objects.get(card=qiecard, test_type=temp_test)
-                    if temp_attempt.attempt_number == attempt_num - 1:
-                        raise ObjectDoesNotExist
-                    if temp_attempt not in attemptlist:
-                        attemptlist[test] = temp_attempt
-                except ObjectDoesNotExist:
-                    print "Uh oh"
-#                    # This attempt for this card and test does not exist
-#                    temp_attempt = Attempt(card=qiecard, 
-#                                           date_tested=timezone.now(), 
-#                                           plane_loc="default", 
-#                                           attempt_number=attempt_num, 
-#                                           test_type=temp_test,
-#                                           tester=Tester.objects.get(username="Nesta Lenhert"))
-#                    temp_attempt.save()
-#                    attemptlist[test] = temp_attempt
-#            
-#                for pa in prev_attempts:
-#                    pa.revoked=True
-#                    pa.save()
-#            
-#            else:
-#                # Get the correct attempt
-#                temp_attempt = attemptlist[test]
-#            
-#    
-#            for variable in data[rawUID][position][channel][test].keys():
-#                temp_value = data[rawUID][position][channel][test][variable][0]
-#                temp_result = data[rawUID][position][channel][test][variable][1]
-#                
-#                temp_var = Variable(name=variable, value=temp_value, attempt=attemptlist[test], test_pass=temp_result)
-#                temp_var.save()
-#                varlist.append(temp_var)
-#                if temp_result == 0.0:
-#                    # If the test failed, set a flag that the channel failed 
-#                    failed_channel = True
-#                    failed_test = True
-#
-#            
-#            
-#            if failed_test:
-#                temp_attempt.result = 0
-#                temp_attempt.save()
-#                channels_failed[test] += 1
-#            else:
-#                channels_passed[test] += 1
-#        
-#
-#
-## Add the correct channels passed/failed to attempts
-#for test in attemptlist.keys():    
-#    attemptlist[test].num_channels_passed = channels_passed[test]
-#    attemptlist[test].num_channels_failed = channels_failed[test]
-#    attemptlist[test].save()
-#
+                temp_attempt = Attempt(card=qiecard, 
+                                       date_tested=timezone.now(), 
+                                       plane_loc="default", 
+                                       attempt_number=attempt_num, 
+                                       test_type=temp_test,
+                                       tester=Tester.objects.get(username="Nesta Lenhert"))
+                temp_attempt.save()
+                attemptlist[test] = temp_attempt
+            
+                for pa in prev_attempts:
+                    pa.revoked=True
+                    pa.save()
+            
+
+            else:
+                # Get the correct attempt
+                temp_attempt = attemptlist[test]
+            
+    
+            for variable in data[rawUID][position][channel][test].keys():
+                temp_value = data[rawUID][position][channel][test][variable][0]
+                temp_result = data[rawUID][position][channel][test][variable][1]
+                
+                temp_var = Variable(name=variable, value=temp_value, attempt=attemptlist[test], test_pass=temp_result)
+                temp_var.save()
+                if temp_result == 0.0:
+                    # If the test failed, set a flag that the channel failed 
+                    failed_test = True
+            
+            
+            if failed_test:
+                failed_channel[test] = True
+                channels_failed[test] += 1
+            else:
+                failed_channel[test] = False
+                channels_passed[test] += 1
+
+        
+        if first_channel:
+            first_channel = False
+
+# Add the correct channels passed/failed to attempts
+for test in attemptlist.keys():
+    attemptlist[test].num_channels_passed = channels_passed[test]
+    attemptlist[test].num_channels_failed = channels_failed[test]
+    attemptlist[test].result = bool(channels_failed[test] == 0)
+    attemptlist[test].save()
+
