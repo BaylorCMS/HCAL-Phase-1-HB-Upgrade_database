@@ -336,8 +336,8 @@ def testDetail(request, card, test):
 
     return render(request, 'qie_cards/testDetail.html', {'card': p,
                                                          'test': curTest,
-                                                         'attempts': attemptData
-                                                         })
+                                                         'attempts': attemptData,
+                                                          })
 
 
 def fieldView(request):

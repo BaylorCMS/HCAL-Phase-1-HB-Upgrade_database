@@ -57,7 +57,7 @@
 
 <div class="row" style="padding-left:25px;">
     <div class="col-md-12">
-        <h3>{{test}}</h3>
+        <!--<h3>{{test}}</h3>-->
         {% for attempt, data in attempts %}
         <br>
         <div class="row">
@@ -106,12 +106,12 @@
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
-                        <td colspan="3">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
+                        <td colspan="3">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to Images for {{attempt.test_type}}</a>
                                         {% else %} No image {% endif %}</td>
                     </tr>
                     <tr>
                         <td><b>Log Files:</b></td>
-                        <td colspan="3">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
+                        <td colspan="3">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to Log File for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                     </tr>
 		    {% else %}
@@ -143,12 +143,12 @@
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
-                        <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">{{attempt.image}}</a>
+                        <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to Images for {{attempt.test_type}}</a>
                                         {% else %} No image {% endif %}</td>
                     </tr>
                     <tr>
                         <td><b>Log Files:</b></td>
-                        <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">{{attempt.log_file}}</a>
+                        <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to Log File for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                     </tr>
 		    {% endif %}
@@ -159,6 +159,7 @@
             <a href="../media/{{attempt.image}}/{{image}}"><img src="../media/{{attempt.image}}/{{image}}" style="width:10%"></a>
             {% endfor %}
             {% endif %}
+        <br/><br/>
         <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.attempt_number}}').classList.toggle('hide')">Show Data</button>
         <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.attempt_number}}"> {{data}} </p>
         </div>

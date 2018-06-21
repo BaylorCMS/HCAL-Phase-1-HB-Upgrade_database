@@ -12,7 +12,7 @@
 ########################
 
 run_num=$1
-runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output/    # location of run control tests
+runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output    # location of run control tests
 scriptLoc=$(readlink -f $(dirname $0) )    # location of this script
 logLoc=$scriptLoc/log_files/    # location of log files
 qcDir=$runDir/QC_run${run_num}    # location of Quality Control data
@@ -43,7 +43,7 @@ if ls $qcDir &> /dev/null; then
         qieuid="$(basename "${dir}")"    # list of uid directories
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
         uidjsonFile=${dir}/${qieuid}_QC.json
-        python $scriptLoc/qc_test.py $uidjsonFile $run_num #2> $logLoc${qieuid}.log 1> $logLoc${qieuid}.txt    # call python script
+        python $scriptLoc/upload_qc.py $uidjsonFile $run_num #2> $logLoc${qieuid}.log 1> $logLoc${qieuid}.txt    # call python script
        #for barcode in $logLoc*.txt; do
        ## move files to their associated barcode directories
        #done
