@@ -328,39 +328,40 @@ def testDetail(request, card, test):
         data = ""
         num_list = []
         num_var_list = {}
-        if not str(attempt.hidden_log_file) == "default.png":
-            inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
-            tempDict = json.load(inFile)
-            rawUID = tempDict["Unique_ID"]
-            channel_list = []
-            for position in tempDict[rawUID]:
-                for channel in tempDict[rawUID][position]:
-                    channel_num = CHANNEL_MAPPING[position][channel[-1]]
-                    num_var_list[channel_num] =  tempDict[rawUID][position][channel][curTest.abbreviation]
-                    num_list.append(CHANNEL_MAPPING[position][channel[-1]])
-                    new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
-                    channel_list.append(new_chan)      
+        if attempt.num_channels_passed != 0 and attempt.num_channels_failed != 0:
+            if not str(attempt.hidden_log_file) == "default.png":
+                inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
+                tempDict = json.load(inFile)
+                rawUID = tempDict["Unique_ID"]
+                channel_list = []
+                for position in tempDict[rawUID]:
+                    for channel in tempDict[rawUID][position]:
+                        channel_num = CHANNEL_MAPPING[position][channel[-1]]
+                        num_var_list[channel_num] =  tempDict[rawUID][position][channel][curTest.abbreviation]
+                        num_list.append(CHANNEL_MAPPING[position][channel[-1]])
+                        new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
+                        channel_list.append(new_chan)      
 
-            num_list.sort()
+                num_list.sort()
 
-            o_channel_list = {}
-            for i in num_list:
-                channel = getChannel(i, channel_list)
-                o_channel_list[channel.number] = num_var_list[i]    # Ordered dictionary of channel objects with their variables and values
-                data += channel.get_number_display() + ": \n"
-                for variable in o_channel_list[channel.number]:
-                    value = o_channel_list[channel.number][variable][0]
-                    result = o_channel_list[channel.number][variable][1]
-                    data += "\t" + variable + ": " + str(value) + ", "
-                    if result == 0:
-                        data += "FAIL"
-                    else:
-                        data += "PASS"
-                    data += "\n"    
-                data += "\n"
-
-        attemptData.append((attempt, data))
+                o_channel_list = {}
+                for i in num_list:
+                    channel = getChannel(i, channel_list)
+                    o_channel_list[channel.number] = num_var_list[i]    # Ordered dictionary of channel objects with their variables and values
+                    data += channel.get_number_display() + ": \n"
+                    for variable in o_channel_list[channel.number]:
+                        value = o_channel_list[channel.number][variable][0]
+                        result = o_channel_list[channel.number][variable][1]
+                        data += "\t" + variable + ": " + str(value) + ", "
+                        if result == 0:
+                            data += "FAIL"
+                        else:
+                            data += "PASS"
+                        data += "\n"    
+                    data += "\n"
                     
+        attemptData.append((attempt, data))
+            
     firstTest = []
 
     return render(request, 'qie_cards/testDetail.html', {'card': p,
