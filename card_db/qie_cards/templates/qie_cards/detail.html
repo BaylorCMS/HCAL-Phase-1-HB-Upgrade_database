@@ -149,7 +149,7 @@ table, td, th {
     {% for item in attempts %}
     {% if item.valid %}
     <tr>
-      <th scope="row">{{item.attempt.test_type}}</th>
+      <th scope="row"><a href="{{item.attempt.test_type}}">{{item.attempt.test_type}}</a></th>
       <td class="{{item.attempt.get_css_class}}">{{item.attempt.get_status}}
           {% if not item.required %}
           (NOT REQ)
