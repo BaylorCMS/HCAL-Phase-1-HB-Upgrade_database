@@ -60,7 +60,8 @@ def getData(data, rawUID, qiecard):
     for position in data[rawUID].keys():
         for channel in data[rawUID][position].keys():
             newchannel = Channel(number=CHANNEL_MAPPING[position][channel[-1]], card=qiecard)
-            newchannel.save()
+            if newchannel not in list(qiecard.channel_set.all()):
+                newchannel.save()
             failed_channel = {}
             for test in data[rawUID][position][channel].keys():
                 failed_test = False
