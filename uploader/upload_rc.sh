@@ -43,11 +43,18 @@ if ls $qcDir &> /dev/null; then
         qieuid="$(basename "${dir}")"    # list of uid directories
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
         uidjsonFile=${dir}/${qieuid}_QC.json
-        python $scriptLoc/upload_qc.py $uidjsonFile $run_num #2> $logLoc${qieuid}.log 1> $logLoc${qieuid}.txt    # call python script
-       #for barcode in $logLoc*.txt; do
-       ## move files to their associated barcode directories
-       #done
+        python $scriptLoc/upload_qc.py $uidjsonFile $run_num 2> $logLoc${qieuid}.log
+        
+        # Erase log files if there was no error
+        if [ $? -eq 0 ]; then
+            echo -e "    ${SUCCESS}Card Uploaded Succesfully"
+            rm $logLoc${qieuid}.log 
+        else
+            echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}${qieuid}.log"
+        fi
     done
+    echo -e "${STATUS}All Card Data Succesfully Uploaded for Run ${run_num}"
 else
     echo -e "${FAIL}No Quality Control Data Found${DEF}"
 fi
+echo -e ""

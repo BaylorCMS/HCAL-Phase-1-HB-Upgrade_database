@@ -51,7 +51,6 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
 @transaction.atomic
 def getData(data, rawUID, qiecard):
     """Main function to grab data from the JSON file"""
-    #print "I'm in the main function"
     attemptlist = {}
     channels_passed = {}
     channels_failed = {}
@@ -59,10 +58,8 @@ def getData(data, rawUID, qiecard):
     first_channel = True
 
     for position in data[rawUID].keys():
-    #    print "I'm in the main loop"
         for channel in data[rawUID][position].keys():
             newchannel = Channel(number=CHANNEL_MAPPING[position][channel[-1]], card=qiecard)
-   #         print "New channel save"
             newchannel.save()
             failed_channel = {}
             for test in data[rawUID][position][channel].keys():
@@ -78,7 +75,6 @@ def getData(data, rawUID, qiecard):
                 except ObjectDoesNotExist:
                     # Test is not in the database and can be created
                     temp_test = Test(name=test, abbreviation=test)
-  #                  print "New test save"
                     temp_test.save()
                     channels_passed[test] = 0
                     channels_failed[test] = 0
@@ -99,7 +95,6 @@ def getData(data, rawUID, qiecard):
                         
                     for pa in prev_attempts:
                         pa.revoked=True
-         #               print "new prev_attempt save"
                         pa.save()
                             
                             
@@ -113,8 +108,6 @@ def getData(data, rawUID, qiecard):
                                 
                     temp_var = Variable(name=variable, value=temp_value, attempt=attemptlist[test], test_pass=temp_result)
                     varlist.append(temp_var)
- #                   print "new variable save"
-                    #temp_var.save()
                     if temp_result == 0.0:
                         # If the test failed, set a flag that the channel failed 
                         failed_test = True
@@ -132,7 +125,6 @@ def getData(data, rawUID, qiecard):
                 first_channel = False
     
     for var in varlist:
-#        print "in varlist save loop"
         var.save()
     
     return attemptlist, channels_passed, channels_failed
@@ -159,22 +151,13 @@ try:
 except ObjectDoesNotExist:
     sys.exit("UID does not match a QIE Card in the database. Check that the UID is correct or that the QIE Card is in the database.")
 
-#attemptlist = {}    # Hold Attempt objects with keys being the test names
-#channels_passed = {}
-#channels_failed = {}
-#first_channel = True
-#
+
 ################
 # Get the data #
 ################
 
 attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard)
-#print data
-#print rawUID
-#print qiecard
-#print attemptlist
-#print channels_passed
-#print channels_failed
+
 
 ###########################################
 # Move the directory to permanent storage #
@@ -207,13 +190,4 @@ json_file = os.path.join("uploads/", qiecard.barcode, os.path.basename(mved_src_
 
 uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed)
 
-# Save the media and url for the attempts
-#for test in attemptlist.keys():
-#    attemptlist[test].log_file = json_file
-#    attemptlist[test].hidden_log_file = json_file
-#    attemptlist[test].image = os.path.join(media, str(test))
-#    attemptlist[test].num_channels_passed = channels_passed[test]
-#    attemptlist[test].num_channels_failed = channels_failed[test]
-#    attemptlist[test].result = bool(channels_failed[test] == 0)
-#    attemptlist[test].save()
 
