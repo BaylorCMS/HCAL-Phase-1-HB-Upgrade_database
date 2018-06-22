@@ -159,9 +159,14 @@
             <a href="../media/{{attempt.image}}/{{image}}"><img src="../media/{{attempt.image}}/{{image}}" style="width:10%"></a>
             {% endfor %}
             {% endif %}
-        <br/><br/>
+        <br/>
+        {% if data != ""%}
+        </br>
         <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.attempt_number}}').classList.toggle('hide')">Show Data</button>
         <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.attempt_number}}"> {{data}} </p>
+        {% else %}
+        <p> This Attempt Has No Data</p>
+        {% endif %}
         </div>
         <br/>
         {% endfor %}
