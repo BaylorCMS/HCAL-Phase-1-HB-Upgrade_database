@@ -6,7 +6,7 @@ from os import listdir, path
 import json
 from sets import Set
 
-from .models import QieCard, Tester, Test, Attempt, Location, QieShuntParams 
+from .models import QieCard, Tester, Test, Attempt, Location, QieShuntParams, Channel
 import custom.filters as filters
 
 # Create your views here.
@@ -289,6 +289,16 @@ class PlotView(generic.ListView):
     def get_queryset(self):
         return list(Test.objects.all())
 
+CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8},
+                  "Bot": {"0": 9, "1": 10, "2": 11, "3": 12, "4": 13, "5": 14, "6": 15, "7": 16}}
+
+def getChannel(num, channels):
+    """This function grabs the right channel out of a list of channels and returns that channel"""
+    for channel in channels:
+        if num == channel.number:
+            return channel
+
+
 def testDetail(request, card, test):
     """ This displays details about a specific test for a card """
     if len(card) > 7:
@@ -316,22 +326,41 @@ def testDetail(request, card, test):
     attemptData = []
     for attempt in attemptList:
         data = ""
+        num_list = []
+        num_var_list = {}
         if not str(attempt.hidden_log_file) == "default.png":
             inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
             tempDict = json.load(inFile)
-            if attempt.test_type.abbreviation == "overall pedestal" and "pedResults" in tempDict["TestOutputs"]: 
-                data = tempDict["TestOutputs"]["pedResults"]
-            elif attempt.test_type.abbreviation == "overall charge injection" and "ciResults" in tempDict["TestOutputs"]: 
-                data = tempDict["TestOutputs"]["ciResults"]
-            elif attempt.test_type.abbreviation == "overall phase scan" and "phaseResults" in tempDict["TestOutputs"]:
-                data = tempDict["TestOutputs"]["phaseResults"]
-            elif attempt.test_type.abbreviation == "overall shunt scan" and "shuntResults" in tempDict["TestOutputs"]:
-                data = tempDict["TestOutputs"]["shuntResults"]
-            elif "ResultStrings" in tempDict:
-                if attempt.test_type.abbreviation in tempDict["ResultStrings"]:
-                    data = tempDict["ResultStrings"][attempt.test_type.abbreviation]
-        attemptData.append((attempt, data))
+            rawUID = tempDict["Unique_ID"]
+            channel_list = []
+            for position in tempDict[rawUID]:
+                for channel in tempDict[rawUID][position]:
+                    channel_num = CHANNEL_MAPPING[position][channel[-1]]
+                    num_var_list[channel_num] =  tempDict[rawUID][position][channel][curTest.abbreviation]
+                    num_list.append(CHANNEL_MAPPING[position][channel[-1]])
+                    new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
+                    channel_list.append(new_chan)      
 
+            num_list.sort()
+
+            o_channel_list = {}
+            for i in num_list:
+                channel = getChannel(i, channel_list)
+                o_channel_list[channel.number] = num_var_list[i]    # Ordered dictionary of channel objects with their variables and values
+                data += channel.get_number_display() + ": \n"
+                for variable in o_channel_list[channel.number]:
+                    value = o_channel_list[channel.number][variable][0]
+                    result = o_channel_list[channel.number][variable][1]
+                    data += "\t" + variable + ": " + str(value) + ", "
+                    if result == 0:
+                        data += "FAIL"
+                    else:
+                        data += "PASS"
+                    data += "\n"    
+                data += "\n"
+
+        attemptData.append((attempt, data))
+                    
     firstTest = []
 
     return render(request, 'qie_cards/testDetail.html', {'card': p,
