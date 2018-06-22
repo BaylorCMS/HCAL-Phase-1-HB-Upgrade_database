@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^(?P<card>[0-9]{3,7})/calibration/(?P<group>[0-9]{1,2})/results$', views.calResults, name='results'),
     url(r'^(?P<card>[0-9]{3,7})/(?P<test>.*)$', views.testDetail, name='testDetail'),
     url(r'^error$', views.error, name='error'),
-    url(r'^media/(?P<path>.*)$',serve, {'document_root':MEDIA_ROOT,'show_indexes':True}),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT,'show_indexes':True}),
     url(r'^plots$', views.PlotView.as_view(), name='plots'),
     url(r'^field$', views.fieldView, name='fieldView'),
 ]
