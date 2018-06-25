@@ -128,11 +128,11 @@ function searchBarcode(e){
         document.location.href = "{{ SITE_URL }}/cards/error";
     } else if( cardBarcode.length > 3){
         e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode.substring(cardBarcode.length - 3);
-    } else {
+        document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode;
+    }else {
         appendage = ""
         while(appendage.length + cardBarcode.length < 3){
-            appendage = appendage + "0";
+           appendage = appendage + "0";
         }
         e.preventDefault();
         window.location.href = "{{ SITE_URL }}/cards/" + appendage + cardBarcode;
@@ -146,7 +146,7 @@ function searchUID(e){
         document.location.href = "{{ SITE_URL }}/cards/error";
     } else if( cardUID.length > 5){
         e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/uid/" + cardUID.substring(cardUID.length - 6) + family;
+        document.location.href = "{{ SITE_URL }}/cards/" + cardUID.substring(cardUID.length - 6) + family;
     } else {
         e.preventDefault();
         window.location.href = "{{ SITE_URL }}/cards/error";

@@ -74,13 +74,21 @@ table, td, th {
         <tr>
             <td>Readout Module:</td>
             <!-- <td>{{rm}}<span style="display:inline-block; width:30px"></span><a href="{{ SITE_URL }}/rm/{{rm}}">[link to RM]</a></td> -->
+            {% if rm != "Not Installed" %}
             <td><a href="{{ SITE_URL }}/rm/{{rm}}">{{rm}}</a></td>
+            {% else %}
+            <td><a href="{{SITE_URL }}/rm/error">{{rm}}</a></td>
+            {% endif %}
             <td>Slot {{rm_slot}}</td>
         </tr>
         <tr>
             <td>Calibration Unit</td>
             <!-- <td>{{cu}}<span style="display:inline-block; width:30px"></span><a href="{{ SITE_URL }}/cu/{{cu}}">[link to CU]</a></td> -->
+            {% if cu != "Not Installed" %}
             <td><a href="{{ SITE_URL }}/cu/{{cu}}">{{cu}}</a></td>
+            {% else %}
+            <td><a href="{{ SITE_URL }}/cu/error">{{cu}}</a></td>
+            {% endif %}
             <td></td>
         </tr>
         {% include "snippets/fw_and_uid.html" %}
@@ -141,7 +149,7 @@ table, td, th {
     {% for item in attempts %}
     {% if item.valid %}
     <tr>
-      <th scope="row">{{item.attempt.test_type}}</th>
+      <th scope="row"><a href="{{item.attempt.test_type}}">{{item.attempt.test_type}}</a></th>
       <td class="{{item.attempt.get_css_class}}">{{item.attempt.get_status}}
           {% if not item.required %}
           (NOT REQ)
