@@ -353,6 +353,16 @@ class Variable(models.Model):
         return (self.name + ": " + str(self.test_pass))
 
 
+class Run(models.Model):
+    """ This model will hold a dummy run number that can be displayed on the run page """
+    
+    number = models.IntegerField(default=0)
+
+    def __str__(self):
+        return ("Run: " + str(self.number))
+
+
+
 class ReadoutModule(models.Model):
     """ This model stores information about an RM (Readout Module). """
     ODU_TYPE_OPTIONS = [                    # Optical Decoder Unit (ODU) types 1, 2, 3, 4.
