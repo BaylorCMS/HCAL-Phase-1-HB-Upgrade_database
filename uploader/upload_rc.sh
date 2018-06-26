@@ -12,11 +12,13 @@
 ########################
 
 run_num=$1
-cardDir=/home/django/testing_database_hb/media/uploads/run_control/cards    # temporary location of the qie card qc data
-runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output    # location of run control tests
+uploads=/home/django/testing_database_hb/media/uploads
+cardDir=$uploads/run_control/cards    # temporary location of the qie card qc data
+#runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output    # location of run control tests
+regCardDir=$uploads/temp_reg_test    # Where the qie card data for the register tests will be initially stored
 scriptLoc=$(readlink -f $(dirname $0) )    # location of this script
 logLoc=$scriptLoc/log_files/    # location of log files
-qcDir=$cardDir    # location of Quality Control data
+#qcDir=$cardDir    # location of Quality Control data
 
 # Colors
 STATUS="\e[1;34m"   # color of status statements
@@ -37,9 +39,9 @@ echo ""
 ################################
 echo -e "${STATUS}Uploading Quality Control Tests"
 
-# Check for directories in the run number
-if ls $qcDir &> /dev/null; then
-    for dir in $qcDir/0x*; do
+# Check if there are any cards to upload
+if ls $cardDir/0x* &> /dev/null; then
+    for dir in $cardDir/0x*; do
         [ -d "${dir}" ] || continue
         qieuid="$(basename "${dir}")"    # list of uid directories
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
@@ -59,3 +61,23 @@ else
     echo -e "${FAIL}No Quality Control Data Found${DEF}"
 fi
 echo -e ""
+
+#########################
+# Upload Register Tests #
+#########################
+
+echo -e "${STATUS}Uploading Register Tests${DEF}"
+
+if ls $regCardDir/0x* &> /dev/null; then
+    for dir in $regCardDir/0x*; do
+        [ -d "${dir}" ] || continue
+        qieuid="$(basename "${dir}")"
+        echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
+    done
+else
+    echo -e "${FAIL}No Register Test Data Found${DEF}"
+fi
+
+
+
+
