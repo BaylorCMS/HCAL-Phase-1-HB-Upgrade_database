@@ -6,7 +6,7 @@ from os import listdir, path
 import json
 from sets import Set
 
-from .models import Run #QieCard, Tester, Test, Attempt, Location, QieShuntParams, Channel
+from .models import Run, QieCard, Tester, Test, Attempt, Location, QieShuntParams, Channel
 import custom.filters as filters
 
 # Create your views here.
@@ -26,3 +26,16 @@ def catalog(request):
                                                  'total_count': count})
 
 
+def detail(request, run):
+    """ This displays the tests and cards corresponding to a run"""
+    attempts = list(Attempt.objects.filter(run=run).order_by('card__barcode'))
+    cards = []
+    for attempt in attempts:
+        if attempt.card not in cards:
+            cards.append(attempt.card)
+        
+
+    return render(request, 'runs/detail.html', {'card_list': cards})
+
+
+            

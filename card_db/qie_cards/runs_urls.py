@@ -10,6 +10,7 @@ urlpatterns = [
     #url(r'^catalog$', views.CatalogView.as_view(), name='catalog'),
     url(r'^$', RedirectView.as_view(url='catalog')),
     url(r'^catalog$', views.catalog, name='catalog'),
+    url(r'^(?P<run>[0-9]{1,4})/$', views.detail, name='detail'),
     #url(r'^summary$', views.summary, name='summary'),
     #url(r'^testers$', views.TestersView.as_view(), name='testers'),
     #url(r'^stats$', views.stats, name='stats'),
