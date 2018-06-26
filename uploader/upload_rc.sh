@@ -12,10 +12,11 @@
 ########################
 
 run_num=$1
+cardDir=/home/django/testing_database_hb/media/uploads/run_control/cards    # temporary location of the qie card qc data
 runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output    # location of run control tests
 scriptLoc=$(readlink -f $(dirname $0) )    # location of this script
 logLoc=$scriptLoc/log_files/    # location of log files
-qcDir=$runDir/QC_run${run_num}    # location of Quality Control data
+qcDir=$cardDir    # location of Quality Control data
 
 # Colors
 STATUS="\e[1;34m"   # color of status statements
@@ -43,7 +44,7 @@ if ls $qcDir &> /dev/null; then
         qieuid="$(basename "${dir}")"    # list of uid directories
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
         uidjsonFile=${dir}/${qieuid}_QC.json
-        python $scriptLoc/upload_qc.py $uidjsonFile $run_num 2> $logLoc${qieuid}.log
+        python $scriptLoc/upload_qc.py $uidjsonFile 2> $logLoc${qieuid}.log
         
         # Erase log files if there was no error
         if [ $? -eq 0 ]; then
@@ -53,7 +54,7 @@ if ls $qcDir &> /dev/null; then
             echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}${qieuid}.log"
         fi
     done
-    echo -e "${STATUS}All Card Data Succesfully Uploaded for Run ${run_num}"
+    echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error."
 else
     echo -e "${FAIL}No Quality Control Data Found${DEF}"
 fi
