@@ -57,7 +57,7 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 1 ]; then
                 echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}${qieuid}.log"
             fi
         done
-        echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error."
+        echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error.${DEF}"
     else
         echo -e "${FAIL}No Quality Control Data Found${DEF}"
     fi

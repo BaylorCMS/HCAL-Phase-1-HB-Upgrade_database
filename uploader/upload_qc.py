@@ -190,9 +190,10 @@ if run_num not in num_list:
 ###########################################
 #run = "run" + str(run_num)    # ex: run350
 uploads = os.path.join(MEDIA_ROOT, "uploads/")    # path to the uploads directory
+card_dir = os.path.join(uploads, "qieCards/")    # path to the qie cards
 temp_card_dir = os.path.join(uploads, "run_control/cards/")    # path to where the just installed cards are
 
-destination = os.path.join(uploads, qiecard.barcode)    # path to the destination directory i.e. 0700001/
+destination = os.path.join(card_dir, qiecard.barcode)    # path to the destination directory i.e. 0700001/
 
 #source_dir = os.path.join(run_control, (run + "_output/QC_" + run + "/"))    # temp directory for all the uploaded qie cards
 
@@ -215,8 +216,8 @@ mved_src_name = os.path.join(destination, new_dir_name)
 
 new_file_name = os.path.join(mved_src_name, file_name)
 
-media = os.path.join("uploads/", qiecard.barcode, os.path.basename(mved_src_name))
-json_file = os.path.join("uploads/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
+media = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name))
+json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
 
 
 uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed)
