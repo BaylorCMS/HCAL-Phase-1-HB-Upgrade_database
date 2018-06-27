@@ -1,0 +1,13 @@
+{% extends "runs/base.html" %}
+{% block content %}
+<ul>
+  {% for card in card_list %}
+  <li style="font-size:18px"><a href="{{card.barcode}}/">{{card.barcode}}</a></li>
+  {%endfor%}
+</ul>
+<ul>
+  {% for test in test_list%}
+  <li style="font-size:18px"><a href="{{test.name}}/">{{test.name}}</a></li>
+  {%endfor%}
+</ul>
+{% endblock %}
