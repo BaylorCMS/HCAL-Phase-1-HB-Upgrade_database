@@ -172,7 +172,7 @@ run_num = data["RunNum"]
 # Get the data #
 ################
 
-attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run)
+attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num)
 
 
 # If this is a new run, create a new run
