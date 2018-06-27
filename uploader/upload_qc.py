@@ -17,7 +17,7 @@ from datetime import datetime
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
-from qie_cards.models import QieCard, Attempt, Channel, Test, Variable, Tester
+from qie_cards.models import QieCard, Attempt, Channel, Test, Variable, Tester, Run
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from card_db.settings import MEDIA_ROOT
@@ -59,7 +59,7 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
     
 
 @transaction.atomic
-def getData(data, rawUID, qiecard):
+def getData(data, rawUID, qiecard, run_num):
     """Main function to grab data from the JSON file"""
     attemptlist = {}
     channels_passed = {}
@@ -67,7 +67,6 @@ def getData(data, rawUID, qiecard):
     varlist = []
     first_channel = True
     
-    run_num = data['RunNum']
 
     for position in data[rawUID].keys():
         for channel in data[rawUID][position].keys():
@@ -165,12 +164,26 @@ except ObjectDoesNotExist:
     sys.exit("UID does not match a QIE Card in the database. Check that the UID is correct or that the QIE Card is in the database.")
 
 
+# Get the run number
+run_num = data["RunNum"]
+
+
 ################
 # Get the data #
 ################
 
-attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard)
+attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run)
 
+
+# If this is a new run, create a new run
+run_list = list(Run.objects.all())
+num_list = []
+for r in run_list:
+    num_list.append(r.number)
+
+if run_num not in num_list:
+    new_run = Run(number=run_num)
+    
 
 ###########################################
 # Move the directory to permanent storage #

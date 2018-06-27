@@ -356,7 +356,7 @@ class Variable(models.Model):
 class Run(models.Model):
     """ This model will hold a dummy run number that can be displayed on the run page """
     
-    number = models.IntegerField(default=0)
+    number = models.CharField(max_length=4, default="0", blank=True, null=True)
 
     def __str__(self):
         return ("Run: " + str(self.number))
