@@ -66,6 +66,8 @@ def getData(data, rawUID, qiecard):
     channels_failed = {}
     varlist = []
     first_channel = True
+    
+    run_num = data['RunNum']
 
     for position in data[rawUID].keys():
         for channel in data[rawUID][position].keys():
@@ -99,7 +101,7 @@ def getData(data, rawUID, qiecard):
                                            plane_loc="default", 
                                            attempt_number=attempt_num, 
                                            test_type=temp_test,
-#                                           run=run_num,
+                                           run=run_num,
                                            tester=Tester.objects.get(username="Nesta Lenhert"))
                     temp_attempt.save()
                     attemptlist[test] = temp_attempt
