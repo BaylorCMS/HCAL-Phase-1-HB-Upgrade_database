@@ -183,7 +183,7 @@ for r in run_list:
 
 if run_num not in num_list:
     new_run = Run(number=run_num)
-    
+    new_run.save()
 
 ###########################################
 # Move the directory to permanent storage #
