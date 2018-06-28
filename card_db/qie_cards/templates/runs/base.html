@@ -4,7 +4,7 @@
 
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}Stand-in{% endblock %}</title>
+    <title>{% block title %}Stand-In{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Loading Bootstrap -->
@@ -41,9 +41,9 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                 </button>
-                <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="">{% include "snippets/hcal_title.html" %}: CU</a>
+                <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="">{% include "snippets/hcal_title.html" %}: Runs</a>
                 <span class="dropdown-arrow dropdown-arrow-inverse"></span>
-                <ul class="dropdown-menu" style="left: auto; top: 40%; background-color: #2c3e50">
+                <ul class="dropdown-menu" style="left: auto; top: 70%; background-color: #2c3e50">
                     <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/cards/catalog">QIE Cards</a></li>
                     <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/sipm/catalog">SiPM Cards</a></li>
                     <li style="background-color: #34495e"><a style="color:#ffffff" href="{{ SITE_URL }}/rm/catalog">Readout Modules</a></li>
@@ -54,42 +54,19 @@
             <div class="navbar-collapse collapse">
             {% block links %}
                 <ul class="nav navbar-nav">
-                    <li {% block catalog %}{% endblock %}><a href="{{ SITE_URL }}/cu/catalog">Catalog</a></li> 
-                    <li {% block field-view %}{% endblock %}><a href="{{ SITE_URL }}/cu/field">Field View</a></li> 
+                    <li {% block catalog %}{% endblock %}><a href="{{ SITE_URL }}/runs/catalog">Catalog</a></li> 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ SITE_URL }}/admin">Admin</a></li>
                 </ul>
             {% endblock %} 
             </div>
-            <!-- Barcode Search -->
-            <form class="navbar-form navbar-left" action="#" role="search">
-              <div class="form-group">
-                <div class="input-group">
-                  <input class="form-control" id="navbarInputBarcode" type="search" placeholder="Search Barcode">
-                  <span class="input-group-btn">
-                    <button type="submit" onclick="searchBarcode(event)" class="btn"><span class="fui-search"></span></button>
-                  </span>
-                </div>
-              </div>
-            </form>
-            <!-- UID Search -->
-            <form class="navbar-form navbar-right" action="#" role="search">
-              <div class="form-group">
-                <div class="input-group">
-                  <input class="form-control" id="navbarInputUID" type="search" placeholder="Search UID">
-                  <span class="input-group-btn">
-                    <button type="submit" onclick="searchUID(event)" class="btn"><span class="fui-search"></span></button>
-                  </span>
-                </div>
-              </div>
-            </form>
         </div>
     </div>
    
     <div class="row" align="center">
         <div class="col-md-3"><br><img src="{% static "qie_cards/img/logos/FNAL-Logo-Black.png" %}" style="width:60%;height:60%;"></div>
-        <div class="col-md-6"><h1 class="title">{% include "snippets/hcal_title.html" %}</h1><h3 class="title">HB Calibration Units</h3></div>
+        <div class="col-md-6"><h1 class="title">{% include "snippets/hcal_title.html" %}</h1><h3 class="title">HB DQM Runs</h3></div>
         <div class="col-md-3"><img src="{% static "qie_cards/img/logos/CMS_logo_May2014.png" %}" style="width:45%;height:45%;"></div>
     </div>
     <br><br>
@@ -102,28 +79,7 @@
 {% endblock %}
 
 {% block script %}
-<script>
-function searchBarcode(e){
-    cuBarcode = document.getElementById("navbarInputBarcode").value;
-    if( cuBarcode.length < 1 || cuBarcode.length > 3 ){
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cu/error";
-    } else {
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cu/" + cuBarcode;
-    }
-}
-function searchUID(e){
-    cuUID = document.getElementById("navbarInputUID").value;
-    if( cuUID.length != 6 ){
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cu/error";
-    } else {
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cu/uid/" + cuUID;
-    }
-}
-</script>
+
 {% endblock %}
 
 </body>

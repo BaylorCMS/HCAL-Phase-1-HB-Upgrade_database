@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 urlpatterns = [
+    url(r'^runs/', include('qie_cards.runs_urls', namespace='runs')),
     url(r'^cards/', include('qie_cards.card_urls', namespace='cards')),
     url(r'^rm/', include('qie_cards.rm_urls')),
     url(r'^cu/', include('qie_cards.cu_urls')),

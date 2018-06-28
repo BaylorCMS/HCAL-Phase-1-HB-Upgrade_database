@@ -1,0 +1,40 @@
+{% extends "runs/base.html" %}
+{% load static %}
+{% block head %}
+    <link href="{% static "qie_cards/css/catalog.css" %}" rel="stylesheet">
+    <style>
+        .divider{
+            width:200px;
+            height:auto;
+            display:inline-block;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}HB DQM Runs{% endblock %}
+{% block catalog %}class="active"{% endblock %}
+
+{% block content %}
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
+  <h3>
+        Total Number of Runs: {{total_count}}
+  </h3>
+  <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+  </div>
+<br><br>
+
+<div class="row" style="padding-left:50px;padding-right:50px">
+    <div class="splitColumns">
+      <ul>
+{% if run_list %}
+<div class="row">
+	<div align="center"><ul>
+	{% for run in run_list %}
+  		<li style="font-size:18px"><a href="{{run.number}}/">{{run.number}}</a></li>
+	{% endfor %}
+	</ul></div>
+</div>
+{% else %}
+<h1>This database contains no runs.</h1>
+{% endif %}
+{% endblock %}

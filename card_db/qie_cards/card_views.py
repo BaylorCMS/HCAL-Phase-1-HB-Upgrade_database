@@ -328,7 +328,7 @@ def testDetail(request, card, test):
         data = ""
         num_list = []
         num_var_list = {}
-        if attempt.num_channels_passed != 0 and attempt.num_channels_failed != 0:
+        if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
             if not str(attempt.hidden_log_file) == "default.png":
                 inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
                 tempDict = json.load(inFile)
