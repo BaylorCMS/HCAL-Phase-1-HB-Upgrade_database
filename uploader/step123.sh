@@ -34,70 +34,75 @@ rm -f $logLoc/*.log
 
 echo -e "${STATUS}Initial data set"
 echo ""
-###################################################
-#           Register Step 1 Tests                 #
-###################################################
-echo -e "${STATUS}Uploading step 1 tests"
+###########################################################
+#           Register Tests for Steps 1, 2, 3              #
+###########################################################
+for i in `seq 1 3`;
+do
+    jsonTag=step$i_raw.json
+    script=step$i.py
+    echo -e "${STATUS}Uploading step $i tests"
+    
+    # detemine if there are step$i_raw.json files
+    if ls $jsonStore/*$jsonTag &> /dev/null
+    then
+        # upload each step1_raw.json file to the database
+        fileList=$(ls $jsonStore/*$jsonTag)   # list of step1_raw.json
+        for file in $fileList
+        do
+            echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
+            python $scriptLoc/$script $file 2> $file.log
+            
+    
+            if [ $? -eq 0 ]
+            then
+                echo -e "      ${SUCCESS}Success"
+                rm $file*
+            else
+                echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
+                error_log=$( cat $file.log )
+                echo -e "      ${FAIL}${error_log}${DEF}"
+            fi
+        done
+    else
+        echo -e "    ${SUCCESS}No step $i tests to upload"
+    fi
+    
+    echo -e "${STATUS}New step $i tests uploaded"
+    echo ""
+done
 
-# detemine if there are step1_raw.json files
-if ls $jsonStore/*step1_raw.json &> /dev/null
-then
-    # upload each step1_raw.json file to the database
-    fileList=$(ls $jsonStore/*step1_raw.json)   # list of step1_raw.json
-    for file in $fileList
-    do
-        echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
-        python $scriptLoc/step1.py $file 2> $file.log
-        
-
-        if [ $? -eq 0 ]
-        then
-            echo -e "      ${SUCCESS}Success"
-            rm $file*
-        else
-            echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
-            error_log=$( cat $file.log )
-            echo -e "      ${FAIL}${error_log}${DEF}"
-        fi
-    done
-else
-    echo -e "    ${SUCCESS}No step 1 tests to upload"
-fi
-
-echo -e "${STATUS}New step 1 tests uploaded"
-echo ""
 ###################################################
 #           Register Step 2 Tests                 #
 ###################################################
-echo -e "${STATUS}Uploading step 2 tests"
-
-# detemine if there are step2_raw.json files
-if ls $jsonStore/*step2_raw.json &> /dev/null
-then
-    # upload each step2_raw.json file to the database
-    fileList=$(ls $jsonStore/*step2_raw.json)   # list of step2_raw.json
-    for file in $fileList
-    do
-        echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
-        python $scriptLoc/step2.py $file 2> $file.log
-
-        if [ $? -eq 0 ]
-        then
-            echo -e "      ${SUCCESS}Success"
-            rm $file*
-        else
-            echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
-            error_log=$( cat $file.log )
-            echo -e "      ${FAIL}${error_log}${DEF}"
-        fi
-    done
-else
-    echo -e "    ${SUCCESS}No step 2 tests to upload"
-fi
-
-echo -e "${STATUS}New step 2 tests uploaded"
-echo ""
-
+# echo -e "${STATUS}Uploading step 2 tests"
+# 
+# # detemine if there are step2_raw.json files
+# if ls $jsonStore/*step2_raw.json &> /dev/null
+# then
+#     # upload each step2_raw.json file to the database
+#     fileList=$(ls $jsonStore/*step2_raw.json)   # list of step2_raw.json
+#     for file in $fileList
+#     do
+#         echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
+#         python $scriptLoc/step2.py $file 2> $file.log
+# 
+#         if [ $? -eq 0 ]
+#         then
+#             echo -e "      ${SUCCESS}Success"
+#             rm $file*
+#         else
+#             echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
+#             error_log=$( cat $file.log )
+#             echo -e "      ${FAIL}${error_log}${DEF}"
+#         fi
+#     done
+# else
+#     echo -e "    ${SUCCESS}No step 2 tests to upload"
+# fi
+# 
+# echo -e "${STATUS}New step 2 tests uploaded"
+# echo ""
 
 # Move log files to proper folder
 mv $jsonStore/*.log $logLoc 2> /dev/null
