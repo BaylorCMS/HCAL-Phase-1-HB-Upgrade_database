@@ -1,10 +1,34 @@
 {% extends "runs/base.html" %}
 {% block content %}
-<ul>
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
+    <h3>Run: {{run}}</h3>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+</div><br>
+<div style="padding-left:25px;">
+   <h3>Card Barcodes:</h3>
+</div>
+<table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:60%;">
   {% for card in card_list %}
-  <li style="font-size:18px"><a href="{{card.barcode}}/">{{card.barcode}}</a></li>
+  <tbody>
+    <tr>
+      <td style="font-size:18px"><a href="{{card.barcode}}/">{{card.barcode}}</a></td>
+      {% for attempt in attempt_list %}
+      {% if card == attempt.card %}
+      <td style="font-size:18px">{{attempt.get_status}}</td>
+      {% test_switch 
+      {% else %}
+      <td sytle="font-size:18px">No Attempt</td>
+      {% endif %}
+      {% endfor %}
+    </tr>
+  </tbody>
+  
   {%endfor%}
-</ul>
+</table>
+<div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+<div style="padding-left:25px;">
+  <h3>Test Type:</h3>
+</div>
 <ul>
   {% for test in test_list%}
   <li style="font-size:18px"><a href="{{test.name}}/">{{test.name}}</a></li>

@@ -29,21 +29,24 @@ def catalog(request):
 
 def detail(request, run):
     """ This displays the cards and tests  corresponding to a run"""
-    attempts   = list(Attempt.objects.filter(run=run).order_by('card__barcode'))
+    card_names   = list(Attempt.objects.filter(run=run).order_by('card__barcode'))
     test_types = list(Attempt.objects.filter(run=run).order_by('test_type__name'))
+
     cards = []
     tests = []
-    for attempt in attempts:
+    for attempt in card_names:
         if attempt.card not in cards:
             cards.append(attempt.card)
-        
+    attempts = []
+    for card in cards:
+        attempts.append(Attempt.objects.filter(card__barcode=card, test_type__name='Plot Inspection').last())
+    
     for attempt in test_types:
         if attempt.test_type not in tests:
             tests.append(attempt.test_type)
     
     
-    
-    return render(request, 'runs/detail.html', {'card_list': cards,'test_list': tests})
+    return render(request, 'runs/detail.html', {'card_list': cards,'test_list': tests, 'run': run, 'attempt_list': attempts})
 
 
 def card_plots(request, run, card):
