@@ -14,6 +14,7 @@ import custom.filters as filters
 from django.utils import timezone
 from django.http import HttpResponse, Http404
 from card_db.settings import MEDIA_ROOT, CACHE_DATA 
+from django.core.exceptions import MultipleObjectsReturned
 
 
 def catalog(request):
@@ -45,3 +46,18 @@ def detail(request, run):
     return render(request, 'runs/detail.html', {'card_list': cards,'test_list': tests})
 
 
+def card_plots(request, run, card):
+    """This displays the test plots relating to a card"""
+    test_types = list(Attempt.objects.filter(run=run).order_by('test_type__name'))
+    tests = []
+    attempts = []
+    for attempt in test_types:
+        if attempt.test_type not in tests:
+            tests.append(attempt.test_type)
+    
+    for test in tests:
+        attempts.append(Attempt.objects.filter(run=run, card__barcode=card, test_type=test).last())
+            
+                        
+    
+    return render(request, 'runs/card_plots.html', {'test_list': tests, 'attempt_list': attempts}) 
