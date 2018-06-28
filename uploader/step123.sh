@@ -34,20 +34,27 @@ rm -f $logLoc/*.log
 
 echo -e "${STATUS}Initial data set"
 echo ""
+
+echo "script location: $scriptLoc"
+echo "json location: $jsonStore"
+echo "json files: $(ls $jsonStore/*.json)"
+
 ###########################################################
 #           Register Tests for Steps 1, 2, 3              #
 ###########################################################
 for i in `seq 1 3`;
 do
-    jsonTag=step$i_raw.json
-    script=step$i.py
+    jsonTag="step"$i"_raw.json" # broken
+    script="step$i.py"
     echo -e "${STATUS}Uploading step $i tests"
     
+    echo "json files for step $i: $(ls $jsonStore/*$jsonTag)"
+
     # detemine if there are step$i_raw.json files
     if ls $jsonStore/*$jsonTag &> /dev/null
     then
-        # upload each step1_raw.json file to the database
-        fileList=$(ls $jsonStore/*$jsonTag)   # list of step1_raw.json
+        # upload each step$i_raw.json file to the database
+        fileList=$(ls $jsonStore/*$jsonTag)   # list of step$i_raw.json
         for file in $fileList
         do
             echo -e "    ${ACTION}Processing${DEF} $(basename $file)"

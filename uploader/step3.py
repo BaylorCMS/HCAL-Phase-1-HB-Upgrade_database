@@ -68,6 +68,9 @@ cardData = json.load(infile)
 barcode = cardData["Barcode"]
 uid = cardData["Unique_ID"]
 
+print "    Barcode: {0}".format(barcode)
+print "    Unique ID: {0}".format(uid)
+
 if barcode == "": 
     try:
         qie = QieCard.objects.get(uid=getUID(uid))
