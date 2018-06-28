@@ -48,7 +48,7 @@ def loadCard(cardData, qie):
     
 def moveJsonFile(qie, fileName):
     """ Moves the json for this upload to permanent storage """
-    url = os.path.join("uploads/", qie.barcode)
+    url = os.path.join("uploads/qieCards/", qie.barcode)
     path = os.path.join(MEDIA_ROOT, url)
     if not os.path.exists(path):
         exit("Database does not contain this card's log folder")
