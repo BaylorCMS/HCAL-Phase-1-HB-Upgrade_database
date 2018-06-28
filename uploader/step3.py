@@ -68,6 +68,9 @@ cardData = json.load(infile)
 barcode = cardData["Barcode"]
 uid = cardData["Unique_ID"]
 
+print "    Barcode: {0}".format(barcode)
+print "    Unique ID: {0}".format(uid)
+
 if barcode == "": 
     try:
         qie = QieCard.objects.get(uid=getUID(uid))
@@ -83,8 +86,11 @@ else:
 date = cardData["DateRun"] + "-06:00"
 
 #find tester account
+#hardcode
+windows_pc_tester = "hcaldaq"
 try:
-    tester = Tester.objects.get(username=cardData["User"])
+    #tester = Tester.objects.get(username=cardData["User"])
+    tester = Tester.objects.get(username=windows_pc_tester)
 except:
     sys.exit("Tester %s not valid" % cardData["User"])
 
@@ -92,7 +98,7 @@ card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
 
-test_list = ["Igloo_FPGA_Control", "Checksum", "SupplyI", "PrgmChk"]
+test_list = ["Igloos_Programmed"]
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
