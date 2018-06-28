@@ -86,12 +86,13 @@ else:
 date = cardData["DateRun"] + "-06:00"
 
 #find tester account
-#try:
-#    tester = Tester.objects.get(username=cardData["User"])
-#except:
-#    sys.exit("Tester %s not valid" % cardData["User"])
-
-tester="hcaldaq"
+#hardcode
+windows_pc_tester = "hcaldaq"
+try:
+    #tester = Tester.objects.get(username=cardData["User"])
+    tester = Tester.objects.get(username=windows_pc_tester)
+except:
+    sys.exit("Tester %s not valid" % cardData["User"])
 
 card = loadCard(cardData, qie)
 
