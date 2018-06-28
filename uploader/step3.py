@@ -83,16 +83,16 @@ else:
 date = cardData["DateRun"] + "-06:00"
 
 #find tester account
-try:
-    tester = Tester.objects.get(username=cardData["User"])
-except:
-    sys.exit("Tester %s not valid" % cardData["User"])
+#try:
+#    tester = Tester.objects.get(username=cardData["User"])
+#except:
+#    sys.exit("Tester %s not valid" % cardData["User"])
 
 card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
 
-test_list = ["Igloo_FPGA_Control", "Checksum", "SupplyI", "PrgmChk"]
+test_list = ["Igloos_Programmed"]
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
