@@ -39,8 +39,10 @@ def detail(request, run):
             cards.append(attempt.card)
     attempts = []
     for card in cards:
-        attempts.append(Attempt.objects.filter(card__barcode=card, test_type__name='Plot Inspection').last())
-    
+        attempt = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name="Plot Inspection")
+        if attempt:
+            attempts.append(attempt)
+
     for attempt in test_types:
         if attempt.test_type not in tests:
             tests.append(attempt.test_type)
