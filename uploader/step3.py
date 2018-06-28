@@ -91,6 +91,8 @@ date = cardData["DateRun"] + "-06:00"
 #except:
 #    sys.exit("Tester %s not valid" % cardData["User"])
 
+tester="hcaldaq"
+
 card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
