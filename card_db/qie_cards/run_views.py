@@ -41,9 +41,7 @@ def detail(request, run):
     for card in cards:
         attemptList = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name='Plot Inspection').last()
         if attemptList:
-            attempts.append({"attempt":attemptList, "valid":True})
-        else:
-            attempts.append({"attempt":attemptList, "valid":False})
+            attempts.append(attemptList)
         
 
     for attempt in test_types:
