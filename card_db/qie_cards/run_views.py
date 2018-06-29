@@ -39,9 +39,12 @@ def detail(request, run):
             cards.append(attempt.card)
     attempts = []
     for card in cards:
-        attempt = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name="Plot Inspection")
-        if attempt:
-            attempts.append(attempt)
+        attemptList = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name='Plot Inspection').last()
+        if attemptList:
+            attempts.append({"attempt":attemptList, "valid":True})
+        else:
+            attempts.append({"attempt":attemptList, "valid":False})
+        
 
     for attempt in test_types:
         if attempt.test_type not in tests:
@@ -58,12 +61,12 @@ def card_plots(request, run, card):
     for attempt in test_types:
         if attempt.test_type not in tests:
             tests.append(attempt.test_type)
-    
+    testers = Tester.objects.all()
     attempts = []
     for test in tests:
         attempts.append(Attempt.objects.filter(run=run, card__barcode=card, test_type=test).last())
             
-    return render(request, 'runs/card_plots.html', {'test_list': tests, 'attempt_list': attempts}) 
+    return render(request, 'runs/card_plots.html', {'test_list': tests, 'attempt_list': attempts, 'testers': testers}) 
 
 def test_plots(request, run, test):
     """This displays the plots relating tied to a specific test"""

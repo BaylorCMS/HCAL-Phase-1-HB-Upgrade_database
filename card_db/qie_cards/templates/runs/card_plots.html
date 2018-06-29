@@ -12,6 +12,35 @@
         {% endif %}
       {% endif%}
     {% endfor %}
+    <br/>
+    <br/>
   {% endfor %}
-</ul>       
+</ul>
+<br/>
+<div align="center">
+  <form method="post" id="test_results">
+    {% csrf_token %}
+    Tester Name:
+    <br/>
+    <select name="testers" style="color:black">
+      {% for tester in testers %}
+      <option value="{{tester.username}}">{{tester.username}}</option>
+      {% endfor %}
+    </select>
+    <br/>
+    <br/>
+    <textarea rows="4" cols="50" name="comments" placeholder="Place comments here..." style="color: black"></textarea>
+    <br/>
+    <br/>
+    <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;">
+      PASS
+    </button>
+    <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" >
+      FAIL
+    </button>
+  </form>
+</div>
+<br/>
+<br/>
+<br/>
 {% endblock %}
