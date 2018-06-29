@@ -17,7 +17,7 @@ from datetime import datetime
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
-from qie_cards.models import QieCard, Attempt, Channel, Test, Variable, Tester
+from qie_cards.models import QieCard, Attempt, Channel, Test, Variable, Tester, Run
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from card_db.settings import MEDIA_ROOT
@@ -59,7 +59,7 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
     
 
 @transaction.atomic
-def getData(data, rawUID, qiecard):
+def getData(data, rawUID, qiecard, run_num):
     """Main function to grab data from the JSON file"""
     attemptlist = {}
     channels_passed = {}
@@ -67,7 +67,6 @@ def getData(data, rawUID, qiecard):
     varlist = []
     first_channel = True
     
-    run_num = data['RunNum']
 
     for position in data[rawUID].keys():
         for channel in data[rawUID][position].keys():
@@ -165,21 +164,36 @@ except ObjectDoesNotExist:
     sys.exit("UID does not match a QIE Card in the database. Check that the UID is correct or that the QIE Card is in the database.")
 
 
+# Get the run number
+run_num = data["RunNum"]
+
+
 ################
 # Get the data #
 ################
 
-attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard)
+attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num)
 
+
+# If this is a new run, create a new run
+run_list = list(Run.objects.all())
+num_list = []
+for r in run_list:
+    num_list.append(r.number)
+
+if run_num not in num_list:
+    new_run = Run(number=run_num)
+    new_run.save()
 
 ###########################################
 # Move the directory to permanent storage #
 ###########################################
 #run = "run" + str(run_num)    # ex: run350
 uploads = os.path.join(MEDIA_ROOT, "uploads/")    # path to the uploads directory
+card_dir = os.path.join(uploads, "qieCards/")    # path to the qie cards
 temp_card_dir = os.path.join(uploads, "run_control/cards/")    # path to where the just installed cards are
 
-destination = os.path.join(uploads, qiecard.barcode)    # path to the destination directory i.e. 0700001/
+destination = os.path.join(card_dir, qiecard.barcode)    # path to the destination directory i.e. 0700001/
 
 #source_dir = os.path.join(run_control, (run + "_output/QC_" + run + "/"))    # temp directory for all the uploaded qie cards
 
@@ -202,8 +216,8 @@ mved_src_name = os.path.join(destination, new_dir_name)
 
 new_file_name = os.path.join(mved_src_name, file_name)
 
-media = os.path.join("uploads/", qiecard.barcode, os.path.basename(mved_src_name))
-json_file = os.path.join("uploads/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
+media = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name))
+json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
 
 
 uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed)
