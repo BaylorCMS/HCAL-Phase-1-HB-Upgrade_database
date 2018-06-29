@@ -61,7 +61,7 @@ echo "json files: $(ls $jsonStore/*.json)"
 ###########################################################
 for i in `seq 1 3`;
 do
-    jsonTag="step"$i"_raw.json" # broken
+    jsonTag="step"$i"_raw.json" # quotes for "$i" are required
     script="step$i.py"
     echo -e "${STATUS}Uploading step $i tests"
     
