@@ -169,7 +169,8 @@ except ObjectDoesNotExist:
 run_num = data["RunNum"]
 tester_name = data["Tester_Name"]
 comments = data["Comments"]
-
+qiecard.comments = data["Comments"]
+qiecard.save()
 
 ################
 # Get the data #

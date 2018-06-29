@@ -76,13 +76,13 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 2 ]; then
             [ -d "${dir}" ] || continue
             qieuid="$(basename "${dir}")"    # list of UID directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
-            regjsonFile=${dir}/results.log
-            #python $scriptLoc/upload_reg.py $regjsonFile 2> $logLoc/${qieuid}_reg.py
+            regjsonFile=${dir}/results.json
+            python $scriptLoc/upload_reg.py $regjsonFile 2> $logLoc/${qieuid}_reg.log
 
             # Erase log files if there was no error
             if [ $? -eq 0 ]; then
                 echo -e "    ${SUCCESS}Card Uploaded Succesfully"
-                rm $logLoc/${qieuid}_reg.py
+                rm $logLoc/${qieuid}_reg.log
             else
                 echo -e "    ${FAIL}ERROR: ${DEF}See log file ${logLoc}/${qieuid}_reg.log"
             fi
