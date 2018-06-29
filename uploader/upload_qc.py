@@ -1,5 +1,5 @@
 """
-qc_test.py:
+upload_qc.py:
     This script takes a json file location as an argument and processes the data to upload
     into the database. This script will be used to upload the data from the quality control 
     testing.

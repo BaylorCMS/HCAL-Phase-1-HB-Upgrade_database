@@ -17,7 +17,7 @@ cardDir=$uploads/run_control/cards    # temporary location of the qie card qc da
 #runDir=/home/django/testing_database_hb/media/uploads/run_control/run${run_num}_output    # location of run control tests
 regCardDir=$uploads/temp_reg_test    # Where the qie card data for the register tests will be initially stored
 scriptLoc=$(readlink -f $(dirname $0) )    # location of this script
-logLoc=$scriptLoc/log_files/    # location of log files
+logLoc=$scriptLoc/log_files    # location of log files
 #qcDir=$cardDir    # location of Quality Control data
 
 # Colors
@@ -29,7 +29,7 @@ DEF="\e[39;0m"      # default colors of text
 
 
 # remove old error logs
-rm -f ${logLoc}*.log
+rm -f ${logLoc}/*.log
 
 echo -e "${STATUS}Initial data set"
 echo ""
@@ -47,14 +47,14 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 1 ]; then
             qieuid="$(basename "${dir}")"    # list of uid directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
             uidjsonFile=${dir}/${qieuid}_QC.json
-            python $scriptLoc/upload_qc.py $uidjsonFile 2> $logLoc${qieuid}.log
+            python $scriptLoc/upload_qc.py $uidjsonFile 2> $logLoc/${qieuid}_qc.log
         
             # Erase log files if there was no error
             if [ $? -eq 0 ]; then
                 echo -e "    ${SUCCESS}Card Uploaded Succesfully"
-                rm $logLoc${qieuid}.log 
+                rm $logLoc/${qieuid}_qc.log 
             else
-                echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}${qieuid}.log"
+                echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}/${qieuid}_qc.log"
             fi
         done
         echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error.${DEF}"
@@ -74,12 +74,24 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 2 ]; then
     if ls $regCardDir/0x* &> /dev/null; then
         for dir in $regCardDir/0x*; do
             [ -d "${dir}" ] || continue
-            qieuid="$(basename "${dir}")"
+            qieuid="$(basename "${dir}")"    # list of UID directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
+            regjsonFile=${dir}/results.log
+            #python $scriptLoc/upload_reg.py $regjsonFile 2> $logLoc/${qieuid}_reg.py
+
+            # Erase log files if there was no error
+            if [ $? -eq 0 ]; then
+                echo -e "    ${SUCCESS}Card Uploaded Succesfully"
+                rm $logLoc/${qieuid}_reg.py
+            else
+                echo -e "    ${FAIL}ERROR: ${DEF}See log file ${logLoc}/${qieuid}_reg.log"
+            fi
         done
+        echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error.${DEF}"
     else
         echo -e "${FAIL}No Register Test Data Found${DEF}"
     fi
+    echo -e ""
 fi
 
 
