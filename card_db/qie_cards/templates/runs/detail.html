@@ -17,7 +17,8 @@
         background-color:#F1C40F;
     }
     .okay{
-        color:#2ECC71;
+        color:#2C3E50;
+        background-color:#2ECC71;
     }
     .bad{
         color:#2C3E50;
@@ -50,24 +51,30 @@ table, td, th, thead {
     <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 <div style="padding-left:25px;">
-  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:30%;">
+  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:45%;">
     <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1"> 
       <tr>
         <th style="font-size:20px">Qie Cards</th>
-        <th style="font-size:20px; padding-left:11%;">Plot Inspection</th>
+        <th style="font-size:20px; padding-left:6%;">Plot Inspection</th>
       </tr>
     </thead>
     <tbody>
-      {% for card in card_list %}
+      {% for attempt in attempt_list %}
       <tr>
-        <td style="font-size:18px"><a href="{{card.barcode}}/">{{card.barcode}}</a></td>
-        {% if attempt_list %}
-        {% for attempt in attempt_list %}
-        <td style="font-size:18px" align="center">{{attempt.get_status}}</td>
-        {% endfor %}
+
+        <td style="font-size:18px"><a href="{{attempt.attempt.card}}/">{{attempt.attempt.card}}</a></td>
+        
+        {% if attempt.valid %}
+        {% if attempt.attempt.get_status == "PASS" %}
+        <td  class="okay" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
         {% else %}
-        <td class="warn" align="center" style="font-size:18px">REMAINING</td>
-        {% endif %}
+        <td  class="bad" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
+        {% endif  %} 
+        {% else %}
+        <td style="font-size:18px" class="warn"align="center">REMAINING</td>
+        {% endif  %}
+        <td style="font-size:18px" align="right"><a href="../../cards/{{attempt.attempt.card}}/">Link to Card Details</a></td>
+        
       </tr>
       {%endfor%}
     </tbody>  
