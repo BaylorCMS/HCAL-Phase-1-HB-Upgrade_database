@@ -127,21 +127,14 @@
 <script>
 function searchBarcode(e){
     cardBarcode = document.getElementById("navbarInputBarcode").value;
-    if( cardBarcode.length > 7){
+    if(cardBarcode.length != 7){
         e.preventDefault();
         document.location.href = "{{ SITE_URL }}/cards/error";
-    } else if( cardBarcode.length > 3){
+    } else {
         e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode;
-    }else {
-        appendage = ""
-        while(appendage.length + cardBarcode.length < 3){
-           appendage = appendage + "0";
-        }
-        e.preventDefault();
-        window.location.href = "{{ SITE_URL }}/cards/" + appendage + cardBarcode;
-    }
+        document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode;}
 }
+
 function searchUID(e){
     family = "70"
     cardUID = document.getElementById("navbarInputUID").value;
