@@ -77,7 +77,9 @@ def getData(data, qiecard, tester_name, comments):
                                plane_loc="default",
                                attempt_number=attempt_num,
                                test_type=temp_test,
-                               result=data[test],
+                               result=data[test][0],
+                               times_passed=data[test][1],
+                               times_failed=data[test][2],
                                # run=run_num,
                                tester=Tester.objects.get(username=tester_name),
                                comments=comments)
