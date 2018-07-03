@@ -6,6 +6,7 @@ cardLookup.py:
 
 import argparse
 import django
+import json
 import sys
 
 
@@ -61,15 +62,24 @@ def main():
     parser.add_argument("-u", "--unique", help="Use the Unique ID to find the barcode", action='store_true')
     
     options = parser.parse_args()
+    
+    mapping = {}
+    
     if options.barcode:
         # Get the unique id for the card using its barcode
         uid = getUID(options.identifier)
-        print uid
+        mapping[options.identifier] = uid
     
     if options.unique:
         # Get the barcode using the unique id
         barcode = getBarcode(options.identifier)
-        print barcode
+        mapping[options.identifier] = barcode
+
+
+    if mapping:
+        with open("mapping.json", "w") as outfile:
+            json.dump(mapping, outfile)
+
 
 if __name__ == "__main__": 
     main()
