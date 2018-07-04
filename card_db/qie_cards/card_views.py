@@ -277,9 +277,16 @@ def detail(request, card):
 #    def get_queryset(self):
 #        return QieCard.objects.all().order_by('barcode')
 #
-def error(request): 
+def error(request, card): 
     """ This displays an error for incorrect barcode or unique id """
-    return render(request, 'qie_cards/error.html')
+
+    if card:
+        try:
+            qiecard = QieCard.objects.get(barcode__contains=card)
+        except QieCard.DoesNotExist:
+            qiecard = None
+
+    return render(request, 'qie_cards/error.html', {'qiecard': qiecard, 'query': card})
 
 class PlotView(generic.ListView):
     """ This displays various plots of data """
