@@ -27,14 +27,14 @@ def validate_card_id(value):
     if len(value) != 7:
         raise ValidationError('ID must be 7 digits long')
 
-    sameId = QieCard.objects.filter(barcode=value)
+   # sameId = QieCard.objects.filter(barcode=value)
 
-    # Last 3 digits of ID must be unique
-    if sameId:
-        raise ValidationError(
-            ('Card "%(value)s" is already recorded'),
-            params={'value':sameId},
-        )
+    # ID must be unique
+   # if sameId:
+   #     raise ValidationError(
+   #         ('Card "%(value)s" is already recorded'),
+   #         params={'value':sameId},
+   #     )
 
 
 def validate_uid(uid):
