@@ -127,12 +127,8 @@
 <script>
 function searchBarcode(e){
     cardBarcode = document.getElementById("navbarInputBarcode").value;
-    if(cardBarcode.length != 7){
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/error";
-    } else {
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode;}
+    e.preventDefault();
+    document.location.href = "{{ SITE_URL }}/cards/" + cardBarcode;
 }
 
 function searchUID(e){

@@ -280,11 +280,10 @@ def detail(request, card):
 def error(request, card): 
     """ This displays an error for incorrect barcode or unique id """
 
-    if card:
-        try:
-            qiecard = QieCard.objects.get(barcode__contains=card)
-        except QieCard.DoesNotExist:
-            qiecard = None
+    try:
+        qiecard = list(QieCard.objects.filter(barcode__endswith=card))
+    except QieCard.DoesNotExist:
+        qiecard = None
 
     return render(request, 'qie_cards/error.html', {'qiecard': qiecard, 'query': card})
 
