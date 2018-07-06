@@ -186,9 +186,9 @@ def stats(request):
 
 def detail(request, card):
     """ This displays the overview of tests for a card """
-    if len(card) > 7:
+    if not card.isdigit():
         try:
-            p = QieCard.objects.get(uid__endswith=card)
+            p = QieCard.objects.get(uid__contains=card)
         except QieCard.DoesNotExist:
             #raise Http404("QIE card with unique id " + str(card) + " does not exist")
             return render(request, 'qie_cards/error.html')
@@ -279,13 +279,22 @@ def detail(request, card):
 #
 def error(request, card): 
     """ This displays an error for incorrect barcode or unique id """
-
-    try:
-        qiecard = list(QieCard.objects.filter(barcode__endswith=card))
-    except QieCard.DoesNotExist:
-        qiecard = None
-
-    return render(request, 'qie_cards/error.html', {'qiecard': qiecard, 'query': card})
+    if card.isdigit():
+        try:
+            qiecard = list(QieCard.objects.filter(barcode__endswith=card))
+            uidcard = None
+        except QieCard.DoesNotExist:
+            qiecard = None
+            uidcard = None
+    else:
+        try:
+            uidcard = list(QieCard.objects.filter(uid__contains=card))
+            qiecard = None
+        except QieCard.DoesNotExist:
+            uidcard = None
+            qiecard = None
+    
+    return render(request, 'qie_cards/error.html', {'qiecard': qiecard, 'query': card, 'uidcard': uidcard})
 
 class PlotView(generic.ListView):
     """ This displays various plots of data """
