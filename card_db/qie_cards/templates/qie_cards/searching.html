@@ -2,7 +2,9 @@
 
 
 {% block header %}
-  {% if num_items != 1 %}
+  {% if query == '' %}
+    No search query given
+  {% elif num_items != 1 %}
     Your search of '{{query}}' returned {{num_items}} items
   {% else %}
     Your search of '{{query}}' returned {{num_items}} item
@@ -10,7 +12,7 @@
 {% endblock %}
 
 {% block search %}
-  {% if num_items != 0 %}
+  {% if num_items != 0 and query != '' %}
     <h4>Your search returned these items:</h4>
     <ul>
       {% if barcodes %}
