@@ -29,9 +29,13 @@ CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7
 
 def getUID(uid):
     """Gets the Unique ID to be used in finding the associated card"""
-    uniqueid = uid[2:10] + uid[13:]
-    carduid=str(uniqueid)
-    return carduid.lower()
+    
+    split_id = uid.split("_")
+    uniqueid = split_id[0][2:] + split_id[1][2:]
+    while len(uniqueid) < 16:
+        uniqueid = "0" + uniqueid
+
+    return uniqueid.lower()
 
 
 def makeOutputPath(uID, destination):
@@ -77,7 +81,9 @@ def getData(data, qiecard, tester_name, comments):
                                plane_loc="default",
                                attempt_number=attempt_num,
                                test_type=temp_test,
-                               result=data[test],
+                               result=data[test][0],
+                               times_passed=data[test][1],
+                               times_failed=data[test][2],
                                # run=run_num,
                                tester=Tester.objects.get(username=tester_name),
                                comments=comments)
@@ -119,7 +125,7 @@ except:
 try:
     rawUID = data["uID"]    # UID as stored in the JSON file
     cardUID = getUID(data["uID"])    # UID as stored in the database
-    qiecard = QieCard.objects.get(uid=cardUID)    # Get the card with this specific UID
+    qiecard = QieCard.objects.get(uid__contains=cardUID)    # Get the card with this specific UID
     del data["uID"]    # Remove the uID so only the data is left in the dictionary
 except ObjectDoesNotExist:
     sys.exit("UID does not match a QIE Card in the database. Check that the UID is correct or that the QIE Card is in the database.")
@@ -127,8 +133,12 @@ except ObjectDoesNotExist:
 # Get the run number
 # run_num = data["RunNum"]
 tester_name = data["Tester_Name"]
-comments = data["Comments"]
-qiecard.comments = comments
+comment = ""
+if not qiecard.comments == "":
+    comment += "\n"
+comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - Register Test: "
+comment += data["Comments"]
+qiecard.comments = comment
 qiecard.save()
 del data["Tester_Name"]
 del data["Comments"]
@@ -183,7 +193,6 @@ new_file_name = os.path.join(mved_src_name, file_name)
 
 #media = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name))
 json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
-
 
 uploadAttempt(attemptlist, json_file)    #, channels_passed, channels_failed)
 

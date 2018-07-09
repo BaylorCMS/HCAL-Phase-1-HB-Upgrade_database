@@ -1,0 +1,14 @@
+{% extends "qie_cards/base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="row" align="left" style="padding-left:50px; padding-right:50px">
+  <h3 align="center">{% block header %}Search{% endblock %}<h3>
+  <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+  <br/>
+  {% block search %}
+  <h4 align="center">Please enter something in the search box at the top right of the page to look for something.</h4>
+  {% endblock %}
+</div>
+{% endblock %}

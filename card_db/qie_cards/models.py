@@ -27,15 +27,14 @@ def validate_card_id(value):
     if len(value) != 7:
         raise ValidationError('ID must be 7 digits long')
 
-    curId = value[(len(value) - 3):]
-    sameId = QieCard.objects.filter(barcode__iendswith=curId).exclude(barcode__exact=value)
+   # sameId = QieCard.objects.filter(barcode=value)
 
-    # Last 3 digits of ID must be unique
-    if sameId:
-        raise ValidationError(
-            ('Card "%(value)s" is already recorded'),
-            params={'value':curId},
-        )
+    # ID must be unique
+   # if sameId:
+   #     raise ValidationError(
+   #         ('Card "%(value)s" is already recorded'),
+   #         params={'value':sameId},
+   #     )
 
 
 def validate_uid(uid):
@@ -286,6 +285,8 @@ class Attempt(models.Model):
     date_tested = models.DateTimeField('date tested', blank=True)       # The date this test finished
     num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
     num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
+    times_passed = models.IntegerField(default=0)           # If this is a register test, the number of times this register test passed 
+    times_failed = models.IntegerField(default=0)           # If this is a register test, the number of times this register test failed 
     revoked     = models.BooleanField(default=False)        # Whether this test series is revoked
     overwrite_pass  = models.BooleanField(default=False)    # Whether this test was overwritten as a pass
     temperature = models.FloatField(default=-999.9)         # The temperature of the card during the test

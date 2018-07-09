@@ -252,7 +252,7 @@ def detail(request, card):
         comment = ""
         if not p.comments == "":
             comment += "\n"
-        comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": " + request.POST.get('comment')
+        comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - " + request.POST.get('comment')
         p.comments += comment
         p.save()
 
@@ -279,6 +279,12 @@ def detail(request, card):
 #
 def error(request): 
     """ This displays an error for incorrect barcode or unique id """
+
+   # try:
+   #     qiecard = list(QieCard.objects.filter(barcode__endswith=card))
+   # except QieCard.DoesNotExist:
+   #     qiecard = None
+
     return render(request, 'qie_cards/error.html')
 
 class PlotView(generic.ListView):
@@ -434,4 +440,28 @@ def fieldView(request):
 
     return render(request, 'qie_cards/fieldView.html', {'fields': fields, "items": items, "options": options})
 
+
+def search(request):
+    return render(request, 'qie_cards/search.html')
+
+
+def searchbar(request, query):
+    try:
+        barcodes = list(QieCard.objects.filter(barcode__endswith=query))
+    except QieCard.DoesNotExist:
+        barcodes = None
+    
+    try:
+        uids = list(QieCard.objects.filter(uid__contains=query))
+    except QieCard.DoesNotExist:
+        uids = None
+        
+
+    num_items = 0
+    if barcodes:
+        num_items += len(barcodes)
+    if uids:
+        num_items += len(uids)
+
+    return render(request, 'qie_cards/searching.html', {'barcodes': barcodes, 'unique_ids': uids, 'num_items': num_items, 'query': query})
 

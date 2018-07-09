@@ -137,11 +137,12 @@ table, td, th {
 <table id="testsummary" class="table table-bordered" cellspacing="0" width="100%">
   <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1">
     <tr data-toggle="collapse" data-target="#accordion" class="clickable">
-      <th>Test<span class="fui-list-numbered" style="float:right"></span></th>
+      <th width="10%">Test<span class="fui-list-numbered" style="float:right;"></span></th>
       <th>Pass/Fail <span class="fui-list-numbered" style="float:right"></span></th>
-      <th>Date <span class="fui-list-numbered" style="float:right"></span></th>
-      <th>Channels Pass/Fail</th>
-      <th>More</th>
+      <th width="15%">Date <span class="fui-list-numbered" style="float:right"></span></th>
+      <th>Channels Pass/Fail <span class="fui-list-numbered" style="float:right"></span></th>
+      <th>Register Test Pass/Fail <span class="fui-list-numbered" style="float:right"></span></th>
+      <th>More<span class="fui-list-numbered" style="float:right"></span></th>
     </tr>
   </thead>
   <tbody>
@@ -157,10 +158,24 @@ table, td, th {
       </td>
       <td>{{item.attempt.date_tested}}</td>
       {% if item.attempt.num_channels_passed == 0 and item.attempt.num_channels_failed == 0 %}
-      <td> Full Card Test </td>
+          {% if item.attempt.times_passed == 0 and item.attempt.times_failed == 0 %}
+          <td> Full Card Test </td>
+          {% else %}
+          <td> Register Test </td>
+          {% endif %}
       {% else %}
       <td>{{item.attempt.num_channels_passed}}/{{item.attempt.num_channels_failed}}</td>
       {% endif %}
+      {% if item.attempt.times_passed == 0 and item.attempt.times_failed == 0 %}
+         {% if item.attempt.num_channels_passed == 0 and item.attempt.num_channels_failed == 0 %}
+         <td>Not a Register Test</td>
+         {% else %}
+         <td>Quality Control Test</td>
+         {% endif %}
+      {% else %}
+      <td>{{item.attempt.times_passed}}/{{item.attempt.times_failed}}</td>
+      {% endif %}
+
       <td><a href="{{item.attempt.test_type}}">[link to history]</a></td>
     </tr>
     {% else %}
@@ -171,6 +186,7 @@ table, td, th {
           (NOT REQ)
           {% endif %}
       </td>
+      <td>N/A</td>
       <td>N/A</td>
       <td>N/A</td>
       <td>N/A</td>
@@ -187,7 +203,7 @@ table, td, th {
 <script>
 $(document).ready(function() {
     oTable = $('#testsummary').DataTable({
-      "paging":   false,
+      "paging": false,
       dom: 'lrtp',
     }
     );
@@ -196,6 +212,5 @@ $(document).ready(function() {
     })
 } );
 </script>
-
 
 {% endblock %}

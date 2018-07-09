@@ -168,8 +168,13 @@ except ObjectDoesNotExist:
 # Get the run number
 run_num = data["RunNum"]
 tester_name = data["Tester_Name"]
-comments = data["Comments"]
-qiecard.comments = data["Comments"]
+
+comment = ""
+if not qiecard.comments == "":
+    comment += "\n"
+comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - Quality Control: "
+comment += data["Comments"]
+qiecard.comments = comment
 qiecard.save()
 
 ################
