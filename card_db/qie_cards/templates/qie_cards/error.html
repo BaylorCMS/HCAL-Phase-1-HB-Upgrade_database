@@ -25,8 +25,8 @@
 <h6>For better results, please enter at least the last 8 digits of the Unique ID for the card you are looking for.<h6>
 <h6>Maybe you were looking for one of the Unique IDs:<h6>
 <ul>
-  {% for uid in uidcard %}
-  <li><a href="../{{uid.uid}}">{{uid.uid}}</a></li>
+  {% for card, uid in uidcard %}
+  <li><a href="../{{uid}}">{{card.uid}}</a></li>
   {% endfor %}
 </ul>
 {% else %}

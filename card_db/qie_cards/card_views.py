@@ -288,7 +288,10 @@ def error(request, card):
             uidcard = None
     else:
         try:
-            uidcard = list(QieCard.objects.filter(uid__contains=card))
+            uidcard = []
+            cards = list(QieCard.objects.filter(uid__contains=card))
+            for carduid in cards:
+                uidcard.append([carduid, carduid.uid[8:]])
             qiecard = None
         except QieCard.DoesNotExist:
             uidcard = None
@@ -318,7 +321,7 @@ def testDetail(request, card, test):
     """ This displays details about a specific test for a card """
     if len(card) > 7:
         try:
-            p = QieCard.objects.get(uid__endswith=card)
+            p = QieCard.objects.get(uid__contains=card)
         except QieCard.DoesNotExist:
             raise Http404("QIE card with unique id " + str(card) + " does not exist")
     else:
