@@ -30,55 +30,78 @@ def getBarcode(uID):
     
     try:
         card = QieCard.objects.get(uid__contains=uID)
+        return card.barcode
     except ObjectDoesNotExist:
-        sys.exit("No card matching the Unique ID '%s' was able to be found. Either the card is not in the database, or the Unique ID was passed in wrong. Make sure to pass in the last 8 digits of the Unique ID. For example, from 0xb8000000_0xeac36970 only eac36970 is needed." % uID)
+        return "-1"
+       # sys.exit("No card matching the Unique ID '%s' was able to be found. Either the card is not in the database, or the Unique ID was passed in wrong. Make sure to pass in the last 8 digits of the Unique ID. For example, from 0xb8000000_0xeac36970 only eac36970 is needed." % uID)
     except MultipleObjectsReturned:
-        sys.exit("Multiple cards containing this Unique ID were found. Please pass in the last 8 digits of the Unique ID. For example, from 0xb8000000_0xeac36970 only eac36970 is needed.")
+        return "-2"
+        #  sys.exit("Multiple cards containing this Unique ID were found. Please pass in the last 8 digits of the Unique ID. For example, from 0xb8000000_0xeac36970 only eac36970 is needed.")
     
-    return card.barcode
 
 
-def getUID(barcode):
-    """This function gives back the Unique ID given the barcode. The whole barcode must be given. For example, 0700001 is valid but 001 is not."""
-
-    try:
-        card = QieCard.objects.get(barcode__contains=barcode)
-    except ObjectDoesNotExist:
-        sys.exit("No card matching the Barcode '%s' was able to be found. Either the card is not in the database, or the Barcode was passed in wrong. Make sure you pass in the whole barcode, i.e 0700001." % barcode)
-    except MultipleObjectsReturned:
-        sys.exit("Multiple cards containing this barcode were found. Make sure that the whole barcode is passed in so the right card can be found, i.e 0700001.")
-    
-    uid = formatUID(card.uid)
-    return uid
-    
-        
-    
-    return card.uid
+#def getUID(barcode):
+#    """This function gives back the Unique ID given the barcode. The whole barcode must be given. For example, 0700001 is valid but 001 is not."""
+#
+#    try:
+#        card = QieCard.objects.get(barcode__contains=barcode)
+#    except ObjectDoesNotExist:
+#        sys.exit("No card matching the Barcode '%s' was able to be found. Either the card is not in the database, or the Barcode was passed in wrong. Make sure you pass in the whole barcode, i.e 0700001." % barcode)
+#    except MultipleObjectsReturned:
+#        sys.exit("Multiple cards containing this barcode were found. Make sure that the whole barcode is passed in so the right card can be found, i.e 0700001.")
+#    
+#    uid = formatUID(card.uid)
+#    return uid
+#    
+#        
+#    
+#    return card.uid
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--barcode", help="Use the barcode to find the Unique ID", action='store_true')
-    parser.add_argument("identifier", help="Card identifier to be searched. Either barcode or Unique ID depending on -b or -u")
-    parser.add_argument("-u", "--unique", help="Use the Unique ID to find the barcode", action='store_true')
-    
-    options = parser.parse_args()
-    
-    mapping = {}
-    
-    if options.barcode:
-        # Get the unique id for the card using its barcode
-        uid = getUID(options.identifier)
-        mapping[options.identifier] = uid
-    
-    if options.unique:
-        # Get the barcode using the unique id
-        barcode = getBarcode(options.identifier)
-        mapping[options.identifier] = barcode
+#    parser = argparse.ArgumentParser()
+#    parser.add_argument("-b", "--barcode", help="Use the barcode to find the Unique ID", action='store_true')
+#    parser.add_argument("identifier", help="Card identifier to be searched. Either barcode or Unique ID depending on -b or -u")
+#    parser.add_argument("-u", "--unique", help="Use the Unique ID to find the barcode", action='store_true')
+#    
+#    options = parser.parse_args()
+#    
+#    mapping = {}
+#    
+#    if options.barcode:
+#        # Get the unique id for the card using its barcode
+#        uid = getUID(options.identifier)
+#        mapping[options.identifier] = uid
+#    
+#    if options.unique:
+#        # Get the barcode using the unique id
+#        barcode = getBarcode(options.identifier)
+#        mapping[options.identifier] = barcode
+#
+#
+#    if mapping:
+#        with open("mapping.json", "w") as outfile:
+#            json.dump(mapping, outfile)
+#
 
+    filename = sys.argv[1]    # Grab the file
+    
+    try:
+        # Try to open the file and remove any empty strings from the list
+        with open(filename) as file:
+            ids = file.read().splitlines()
+        ids[:] = [item for item in ids if item != '']
+    except IOError:
+        sys.exit("File not able to be opened")
+        
+    mapping = {}
+    for uid in ids:
+        mapping[uid] = getBarcode(uid)
 
     if mapping:
-        with open("mapping.json", "w") as outfile:
-            json.dump(mapping, outfile)
+        with open("mapping.json", "w") as output:
+            json.dump(mapping, output)
+            
+        
 
 
 if __name__ == "__main__": 
