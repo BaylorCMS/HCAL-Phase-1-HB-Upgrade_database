@@ -86,14 +86,14 @@
             <form class="navbar-form navbar-right" action="#" role="search">
               <div class="form-group">
                 <div class="input-group">
-                  <input class="form-control" id="navbarInputBarcode" type="search" placeholder="Search for Card">
+                  <input class="form-control" id="navbarInputBarcode" type="search" placeholder="Search...">
                   <span class="input-group-btn">
                     <button type="submit" onclick="searchBarcode(event)" class="btn"><span class="fui-search"></span></button>
                   </span>
                 </div>
               </div>
             </form>
-            <!-- Unique ID Search 
+            <!-- Unique ID Search
             <form class="navbar-form navbar-right" action="#" role="search">
               <div class="form-group">
                 <div class="input-group">
@@ -126,38 +126,10 @@
 {% block script %}
 <script>
 function searchBarcode(e){
-    cardId = document.getElementById("navbarInputBarcode").value;
-    var isnum = /^\d+$/.test(cardId);
-    if(isnum){
-        e.preventDefault();
-        document.location.href = "{{ SITE_URL }}/cards/" + cardId;
-    } else {
-        if(cardId.length >= 8){
-            e.preventDefault();
-            new_cardId = cardId.slice(-8);
-            document.location.href = "{{ SITE_URL }}/cards/" + new_cardId;
-        } else {
-            e.preventDefault();
-            document.location.href = "{{ SITE_URL }}/cards/" + cardId;
-        }
-//        e.preventDefault();
-//        document.location.href = "{{ SITE_URL }}/cards/catalog"
-    }
-
-
-    //if(cardId.indexOf("0x") === -1){
-    //    e.preventDefault();
-    //    document.location.href = "{{ SITE_URL }}/cards/" + cardId;
-    //} else if(cardId.length > 8){
-    //    e.preventDefault();
-    //    new_cardId = cardId.slice(-8);
-    //    document.location.href = "{{ SITE_URL }}/cards/" + new_cardId;
-    //} else {
-    //    e.preventDefault();
-    //    new_cardId = cardId.slice(-8);
-    //    document.location.href = "{{ SITE_URL }}/cards/" + new_cardId;
-    //}
-} 
+    query = document.getElementById("navbarInputBarcode").value;
+    e.preventDefault();
+    document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+}
 
 function searchUID(e){
     family = "70"

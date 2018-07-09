@@ -1,0 +1,32 @@
+{% extends "qie_cards/search.html" %}
+
+
+{% block header %}
+  {% if query == '' %}
+    No search query given
+  {% elif num_items != 1 %}
+    Your search of '{{query}}' returned {{num_items}} items
+  {% else %}
+    Your search of '{{query}}' returned {{num_items}} item
+  {% endif %}
+{% endblock %}
+
+{% block search %}
+  {% if num_items != 0 and query != '' %}
+    <h4>Your search returned these items:</h4>
+    <ul>
+      {% if barcodes %}
+        <h4>Barcodes:</h4>
+        {% for barcode in barcodes %}
+          <li style="padding-left: 3%; list-style-type: none;"><a href="../{{barcode.barcode}}"><h5>{{barcode.barcode}}</h5></a></li>
+        {% endfor %}
+      {% endif %}
+      {% if unique_ids %}
+        <h4>Unique IDs:</h4>
+        {% for uid in unique_ids %}
+          <li style="padding-left: 3%; list-style-type: none;"><a href="../{{uid.barcode}}"><h5>{{uid.uid}}</h5></a></li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  {% endif %}
+{% endblock %}

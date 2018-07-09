@@ -277,27 +277,16 @@ def detail(request, card):
 #    def get_queryset(self):
 #        return QieCard.objects.all().order_by('barcode')
 #
-def error(request, card): 
+def error(request): 
     """ This displays an error for incorrect barcode or unique id """
-    if card.isdigit():
-        try:
-            qiecard = list(QieCard.objects.filter(barcode__endswith=card))
-            uidcard = None
-        except QieCard.DoesNotExist:
-            qiecard = None
-            uidcard = None
-    else:
-        try:
-            uidcard = []
-            cards = list(QieCard.objects.filter(uid__contains=card))
-            for carduid in cards:
-                uidcard.append([carduid, carduid.uid[8:]])
-            qiecard = None
-        except QieCard.DoesNotExist:
-            uidcard = None
-            qiecard = None
-    
-    return render(request, 'qie_cards/error.html', {'qiecard': qiecard, 'query': card, 'uidcard': uidcard})
+
+   # try:
+   #     qiecard = list(QieCard.objects.filter(barcode__endswith=card))
+   # except QieCard.DoesNotExist:
+   #     qiecard = None
+
+    return render(request, 'qie_cards/error.html')
+
 
 class PlotView(generic.ListView):
     """ This displays various plots of data """
@@ -452,4 +441,28 @@ def fieldView(request):
 
     return render(request, 'qie_cards/fieldView.html', {'fields': fields, "items": items, "options": options})
 
+
+def search(request):
+    return render(request, 'qie_cards/search.html')
+
+
+def searchbar(request, query):
+    try:
+        barcodes = list(QieCard.objects.filter(barcode__endswith=query))
+    except QieCard.DoesNotExist:
+        barcodes = None
+    
+    try:
+        uids = list(QieCard.objects.filter(uid__contains=query))
+    except QieCard.DoesNotExist:
+        uids = None
+        
+
+    num_items = 0
+    if barcodes:
+        num_items += len(barcodes)
+    if uids:
+        num_items += len(uids)
+
+    return render(request, 'qie_cards/searching.html', {'barcodes': barcodes, 'unique_ids': uids, 'num_items': num_items, 'query': query})
 
