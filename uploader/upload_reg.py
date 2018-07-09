@@ -136,7 +136,7 @@ tester_name = data["Tester_Name"]
 comment = ""
 if not qiecard.comments == "":
     comment += "\n"
-comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - Register Test: "
+comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
 comment += data["Comments"]
 qiecard.comments = comment
 qiecard.save()

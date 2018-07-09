@@ -252,7 +252,7 @@ def detail(request, card):
         comment = ""
         if not p.comments == "":
             comment += "\n"
-        comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - " + request.POST.get('comment')
+        comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": " + request.POST.get('comment')
         p.comments += comment
         p.save()
 
