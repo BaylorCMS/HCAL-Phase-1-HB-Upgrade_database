@@ -92,7 +92,7 @@ card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
 
-test_list = ["Igloo_FPGA_Control", "Checksum", "SupplyI", "PrgmChk"]
+test_list = ["Checksum", "SupplyI", "PrgmChk"]
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
