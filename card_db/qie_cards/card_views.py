@@ -186,9 +186,9 @@ def stats(request):
 
 def detail(request, card):
     """ This displays the overview of tests for a card """
-    if len(card) > 7:
+    if not card.isdigit():
         try:
-            p = QieCard.objects.get(uid__endswith=card)
+            p = QieCard.objects.get(uid__contains=card)
         except QieCard.DoesNotExist:
             #raise Http404("QIE card with unique id " + str(card) + " does not exist")
             return render(request, 'qie_cards/error.html')
@@ -248,17 +248,31 @@ def detail(request, card):
         status["banner"] = "INCOMPLETE"
         status["css"] = "warn"
 
+
     if(request.POST.get('comment_add')):
         comment = ""
         if not p.comments == "":
             comment += "\n"
-        comment += str(timezone.localtime().date()) + " " + str(timezone.localtime().hour) + ":" + str(timezone.localtime().minute) + " - " + request.POST.get('comment')
+        comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": " + request.POST.get('comment')
         p.comments += comment
         p.save()
 
     if(request.POST.get('location_add')):
         if len(Location.objects.filter(card=p)) < 10:
             Location.objects.create(geo_loc=request.POST.get("location"), card=p)
+
+    if(request.POST.get('make_test_stand')):
+        p.test_stand = True
+        p.save()
+
+    if(request.POST.get('make_normal')):
+        p.test_stand = False
+        p.save()
+
+    if p.test_stand:
+        status["banner"] = "TEST STAND CARD"
+        status["css"] = "teststand"
+
 
     return render(request, 'qie_cards/detail.html', {'card': p,
                                                      'rm' : rm,
@@ -287,6 +301,7 @@ def error(request):
 
     return render(request, 'qie_cards/error.html')
 
+
 class PlotView(generic.ListView):
     """ This displays various plots of data """
     
@@ -309,7 +324,7 @@ def testDetail(request, card, test):
     """ This displays details about a specific test for a card """
     if len(card) > 7:
         try:
-            p = QieCard.objects.get(uid__endswith=card)
+            p = QieCard.objects.get(uid__contains=card)
         except QieCard.DoesNotExist:
             raise Http404("QIE card with unique id " + str(card) + " does not exist")
     else:
