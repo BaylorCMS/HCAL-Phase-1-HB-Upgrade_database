@@ -248,6 +248,7 @@ def detail(request, card):
         status["banner"] = "INCOMPLETE"
         status["css"] = "warn"
 
+
     if(request.POST.get('comment_add')):
         comment = ""
         if not p.comments == "":
@@ -259,6 +260,19 @@ def detail(request, card):
     if(request.POST.get('location_add')):
         if len(Location.objects.filter(card=p)) < 10:
             Location.objects.create(geo_loc=request.POST.get("location"), card=p)
+
+    if(request.POST.get('make_test_stand')):
+        p.test_stand = True
+        p.save()
+
+    if(request.POST.get('make_normal')):
+        p.test_stand = False
+        p.save()
+
+    if p.test_stand:
+        status["banner"] = "TEST STAND CARD"
+        status["css"] = "teststand"
+
 
     return render(request, 'qie_cards/detail.html', {'card': p,
                                                      'rm' : rm,
