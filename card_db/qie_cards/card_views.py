@@ -217,6 +217,7 @@ def detail(request, card):
     status["passed"] = 0
     failedAny = False
     forcedAny = False
+    no_result = False
 
     for test in tests:
         attemptList = Attempt.objects.filter(card=p.pk, test_type=test.pk).order_by("attempt_number")
@@ -228,6 +229,8 @@ def detail(request, card):
                     forcedAny = True
                 elif last.passed():
                     status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
                 else:
                     failedAny = True
             attempts.append({"attempt":last, "valid": True, "required": test.required})
@@ -241,12 +244,17 @@ def detail(request, card):
         else:
             status["banner"] = "GOOD"
             status["css"] = "okay"
+
     elif failedAny:
         status["banner"] = "FAILED"
         status["css"] = "bad"
+    elif no_result:
+        status["banner"] = "INCOMPLETE"
+        status["css"] = "warn"
     else:
         status["banner"] = "INCOMPLETE"
         status["css"] = "warn"
+
 
 
     if(request.POST.get('comment_add')):

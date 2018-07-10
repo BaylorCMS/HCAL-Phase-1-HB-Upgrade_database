@@ -304,6 +304,9 @@ class Attempt(models.Model):
     def passed(self): 
         return (self.result == 1)
 
+    def empty_test(self):
+        return (self.result == None)
+
     def has_image(self):
         """ This returns whether the attempt has a specified image """
         return (not self.image == "default.png")
@@ -319,12 +322,14 @@ class Attempt(models.Model):
             return "PASS (FORCED)"
         elif self.result:
             return "PASS"
+        elif self.result == None:
+            return "REMAINING"
         else:
             return "FAIL"
 
     def get_css_class(self):
         """ This returns the color which the Attempt template should take """
-        if self.revoked:
+        if self.revoked or self.result == None:
             return "warn"
         elif self.overwrite_pass:
             return "forced"
