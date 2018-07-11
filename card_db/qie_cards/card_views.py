@@ -33,8 +33,55 @@ def catalog(request):
     cards = QieCard.objects.all().order_by('barcode')
     count = len(cards)
 
+    red = "#E74C3C"    # Failed card
+    yellow = "#FFFF00"    # Remaining tests
+    blue = "#16A085"    # Passed card
+    test_blue = "#3CBEE7"    # Card is good for test stand
+
+    tests = Test.objects.all()
+    status = {}
+    status["total"] = len(tests.filter(required=True))
+    status["passed"] = 0
+    state = {}
+    failedAny = False
+    no_result = False
+    if cards:
+        for card in cards:
+            for test in tests:
+                attemptList = Attempt.objects.filter(card=card.pk, test_type=test.pk).order_by("attempt_number")
+                if attemptList:
+                    last = attemptList[len(attemptList)-1]
+                    if not last.revoked and test.required:
+                        if last.overwrite_pass:
+                            status["passed"] += 1
+                            #forcedAny = True
+                        elif last.passed():
+                            status["passed"] += 1
+                        elif last.empty_test():
+                            no_result = True
+                        else:
+                            failedAny = True
+
+            if status["total"] == status["passed"]:
+                state[card.barcode] = blue
+            elif failedAny:
+                state[card.barcode] = red
+                failedAny = False
+            elif no_result:
+                state[card.barcode] = yellow
+                no_result = False
+            else:
+                state[card.barcode] = yellow
+        
+
+            if card.test_stand:
+                state[card.barcode] = test_blue
+            status["passed"] = 0
+    
+
     return render(request, 'qie_cards/catalog.html', {'barcode_list': cards,
-                                                      'total_count': count})
+                                                      'total_count': count,
+                                                      'state': sorted(state.iteritems())})
 
 def summary(request):
     """ This displays a summary of the cards """

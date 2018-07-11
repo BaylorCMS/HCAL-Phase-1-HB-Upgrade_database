@@ -29,9 +29,12 @@
 {% if barcode_list %}
 <div class="row">
 	<div align="center"><ul>
-	{% for card in barcode_list %}
-  		<li style="font-size:18px"><a href="{{card.barcode}}/">{{card.barcode}}</a></li>
-	{%endfor%}
+	{% for card, color in state %}
+
+  	      <li style="font-size:18px"><a href="{{card}}/" style="color:{{color}}">{{card}}</a></li>
+
+
+	{% endfor %}
 	</ul></div>
 </div>
 {% else %}
