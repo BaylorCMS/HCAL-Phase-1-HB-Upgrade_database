@@ -49,11 +49,12 @@ def makeOutputPath(uID, destination):
 
 
 @transaction.atomic
-def uploadAttempt(attemptlist, json_file):    #, chan_passed, chan_failed):
+def uploadAttempt(attemptlist, json_file, cmd_file, run_file):    #, chan_passed, chan_failed):
     """This functions saves info in the attempt at saves it in the database"""
     for attempt in attemptlist:
-        attempt.log_file = json_file
+        attempt.log_file = cmd_file
         attempt.hidden_log_file = json_file
+        attempt.image = run_file
       #  attempt.num_channels_passed = chan_passed[test]
       #  attempt.num_channels_failed = chan_failed[test]
       #  attempt.result = bool(chan_failed[test] == 0)
@@ -133,13 +134,16 @@ except ObjectDoesNotExist:
 # Get the run number
 # run_num = data["RunNum"]
 tester_name = data["Tester_Name"]
-comment = ""
-if not qiecard.comments == "":
-    comment += "\n"
-comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
-comment += data["Comments"]
-qiecard.comments = comment
-qiecard.save()
+comments = data["Comments"]
+
+if comments != "":
+    comment = ""
+    if not qiecard.comments == "":
+        comment += "\n"
+    comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
+    comment += data["Comments"]
+    qiecard.comments = comment
+    qiecard.save()
 del data["Tester_Name"]
 del data["Comments"]
 
@@ -193,7 +197,9 @@ new_file_name = os.path.join(mved_src_name, file_name)
 
 #media = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name))
 json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
+cmd_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), "cmd.log")
+run_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), "run.log")
 
-uploadAttempt(attemptlist, json_file)    #, channels_passed, channels_failed)
+uploadAttempt(attemptlist, json_file, cmd_file, run_file)    #, channels_passed, channels_failed)
 
 
