@@ -55,6 +55,8 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
         attemptdict[test].num_channels_passed = chan_passed[test]
         attemptdict[test].num_channels_failed = chan_failed[test]
         attemptdict[test].result = bool(chan_failed[test] == 0)
+        if chan_passed[test] + chan_failed[test] != 16:
+            attemtdict[test].result = False
         attemptdict[test].save()
     
 
