@@ -59,7 +59,7 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
     
 
 @transaction.atomic
-def getData(data, rawUID, qiecard, run_num, tester_name, comments):
+def getData(data, rawUID, qiecard, run_num, tester_name):
     """Main function to grab data from the JSON file"""
     attemptlist = {}
     channels_passed = {}
@@ -102,7 +102,7 @@ def getData(data, rawUID, qiecard, run_num, tester_name, comments):
                                            test_type=temp_test,
                                            run=run_num,
                                            tester=Tester.objects.get(username=tester_name),
-                                           comments=comments)
+                                           comments=data["Comments"])
                     temp_attempt.save()
                     attemptlist[test] = temp_attempt
                         
@@ -181,7 +181,7 @@ qiecard.save()
 # Get the data #
 ################
 
-attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num, tester_name, comments)
+attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num, tester_name)
 
 
 # If this is a new run, create a new run
