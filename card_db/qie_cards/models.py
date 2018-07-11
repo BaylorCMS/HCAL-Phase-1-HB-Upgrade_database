@@ -342,7 +342,11 @@ class Attempt(models.Model):
         path = MEDIA_ROOT + str(self.image)
         #images = [image for image in os.listdir(os.path.join(MEDIA_ROOT, self.image.url))]
         if not str(self.image)[-4:] == "uhtr" and not str(self.image)[-4:] == "r.gz":
-            return os.listdir(path)
+            dirlist = sorted(os.listdir(path), reverse=True)
+            top_dirlist = sorted(dirlist[0:8])
+            bot_dirlist = sorted(dirlist[8:])
+            dirlist = top_dirlist + bot_dirlist
+            return dirlist
 
     def __str__(self):
         return str(self.test_type)
