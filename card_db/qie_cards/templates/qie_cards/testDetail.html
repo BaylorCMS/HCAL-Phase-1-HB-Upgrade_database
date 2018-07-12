@@ -100,6 +100,8 @@
                         <td>{{attempt.run}}</td>
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
+                        {% elif attempt.result == None %}
+                        <td class="{{attempt.get_css_class}}"><b>None</b></td>
 			{% else %}
 			<td class="{{attempt.get_css_class}}"><b>Fail</b></td>
 			{% endif %}
@@ -153,6 +155,8 @@
                         <td>{{attempt.run}}</td>
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
+                        {% elif attempt.result == None %}
+                        <td class="{{attempt.get_css_class}}"><b>None</b></td>
 			{% else %}
 			<td class="{{attempt.get_css_class}}"><b>Fail</b></td>
 			{% endif %}
