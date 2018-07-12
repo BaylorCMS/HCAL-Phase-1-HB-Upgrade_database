@@ -47,32 +47,38 @@ def catalog(request):
     no_result = False
     if cards:
         for card in cards:
-            for test in tests:
-                attemptList = Attempt.objects.filter(card=card.pk, test_type=test.pk).order_by("attempt_number")
-                if attemptList:
-                    last = attemptList[len(attemptList)-1]
-                    if not last.revoked and test.required:
-                        if last.overwrite_pass:
-                            status["passed"] += 1
-                            #forcedAny = True
-                        elif last.passed():
-                            status["passed"] += 1
-                        elif last.empty_test():
-                            no_result = True
-                        else:
-                            failedAny = True
+#            for test in tests:
+#                attemptList = Attempt.objects.filter(card=card.pk, test_type=test.pk).order_by("attempt_number")
+#                if attemptList:
+#                    last = attemptList[len(attemptList)-1]
+#                    if not last.revoked and test.required:
+#                        if last.overwrite_pass:
+#                            status["passed"] += 1
+#                            #forcedAny = True
+#                        elif last.passed():
+#                            status["passed"] += 1
+#                        elif last.empty_test():
+#                            no_result = True
+#                        else:
+#                            failedAny = True
+#
+#            if status["total"] == status["passed"]:
+#                state[card.barcode] = blue
+#            elif failedAny:
+#                state[card.barcode] = red
+#                failedAny = False
+#            elif no_result:
+#                state[card.barcode] = yellow
+#                no_result = False
+#            else:
+#                state[card.barcode] = yellow
 
-            if status["total"] == status["passed"]:
+            if card.status:
                 state[card.barcode] = blue
-            elif failedAny:
-                state[card.barcode] = red
-                failedAny = False
-            elif no_result:
+            elif card.status == None:
                 state[card.barcode] = yellow
-                no_result = False
             else:
-                state[card.barcode] = yellow
-        
+                state[card.barcode] = red
 
             if card.test_stand:
                 state[card.barcode] = test_blue
@@ -291,17 +297,28 @@ def detail(request, card):
         else:
             status["banner"] = "GOOD"
             status["css"] = "okay"
+        if p.status != True:
+            p.status = True
+            p.save()
 
     elif failedAny:
         status["banner"] = "FAILED"
         status["css"] = "bad"
+        if p.status != False:
+            p.status = False
+            p.save()
     elif no_result:
         status["banner"] = "INCOMPLETE"
         status["css"] = "warn"
+        if p.status != None:
+            p.status = None
+            p.save()
     else:
         status["banner"] = "INCOMPLETE"
         status["css"] = "warn"
-
+        if p.status != None:
+            p.status = None
+            p.save()
 
 
     if(request.POST.get('comment_add')):
