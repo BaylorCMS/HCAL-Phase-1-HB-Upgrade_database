@@ -1,7 +1,7 @@
 """
-#   step2.py:
+#   step3.py:
 #       This script accepts a properly formatted .json file and uploads it
-#       to the database. The json file should contain results from Step 2
+#       to the database. The json file should contain results from Step 3
 #       of Test Stand 1.
 """
 
