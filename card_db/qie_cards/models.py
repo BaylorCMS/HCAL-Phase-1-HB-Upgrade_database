@@ -342,7 +342,8 @@ class Attempt(models.Model):
     def get_images(self):
         path = MEDIA_ROOT + str(self.image)
         #images = [image for image in os.listdir(os.path.join(MEDIA_ROOT, self.image.url))]
-        if not str(self.image)[-4:] == "uhtr" and not str(self.image)[-4:] == "r.gz":
+        #if not str(self.image)[-4:] == "uhtr" and not str(self.image)[-4:] == "r.gz":
+        if self.num_channels_passed != 0 or self.num_channels_failed != 0:
             dirlist = sorted(os.listdir(path), reverse=True)
             top_dirlist = sorted(dirlist[0:8])
             bot_dirlist = sorted(dirlist[8:])
