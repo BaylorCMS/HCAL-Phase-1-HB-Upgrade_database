@@ -65,6 +65,7 @@ def uploadAttempt(attemptlist, json_file, cmd_file, run_file):    #, chan_passed
 def getData(data, qiecard, tester_name, comments):
     """Main function to grab data from the JSON file"""
     attemptlist = []
+    #card_status = []
     for test in data.keys():
         try:
             # Test is in the database
@@ -88,6 +89,7 @@ def getData(data, qiecard, tester_name, comments):
                                # run=run_num,
                                tester=Tester.objects.get(username=tester_name),
                                comments=comments)
+    #    card_status.append(data[test][0])
       #  else:
       #      temp_attempt = Attempt(card=qiecard,
       #                             date_tested=timezone.now(),
@@ -105,6 +107,15 @@ def getData(data, qiecard, tester_name, comments):
             pa.revoked=True
             pa.save()
     
+    #if False in card_status and qiecard.status != False:
+    #    qiecard.status = False
+    #elif None in card_status and qiecard.status != False :
+    #    qiecard.status = None
+    #else:
+    #    qiecard.status = True
+    #
+    #qiecard.save()
+            
     return attemptlist
 
 # load the json file

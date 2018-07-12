@@ -93,6 +93,7 @@ card = loadCard(cardData, qie)
 path = moveJsonFile(qie, fileName)
 
 test_list = ["Checksum", "SupplyI", "PrgmChk"]
+#card_status = []
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
@@ -118,6 +119,7 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+#        card_status.append(True)
     elif cardData[test] == "N/Aed":
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -131,6 +133,7 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       ) 
+#        card_status.append(None)
     else:
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -144,9 +147,20 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+#        card_status.append(False)
 	
     for attempt in prev_attempts:
         attempt.revoked = True
         attempt.save()
 	
     temp_attempt.save()
+
+#if False in card_status:
+#    card.status = False
+#elif None in card_status:
+#    card.status = None
+#else:
+#    card.status = True
+#card.save()
+
+

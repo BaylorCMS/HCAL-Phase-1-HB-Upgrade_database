@@ -46,8 +46,9 @@ def makeOutputPath(uID, destination):
 
 
 @transaction.atomic
-def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
+def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed, card):
     """This functions saves info in the attempt at saves it in the database"""
+#    card_status = []
     for test in attemptdict.keys():
         attemptdict[test].log_file = json_file
         attemptdict[test].hidden_log_file = json_file
@@ -56,8 +57,18 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
         attemptdict[test].num_channels_failed = chan_failed[test]
         attemptdict[test].result = bool(chan_failed[test] == 0)
         if chan_passed[test] + chan_failed[test] != 16:
-            attemtdict[test].result = False
+            attemptdict[test].result = False
+        card_status.append(attemptdict[test].result)
         attemptdict[test].save()
+    
+ #   if False in card_status:
+ #       card.status = False
+ #   elif None in card_status:
+ #       card.status = None
+ #   else:
+ #       card.status = True
+
+ #   card.save()
     
 
 @transaction.atomic
@@ -233,6 +244,6 @@ media = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved
 json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(mved_src_name), file_name)
 
 
-uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed)
+uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed, qiecard)
 
 

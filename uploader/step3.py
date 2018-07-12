@@ -97,8 +97,8 @@ except:
 card = loadCard(cardData, qie)
 
 path = moveJsonFile(qie, fileName)
-
 test_list = ["Igloos_Programmed"]
+#card_status = None
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
@@ -124,6 +124,7 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+#        card_status = True
     elif cardData[test] == "N/A":
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -136,7 +137,8 @@ for test in test_list:
 	                       humidity=-999,
 	                       log_file=path,
 	                       hidden_log_file=path,
-	                       ) 
+	                       )
+#        card_status = None
     else:
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -150,9 +152,15 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+#        card_status = False
 	
     for attempt in prev_attempts:
         attempt.revoked = True
         attempt.save()
 	
     temp_attempt.save()
+
+
+#card.status = card_status
+#card.save()
+
