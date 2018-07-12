@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT,'show_indexes':True}),
     url(r'^plots$', views.PlotView.as_view(), name='plots'),
     url(r'^field$', views.fieldView, name='fieldView'),
+    url(r'.*', views.error, name='error')
 ]

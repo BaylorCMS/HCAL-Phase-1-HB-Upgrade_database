@@ -234,22 +234,22 @@ class Channel(models.Model):
     # Channel number for this specific channel
     CHANNEL = (
         (-1, "N/A"),
-        (1, "Top Channel 1"),
-        (2, "Top Channel 2"),
-        (3, "Top Channel 3"),
-        (4, "Top Channel 4"),
-        (5, "Top Channel 5"),
-        (6, "Top Channel 6"),
-        (7, "Top Channel 7"),
-        (8, "Top Channel 8"),
-        (9, "Bot Channel 9"),
-        (10, "Bot Channel 10"),
-        (11, "Bot Channel 11"),
-        (12, "Bot Channel 12"),
-        (13, "Bot Channel 13"),
-        (14, "Bot Channel 14"),
-        (15, "Bot Channel 15"),
-        (16, "Bot Channel 16"),
+        (1, "Top Channel 0"),
+        (2, "Top Channel 1"),
+        (3, "Top Channel 2"),
+        (4, "Top Channel 3"),
+        (5, "Top Channel 4"),
+        (6, "Top Channel 5"),
+        (7, "Top Channel 6"),
+        (8, "Top Channel 7"),
+        (9, "Bot Channel 0"),
+        (10, "Bot Channel 1"),
+        (11, "Bot Channel 2"),
+        (12, "Bot Channel 3"),
+        (13, "Bot Channel 4"),
+        (14, "Bot Channel 5"),
+        (15, "Bot Channel 6"),
+        (16, "Bot Channel 7"),
     )
 
     number = models.IntegerField(default=-1, choices=CHANNEL, blank=True, null=True)    # Number specifying which channel this is
@@ -342,7 +342,11 @@ class Attempt(models.Model):
         path = MEDIA_ROOT + str(self.image)
         #images = [image for image in os.listdir(os.path.join(MEDIA_ROOT, self.image.url))]
         if not str(self.image)[-4:] == "uhtr" and not str(self.image)[-4:] == "r.gz":
-            return os.listdir(path)
+            dirlist = sorted(os.listdir(path), reverse=True)
+            top_dirlist = sorted(dirlist[0:8])
+            bot_dirlist = sorted(dirlist[8:])
+            dirlist = top_dirlist + bot_dirlist
+            return dirlist
 
     def __str__(self):
         return str(self.test_type)

@@ -55,11 +55,13 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
         attemptdict[test].num_channels_passed = chan_passed[test]
         attemptdict[test].num_channels_failed = chan_failed[test]
         attemptdict[test].result = bool(chan_failed[test] == 0)
+        if chan_passed[test] + chan_failed[test] != 16:
+            attemtdict[test].result = False
         attemptdict[test].save()
     
 
 @transaction.atomic
-def getData(data, rawUID, qiecard, run_num, tester_name, comments):
+def getData(data, rawUID, qiecard, run_num, tester_name):
     """Main function to grab data from the JSON file"""
     attemptlist = {}
     channels_passed = {}
@@ -102,7 +104,7 @@ def getData(data, rawUID, qiecard, run_num, tester_name, comments):
                                            test_type=temp_test,
                                            run=run_num,
                                            tester=Tester.objects.get(username=tester_name),
-                                           comments=comments)
+                                           comments=data["Comments"])
                     temp_attempt.save()
                     attemptlist[test] = temp_attempt
                         
@@ -168,20 +170,22 @@ except ObjectDoesNotExist:
 # Get the run number
 run_num = data["RunNum"]
 tester_name = data["Tester_Name"]
+comments = data["Comments"]
 
-comment = ""
-if not qiecard.comments == "":
-    comment += "\n"
-comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
-comment += data["Comments"]
-qiecard.comments = comment
-qiecard.save()
+if comments != "":
+    comment = ""
+    if not qiecard.comments == "":
+        comment += "\n"
+    comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
+    comment += data["Comments"]
+    qiecard.comments = comment
+    qiecard.save()
 
 ################
 # Get the data #
 ################
 
-attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num, tester_name, comments)
+attemptlist, channels_passed, channels_failed = getData(data, rawUID, qiecard, run_num, tester_name)
 
 
 # If this is a new run, create a new run

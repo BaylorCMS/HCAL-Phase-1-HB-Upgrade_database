@@ -10,32 +10,8 @@
 
 {% block content %}
 <div class="row" align="left" style="padding-left:50px; padding-right:50px">
-    
-<h3 align="center">Card {{query}} Not Found<h3>
-<div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
-{% if qiecard %}
-<h6>Please enter the full barcode of the card you are looking for.<h6>
-<h6>Maybe you were looking for one of these barcodes: <h6>
-<ul>
-  {% for card in qiecard %}
-  <li><a href="../{{card.barcode}}">{{card.barcode}}</a></li>
-  {% endfor %}
-</ul>
-{% elif uidcard %}
-<h6>For better results, please enter at least the last 8 digits of the Unique ID for the card you are looking for.<h6>
-<h6>Maybe you were looking for one of the Unique IDs:<h6>
-<ul>
-  {% for card, uid in uidcard %}
-  <li><a href="../{{uid}}">{{card.uid}}</a></li>
-  {% endfor %}
-</ul>
-{% else %}
-    <h6>No possible matches were found.</h6>
-    <h6>This card might not be in the database.</h6>
-    <h6>If the barcode was used to look this up, make sure you have typed it correctly.</h6>
-    <h6>If the Unique ID was used to look this up, make sure you enter in only the significant letters/numbers. The search should not contain any "0x" or "_". There should also not be any symbols.</h6>
-    <h6>For better searching of a Unique ID, enter the last 8 digits. For example, if the UID is 0x22000000 0xEAD5E670, then enter EAD5E670.</h6>
-{% endif %}
+  <h3 align="center">Error: Page Not Found<h3>
+  <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div>
 {% endblock %}
 
