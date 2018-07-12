@@ -115,12 +115,12 @@
                     </tr>
                     <tr>
                         <td><b>Log Output:</b></td> 
-                        <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to Images for {{attempt.test_type}}</a>
-                                        {% else %} No image {% endif %}</td>
+                        <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to log file for {{attempt.test_type}}</a>
+                                        {% else %} No file {% endif %}</td>
                     </tr>
                     <tr>
                         <td><b>Commands:</b></td>
-                        <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to Log File for {{attempt.test_type}}</a>
+                        <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to commands for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                         {% else %}
                         <td colspan="3"> {{attempt.comments | default:"None"}} </td>
