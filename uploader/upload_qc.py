@@ -58,7 +58,7 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed, card)
         attemptdict[test].result = bool(chan_failed[test] == 0)
         if chan_passed[test] + chan_failed[test] != 16:
             attemptdict[test].result = False
-        card_status.append(attemptdict[test].result)
+#        card_status.append(attemptdict[test].result)
         attemptdict[test].save()
     
  #   if False in card_status:
