@@ -103,6 +103,7 @@ class QieCard(models.Model):
     comments            = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the
                                                                                                     # testing/appearance of the card
     test_stand = models.NullBooleanField(default=False, blank=True, null=True)
+    status = models.NullBooleanField(default=None, blank=True, null=True)
 
     def update_readout_module(self):
         """ Sets the readout module and slot for a QIE card. """
