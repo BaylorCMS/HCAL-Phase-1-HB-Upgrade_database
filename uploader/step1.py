@@ -20,6 +20,7 @@ import json
 import django
 from shutil import copyfile
 from django.utils import timezone
+from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
@@ -54,7 +55,6 @@ def loadCard(cardData, overwrite):
 def loadTests(qie, tester, date, testData, path, overwrite):
     """ Loads in all test results """
     attempts = []
-#    card_status = True
     for test in testData.keys():
         try:
             temp_test = Test.objects.get(abbreviation=test)
@@ -93,15 +93,12 @@ def loadTests(qie, tester, date, testData, path, overwrite):
                                        log_file=path,
                                        hidden_log_file=path,
                                        )
-#                card_status = False
             if overwrite:
                 for prev_att in prev_attempts:
                     prev_att.revoked = True
                     prev_att.save()
             
             attempts.append(temp_attempt)
-#    qie.status = card_status
-#    qie.save()
     return attempts
 
 def setLocation(qie, date):
@@ -164,3 +161,5 @@ if not overwrite:
 
 for attempt in attempts:
     attempt.save()
+
+set_card_status(qie)
