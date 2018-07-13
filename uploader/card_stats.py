@@ -39,10 +39,5 @@ def set_card_status(qiecard):
     else:
         qiecard.status = None
 
-#    qiecard.save()
-    print qiecard.status
-
-
-
-
+    qiecard.save()
 
