@@ -116,7 +116,8 @@ def card_plots(request, run, card):
                 post.result = False
                 post.test_type = Test.objects.get(name='Plot Inspection')
                 #post.tester = Tester.objects.get(username='Bryan Caraway')
-                post.tester_id = 39
+                post.tester = Tester.objects.get(username=request.POST['testers'])
+                #post.tester_id = 39
                 post.date_tested = timezone.now()
                 post.attempt_number = attempt_number
                 post.save()

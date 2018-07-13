@@ -36,7 +36,8 @@
     {% csrf_token %}
     Tester Name:
     <br/>
-    <select name="testers" style="color:black">
+    <select name="testers" required style="color:black">
+      <option value="" selected="true" disabled="disabled">Select Name</option>
       {% for tester in testers %}
       <option value="{{tester.username}}">{{tester.username}}</option>
       {% endfor %}
