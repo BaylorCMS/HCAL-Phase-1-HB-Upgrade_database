@@ -137,41 +137,40 @@ def card_plots(request, run, card):
         data = ""
         num_list = []
         num_var_list = {}
-        if attempt:
-            if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
-                if not str(attempt.hidden_log_file) == "default.png":
-                    inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
-                    tempDict = json.load(inFile)
-                    rawUID = tempDict["Unique_ID"]
-                    channel_list = []
-                    for position in tempDict[rawUID]:
-                        for channel in tempDict[rawUID][position]:
-                            channel_num = CHANNEL_MAPPING[position][channel[-1]]
-                            num_var_list[channel_num] =  tempDict[rawUID][position][channel][attempt.test_type.name]
-                            num_list.append(CHANNEL_MAPPING[position][channel[-1]])
-                            new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
-                            channel_list.append(new_chan)      
+        if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
+            if not str(attempt.hidden_log_file) == "default.png":
+                inFile = open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r")
+                tempDict = json.load(inFile)
+                rawUID = tempDict["Unique_ID"]
+                channel_list = []
+                for position in tempDict[rawUID]:
+                    for channel in tempDict[rawUID][position]:
+                        channel_num = CHANNEL_MAPPING[position][channel[-1]]
+                        num_var_list[channel_num] =  tempDict[rawUID][position][channel][attempt.test_type.name]
+                        num_list.append(CHANNEL_MAPPING[position][channel[-1]])
+                        new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
+                        channel_list.append(new_chan)      
                             
-                    num_list.sort()
+                num_list.sort()
                             
-                    o_channel_list = {}
-                    for i in num_list:
-                        channel = getChannel(i, channel_list)
-                        o_channel_list[channel.number] = num_var_list[i]    # Ordered dictionary of channel objects with their variables and values
-                        data += channel.get_number_display() + ": \n"
-                        for variable in o_channel_list[channel.number]:
-                            value = o_channel_list[channel.number][variable][0]
-                            result = o_channel_list[channel.number][variable][1]
-                            data += "\t" + variable + ": " + str(value) + ", "
-                            if result == 0:
-                                data += "FAIL"
-                            else:
-                                data += "PASS"
-                            data += "\n"    
-                        data += "\n"
+                o_channel_list = {}
+                for i in num_list:
+                    channel = getChannel(i, channel_list)
+                    o_channel_list[channel.number] = num_var_list[i]    # Ordered dictionary of channel objects with their variables and values
+                    data += channel.get_number_display() + ": \n"
+                    for variable in o_channel_list[channel.number]:
+                        value = o_channel_list[channel.number][variable][0]
+                        result = o_channel_list[channel.number][variable][1]
+                        data += "\t" + variable + ": " + str(value) + ", "
+                        if result == 0:
+                            data += "FAIL"
+                        else:
+                            data += "PASS"
+                        data += "\n"    
+                    data += "\n"
                                 
-            attemptData.append((attempt, data))
-
+        attemptData.append((attempt, data))
+            
     return render(request, 'runs/card_plots.html', {'test_list': tests, 'attempt_list': attempts, 'testers': testers, 'form': form, 'attempts': attemptData, 'card':card}) 
 
 def test_plots(request, run, test):

@@ -16,8 +16,8 @@
         {% if data != ""%}
         <br/>
         <br/>
-          <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.attempt_number}}').classList.toggle('hide')">Show Data</button>
-          <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.attempt_number}}"> {{data}} </p>
+          <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.test_type}}').classList.toggle('hide')">Show Data</button>
+          <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.test_type}}"> {{data}} </p>
         {% else %}            
           <p> This Attempt Has No Data</p>
         {% endif %}
