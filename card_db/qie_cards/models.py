@@ -315,7 +315,10 @@ class Attempt(models.Model):
     def has_log(self):
         """ This returns whether the attempt has a log folder """
         return (not self.log_file == "default.png")
-
+    
+    def has_hidden_log(self):
+        return (not self.hidden_log_file == "default.png")
+    
     def get_status(self):
         if self.revoked:
             return "REVOKED"

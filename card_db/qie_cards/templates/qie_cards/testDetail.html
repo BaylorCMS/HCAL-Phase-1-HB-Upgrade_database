@@ -116,6 +116,11 @@
                         <td colspan="5"> {{attempt.comments | default:"None"}} </td>
                     </tr>
                     <tr>
+                        <td><b>JSON File:</b></td> 
+                        <td colspan="5">{% if attempt.has_hidden_log %}<a href="../media/{{attempt.hidden_log_file}}">Go to JSON file for {{attempt.test_type}}</a>
+                                        {% else %} No file {% endif %}</td>
+                    </tr>
+                    <tr>
                         <td><b>Log Output:</b></td> 
                         <td colspan="5">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to log file for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
