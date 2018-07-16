@@ -1,23 +1,41 @@
-scriptLoc=$(readlink -f $(dirname $0) )
-tempDir=$scriptLoc/temp
-mapping=calibrationParams.txt
-fileName=${1%/}
-plotLoc=$1/shunt/plots
-calibration=$scriptLoc/../media/calibration
+scriptLoc=$(readlink -f $(dirname $0) )    # Current location of this script
+tempDir=$scriptLoc/temp    # Location of the temp directory
+logs=$scriptLoc/error_logs    # Location of the error log files
 
-###################################################
-#            Clear Temp directory                 #
-###################################################
-if [ ! -e $fileName -o ! -d $fileName ]
-then
-    echo "$fileName is not a folder"
-    exit 1
-fi 
+# Setting status colors
+STATUS="\e[1;34m"   # color of status statements
+ACTION="\e[1;33m"   # color of action statements
+SUCCESS="\e[1;92m"  # color of success statements
+FAIL="\e[1;91m"     # color of failure statements
+DEF="\e[39;0m"      # default colors of text
 
-folderLoc=$calibration/$(date +epochSec%s)
-cp -rv $fileName/ $folderLoc/
+rm -f ${logs}/*.log
 
-tar -cvzf $folderLoc/$(basename $fileName).tar.gz -C $(dirname $fileName) $(basename $fileName)
+echo -e "${STATUS}Initial data set"
+echo ""
+echo -e "${STATUS}Uploading Calibration Data${DEF}"
 
-echo "calling python script"
-python $scriptLoc/calibration_uploader.py $folderLoc
+# Check that there are cards to be uploaded
+if ls $tempDir/Card_* &> /dev/null; then
+    for card in $tempDir/Card_*; do
+        # Check that these are directories
+        [ -d "${card}" ] || continue
+        qieuid="$(basename "${card}")"
+        qieuid=${qieuid:5}    # Only grab the unique id with no "Card_"
+        echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
+        jsonFile=${card}/${qieuid}.json
+#        python $scriptLoc/calibration_uploader.py ${jsonFile} 2> $logs/${qieuid}_cal.log
+
+        # Erase log files if there was no error
+        if [ $? -eq 0 ]; then
+            echo -e "    ${SUCCESS}Card Uploaded Successfully"
+            rm $logs/${qieuid}_cal.log
+        else
+            echo -e "    ${FAIL}ERROR: ${DEF}See log file: ${logLoc}/${qieuid}_cal.log"
+        fi
+    done
+    echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error.${DEF}"
+else
+    echo -e "${FAIL}No Calibration Data Found${DEF}"
+fi
+
