@@ -51,7 +51,7 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 1 ]; then
         
             # Erase log files if there was no error
             if [ $? -eq 0 ]; then
-                echo -e "    ${SUCCESS}Card Uploaded Succesfully"
+                echo -e "    ${SUCCESS}Card Uploaded Successfully"
                 rm $logLoc/${qieuid}_qc.log 
             else
                 echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}/${qieuid}_qc.log"
