@@ -3,14 +3,18 @@ import os
 import sys
 import time
 import json
-from shutil import copyfile
+import shutil
 import django
+import datetime
+sys.path.insert(0, '/home/django/testing_database_hb/uploader')
+from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
 from qie_cards.models import QieCard, QieShuntParams, Test, Attempt, Tester
 from card_db.settings import MEDIA_ROOT
+from django.utils import timezone
 
 def getUID(uid):
     """Gets the Unique ID to be used in finding the associated card"""
@@ -63,13 +67,17 @@ try:
 except Test.DoesNotExist:
     # If it doesn't exist then create it
     cal_test = Test(name="Calibration", abbreviation="cal", required=True)
-    print cal_test
-    #cal_test.save()
+    cal_test.save()
 
-date = data["date"]
+raw_date = data["date"]
 run_num = data["run"]
 result = data["Result"]
-tester = data["Tester"][0]
+tester = data["Tester"]
+
+# Format the date
+#date = date[0] + "/" + date[1] + "/" + date[2]
+
+date = timezone.localtime(timezone.now())
 
 prev_attempts = list(Attempt.objects.filter(card=card, test_type=cal_test))    # Get list of all old attempts for this card and test
 attempt_num = len(prev_attempts) + 1    # Increment the current attempt number by 1
@@ -82,40 +90,45 @@ temp_attempt = Attempt(card=card,
                        test_type=cal_test,
                        result=result,
                        cal_run=run_num,
-                       #tester=Tester.objects.get(username__contains=tester)
+                       tester=Tester.objects.get(username=tester)
                        )
-#temp_attempt.save()
-#for pa in prev_attempts:
-#    pa.revoked=True
-#    pa.save()
+temp_attempt.save()
+for pa in prev_attempts:
+    pa.revoked=True
+    pa.save()
 
 ###########################################
 # Move the directory to permanent storage #
 ###########################################
 
 uploads = os.path.join(MEDIA_ROOT, "uploads/")
-print "Uploads: " + uploads
 card_dir = os.path.join(uploads, "qieCards/")
-print "Card_dir: " + card_dir
 destination = os.path.join(card_dir, card.barcode)
-print "Destination: " + destination
+temp_card_path = os.path.dirname(filename)
 temp_card_dir = os.path.basename(os.path.dirname(filename))
-print "Temp Card Dir: " + temp_card_dir
+new_dir_name = os.path.basename(makeOutputPath(temp_card_dir, destination))
+new_src_name = os.path.join(os.path.dirname(temp_card_path), new_dir_name)
 
 
+os.renames(temp_card_path, new_src_name)
+
+shutil.move(new_src_name, destination)
+jsonfile = os.path.basename(filename)
+mved_src_name = os.path.join(destination, new_dir_name)
 
 
+json_file = os.path.join("uploads/qieCards/", card.barcode, os.path.basename(mved_src_name), jsonfile)
+db_file = os.path.join("uploads/qieCards/", card.barcode, os.path.basename(mved_src_name), "qieCalibrationParameters_" + hex_uid + ".db")
+fit_results = os.path.join("uploads/qieCards/", card.barcode, os.path.basename(mved_src_name), "fitResults_" + hex_uid + ".root")
+plots = os.path.join("uploads/qieCards/", card.barcode, os.path.basename(mved_src_name), "plots/")
 
 
+temp_attempt.image = plots
+temp_attempt.log_file = json_file
+temp_attempt.hidden_log_file = db_file
+temp_attempt.save()
 
-
-
-
-
-
-
-
-
+set_card_status(card)
 
 
 

@@ -85,7 +85,9 @@
                     <tr>
                         <th>Name</th>
                         <th>Date</th>
+                        {% if attempt.cal_run > 0 %}
                         <th>Run Number</th>
+                        {% endif %}
                         <th>Result</th>
                         {% if attempt.times_passed != 0 or attempt.times_failed != 0 %}
                         <th>Times Passed</th>
@@ -97,7 +99,9 @@
                     <tr>
                         <td> {{attempt.tester}} </td>
                         <td> {{attempt.date_tested}} </td>
-                        <td>{{attempt.run}}</td>
+                        {% if attempt.cal_run > 0 %}
+                        <td>{{attempt.cal_run}}</td>
+                        {% endif %}
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
                         {% elif attempt.result == None %}
