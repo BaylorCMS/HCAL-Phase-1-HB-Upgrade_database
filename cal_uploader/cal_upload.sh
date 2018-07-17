@@ -24,14 +24,14 @@ if ls $tempDir/Card_* &> /dev/null; then
         qieuid=${qieuid:5}    # Only grab the unique id with no "Card_"
         echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
         jsonFile=${card}/${qieuid}.json
-#        python $scriptLoc/calibration_uploader.py ${jsonFile} 2> $logs/${qieuid}_cal.log
+        python $scriptLoc/calibration_uploader.py ${jsonFile} ${qieuid} 2> $logs/${qieuid}_cal.log
 
         # Erase log files if there was no error
         if [ $? -eq 0 ]; then
             echo -e "    ${SUCCESS}Card Uploaded Successfully"
             rm $logs/${qieuid}_cal.log
         else
-            echo -e "    ${FAIL}ERROR: ${DEF}See log file: ${logLoc}/${qieuid}_cal.log"
+            echo -e "    ${FAIL}ERROR: ${DEF}See log file: ${logs}/${qieuid}_cal.log"
         fi
     done
     echo -e "${STATUS}No More Cards to Upload. Check log file if there was an error.${DEF}"

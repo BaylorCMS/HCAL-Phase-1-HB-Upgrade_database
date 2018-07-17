@@ -2,82 +2,124 @@ import sqlite3
 import os
 import sys
 import time
+import json
 from shutil import copyfile
 import django
 
-sys.path.insert(0, '/home/django/testing_database/card_db')
+sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
 
-from qie_cards.models import QieCard, QieShuntParams
+from qie_cards.models import QieCard, QieShuntParams, Test, Attempt, Tester
 from card_db.settings import MEDIA_ROOT
 
 def getUID(uid):
-    return uid[2:10] + uid[13:]
+    """Gets the Unique ID to be used in finding the associated card"""
+    
+    split_id = uid.split("_")
+    uniqueid = split_id[0][2:] + split_id[1][2:]
+    while len(uniqueid) < 16:
+        uniqueid = "0" + uniqueid
 
-folder = sys.argv[1]
-download = ""
+    return uniqueid.lower()
 
-for file in os.listdir(sys.argv[1]):
-    if file.endswith(".tar.gz"):
-        download = os.path.join("calibration", os.path.basename(sys.argv[1]), os.path.basename(str(file)))
 
-for file in os.listdir(sys.argv[1]):
-    if file.endswith(".db"):
-        conn = sqlite3.connect(os.path.join(sys.argv[1], file))
-        c = conn.cursor()
-        c.execute("select * from qieshuntparams")
-        uid = ""
-        if c:
-            item = c.next()
+def makeOutputPath(uID, destination):
+    path = os.path.join(destination, uID + "_CAL")
+    if os.path.exists(path):
+        extension = 2
+        while os.path.exists(destination + "/{0}_CAL_v{1}".format(uID, extension)):
+            extension += 1
+        path = os.path.join(destination, "{0}_CAL_v{1}".format(uID, extension))
+    return path
 
-            uid = getUID(item[0])
-            print "Processing card " + uid
-            card = QieCard.objects.get(uid=uid)
 
-            # Get the group number
-            group = 0
-            for i in xrange(100):
-                if not QieShuntParams.objects.filter(group=i, card=card):
-                    group = i
-                    break
+filename = sys.argv[1]    # JSON File
+hex_uid = sys.argv[2]   # UniqueID for the specific card in hex form
 
-            # Store the mapping in the filesystem
-            #print "Move " + os.path.join(folder, "calibrationParams_shunt.txt") + " -> " + os.path.join(MEDIA_ROOT, "uploads", card.barcode, str(group) + "calibrationParams_shunt.txt")
-            mappings = os.path.join("uploads", card.barcode, str(group) + "calibrationParams_shunt.txt")
-            copyfile(os.path.join(folder, "calibrationParams_shunt.txt"), os.path.join(MEDIA_ROOT, "uploads", card.barcode, str(group) + "calibrationParams_shunt.txt"))
+uid = getUID(hex_uid)   # Raw UniqueID to be stored in the database
 
-            results = os.path.join("calibration", os.path.basename(sys.argv[1]), os.path.basename(file))
-            
-            plots = os.path.join("calibration", os.path.basename(sys.argv[1]), "shunt/plots", item[0][:10] + "_" + item[0][11:])
-            date = item[7] 
-            print "Card " + uid + " parameters:"
-            print "    barcode     -> " + str(card)
-            print "    plotLoc     -> " + str(plots)
-            print "    mappingsLoc -> " + mappings
-            print "    resultsDB   -> " + results
-            print ""
-            print "Sample of Callibration values:"
-            print "    id     ->" + str(item[0])
-            print "    serial ->" + str(item[1])
-            print "    qie    ->" + str(item[2])
-            print "    capID  ->" + str(item[3])
-            print "    range  ->" + str(item[4])
-            print "    shunt  ->" + str(item[5])
-            print "    date   ->" + str(item[7])
-            print "    slope  ->" + str(item[8])
-            print "    offset ->" + str(item[9])
-            print ""
-            print "Looks good (Y/n):"
-            response = raw_input()
-            failed = response.upper() == "N"
+try:
+    inFile = open(filename, "r")
+except IOError:
+    sys.exit("File could not be found. Make sure there is a JSON file in the directory.")
 
-            QieShuntParams.objects.create(card=card,
-                                          group=group,
-                                          date=date,
-                                          plots=plots,
-                                          mappings=mappings,
-                                          results=results,
-                                          download=download,
-                                          failed=failed,
-                                          )
-        conn.close()
+try:
+    data = json.load(inFile)
+except:
+    sys.exit("Unable to load the JSON file. Make sure the file is formatted correctly as a JSON file.")
+
+
+
+try:
+    # Try to get the card
+    card = QieCard.objects.get(uid=uid)
+except QieCard.DoesNotExist:
+    # Except if it doesn't exist then it will throw an error
+    sys.exit("Card with this UniqueID is not in the database")
+
+try:
+    # Try to get the test
+    cal_test = Test.objects.get(name="Calibration")
+except Test.DoesNotExist:
+    # If it doesn't exist then create it
+    cal_test = Test(name="Calibration", abbreviation="cal", required=True)
+    print cal_test
+    #cal_test.save()
+
+date = data["date"]
+run_num = data["run"]
+result = data["Result"]
+tester = data["Tester"][0]
+
+prev_attempts = list(Attempt.objects.filter(card=card, test_type=cal_test))    # Get list of all old attempts for this card and test
+attempt_num = len(prev_attempts) + 1    # Increment the current attempt number by 1
+
+# Create the new attempt 
+temp_attempt = Attempt(card=card,
+                       date_tested=date,
+                       plane_loc="default",
+                       attempt_number=attempt_num,
+                       test_type=cal_test,
+                       result=result,
+                       cal_run=run_num,
+                       #tester=Tester.objects.get(username__contains=tester)
+                       )
+#temp_attempt.save()
+#for pa in prev_attempts:
+#    pa.revoked=True
+#    pa.save()
+
+###########################################
+# Move the directory to permanent storage #
+###########################################
+
+uploads = os.path.join(MEDIA_ROOT, "uploads/")
+print "Uploads: " + uploads
+card_dir = os.path.join(uploads, "qieCards/")
+print "Card_dir: " + card_dir
+destination = os.path.join(card_dir, card.barcode)
+print "Destination: " + destination
+temp_card_dir = os.path.basename(os.path.dirname(filename))
+print "Temp Card Dir: " + temp_card_dir
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
