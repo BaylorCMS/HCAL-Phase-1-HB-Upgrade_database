@@ -83,7 +83,8 @@ def card_plots(request, run, card):
     testers = Tester.objects.all()
     attempts = []
     for test in tests:
-        attempts.append(Attempt.objects.filter(run=run, card__barcode=card, test_type=test).last())
+        if test.name != "Plot Inspection":
+            attempts.append(Attempt.objects.filter(run=run, card__barcode=card, test_type=test).last())
 
     if request.method == 'POST':
 
