@@ -284,6 +284,7 @@ class Attempt(models.Model):
     attempt_number  = models.IntegerField(default=0)                        # The number of this attempt on this card
     tester      = models.ForeignKey(Tester, on_delete=models.PROTECT, blank=True)       # the person who enterd this attempt
     run         = models.CharField(max_length=4, default="0", blank=True, null=True)        # The run this attempt is associated with
+    cal_run     = models.IntegerField(default=-1)                       # The run associated with a calibration test
     date_tested = models.DateTimeField('date tested', blank=True)       # The date this test finished
     num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
     num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
