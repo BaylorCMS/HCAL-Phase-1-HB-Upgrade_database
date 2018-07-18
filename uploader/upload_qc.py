@@ -182,7 +182,7 @@ if comments != "":
         comment += "\n"
     comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
     comment += data["Comments"]
-    qiecard.comments = comment
+    qiecard.comments += comment
     qiecard.save()
 
 ################
