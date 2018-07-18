@@ -126,7 +126,9 @@ def card_plots(request, run, card):
 
         attempt_list = list(Attempt.objects.filter(card__barcode = card, test_type__name ='Plot Inspection'))
         attempt_number = len(attempt_list) + 1 
-
+        #try: 
+        #    edit_attempt = Attempt.objects.get(card__barcode=card, test_type__name='Plot Inspection', run=run) 
+        #except
         if 'pass' in request.POST.keys():
             form = AttemptForm(request.POST)
             
