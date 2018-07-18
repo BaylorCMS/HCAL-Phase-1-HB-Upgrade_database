@@ -434,9 +434,9 @@ def testDetail(request, card, test):
                         num_list.append(CHANNEL_MAPPING[position][channel[-1]])
                         new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
                         channel_list.append(new_chan)      
-
+                        
                 num_list.sort()
-
+                    
                 o_channel_list = {}
                 for i in num_list:
                     channel = getChannel(i, channel_list)
@@ -452,6 +452,15 @@ def testDetail(request, card, test):
                             data += "PASS"
                         data += "\n"    
                     data += "\n"
+        elif attempt.cal_run > 0:
+            if not str(attempt.log_file) == "default.png":
+                inFile = open(path.join(MEDIA_ROOT, str(attempt.log_file)), "r")
+                tempDict = json.load(inFile)
+                for key in tempDict["Comments"].keys():
+                    data += str(key) + ": \n"
+                    data += str(tempDict["Comments"][key])
+                    data += "\n"
+                    
                     
         attemptData.append((attempt, data))
             

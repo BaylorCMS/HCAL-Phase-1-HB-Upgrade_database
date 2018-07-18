@@ -353,6 +353,9 @@ class Attempt(models.Model):
             bot_dirlist = sorted(dirlist[8:])
             dirlist = top_dirlist + bot_dirlist
             return dirlist
+        elif self.cal_run > 0:
+            dirlist = sorted(os.listdir(path))
+            return dirlist
 
     def __str__(self):
         return str(self.test_type)

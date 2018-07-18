@@ -190,9 +190,19 @@
                 </tbody>
             </table>
             {% if attempt.has_image %}
-            {% for image in attempt.get_images %}
-            <a href="../media/{{attempt.image}}/{{image}}"><img src="../media/{{attempt.image}}/{{image}}" style="width:11%"></a>
-            {% endfor %}
+              {% if attempt.cal_run > 0 %}
+                {% for image in attempt.get_images %}
+                <span title="{{image}}">
+                <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:14%"></a>
+                </span>
+                {% endfor %}
+              {% else %}
+                {% for image in attempt.get_images %}
+                <span title="{{image}}">
+                <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:11%"></a>
+                </span>
+                {% endfor %}
+              {% endif %}
             {% endif %}
         <br/>
         {% if data != ""%}
