@@ -85,7 +85,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Date</th>
-                        {% if attempt.cal_run > 0 %}
+                        {% if attempt.cal_run > 0 or attempt.test_type.name == "Plot Inspection" %}
                         <th>Run Number</th>
                         {% endif %}
                         <th>Result</th>
@@ -101,6 +101,8 @@
                         <td> {{attempt.date_tested}} </td>
                         {% if attempt.cal_run > 0 %}
                         <td>{{attempt.cal_run}}</td>
+                        {% elif attempt.test_type.name == "Plot Inspection" %}
+                        <td>{{attempt.run}}</td>
                         {% endif %}
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>

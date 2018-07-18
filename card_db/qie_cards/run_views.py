@@ -18,6 +18,7 @@ from django.utils import timezone
 from django.http import HttpResponse, Http404
 from card_db.settings import MEDIA_ROOT, CACHE_DATA 
 from django.core.exceptions import MultipleObjectsReturned
+from django.db import transaction
 
 
 def catalog(request):
@@ -73,6 +74,41 @@ def getChannel(num, channels):
         if num == channel.number:
             return channel
 
+@transaction.atomic
+def set_card_status(qiecard):
+    tests = Test.objects.all()
+    status = {}
+    status["total"] = len(tests.filter(required=True))
+    status["passed"] = 0
+    failedAny = False
+    no_result = False
+
+    for test in tests:
+        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
+        if attemptList:
+            last = attemptList[len(attemptList) - 1]
+            if not last.revoked and test.required:
+                if last.overwrite_pass:
+                    status["passed"] += 1
+                elif last.passed():
+                    status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
+                else:
+                    failedAny = True
+
+    if status["total"] == status["passed"]:
+        qiecard.status = True
+    elif failedAny:
+        qiecard.status = False
+    elif no_result:
+        qiecard.status = None
+    else:
+        qiecard.status = None
+
+    qiecard.save()
+ 
+
 def card_plots(request, run, card):
     """This displays the test plots relating to a card"""
     test_types = list(Attempt.objects.filter(run=run).order_by('test_type__name'))
@@ -127,6 +163,8 @@ def card_plots(request, run, card):
         for attempt in attempt_list:
             attempt.revoked = True
             attempt.save()
+
+        set_card_status(card)
 
     else:
         form = AttemptForm()
