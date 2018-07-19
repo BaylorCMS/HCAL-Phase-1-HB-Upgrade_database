@@ -242,7 +242,12 @@ def calibration(request):
             date_list.append((attempt.date_tested.date()).strftime("%m-%d-%Y"))
             
     for date in date_list:
-        dict_date[date] = list(Attempt.objects.filter(test_type__name="Calibration").order_by("cal_run"))
+        dict_date[date] = []
+        split_date = date.split("-")
+        temp_list = list(Attempt.objects.filter(test_type__name="Calibration", date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by("cal_run"))
+        for a in temp_list:
+            if a.cal_run not in dict_date[date]:
+                dict_date[date].append(a.cal_run)
 
     return render(request, 'runs/calibration.html', {"calib_list": attempt_list ,"total_count":num_of_runs ,"dict_date":dict_date})
 
