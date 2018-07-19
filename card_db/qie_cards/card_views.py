@@ -542,6 +542,7 @@ def search(request):
 
 
 def searchbar(request, query):
+    query=query.lower()
     try:
         barcodes = list(QieCard.objects.filter(barcode__endswith=query))
     except QieCard.DoesNotExist:

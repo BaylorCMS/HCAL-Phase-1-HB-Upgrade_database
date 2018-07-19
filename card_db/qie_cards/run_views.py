@@ -229,3 +229,22 @@ def test_plots(request, run, test):
     return render(request, 'runs/test_plots.html', {'card_list': cards, 'attempt_list': attempts})
 
         
+
+def calibration(request):
+
+    attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("date_tested")
+    num_of_runs = len(attempt_list)
+    run_list = []
+    date_list = []
+    dict_date = {}
+    for attempt in attempt_list:
+        if  (attempt.date_tested.date()).strftime("%m-%d-%Y") not in date_list:
+            date_list.append((attempt.date_tested.date()).strftime("%m-%d-%Y"))
+            
+    for date in date_list:
+        dict_date[date] = list(Attempt.objects.filter(test_type__name="Calibration").order_by("cal_run"))
+
+    return render(request, 'runs/calibration.html', {"calib_list": attempt_list ,"total_count":num_of_runs ,"dict_date":dict_date})
+
+
+

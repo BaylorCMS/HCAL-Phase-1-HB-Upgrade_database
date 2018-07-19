@@ -56,7 +56,8 @@
             <div class="navbar-collapse collapse">
             {% block links %}
                 <ul class="nav navbar-nav">
-                    <li {% block catalog %}{% endblock %}><a href="{{ SITE_URL }}/runs/catalog">Catalog</a></li> 
+                    <li {% block catalog %}{% endblock %}><a href="{{ SITE_URL }}/runs/catalog">Run Control</a></li> 
+                    <li {% block cali %}{% endblock %}><a href="{{ SITE_URL }}/runs/calibration">Calibration</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ SITE_URL }}/admin">Admin</a></li>

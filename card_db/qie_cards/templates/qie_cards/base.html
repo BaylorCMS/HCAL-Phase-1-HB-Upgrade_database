@@ -128,7 +128,9 @@
 function searchBarcode(e){
     query = document.getElementById("navbarInputBarcode").value;
     e.preventDefault();
-    document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+    if(query.length <= 16){
+        document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+    } 
 }
 
 function searchUID(e){
