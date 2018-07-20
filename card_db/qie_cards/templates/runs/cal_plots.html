@@ -1,0 +1,35 @@
+{% extends "runs/base.html" %}
+{% load static %}
+{% block head %}
+    <link href="{% static "qie_cards/css/catalog.css" %}" rel="stylesheet">
+    <style>
+        .divider{
+            width:200px;
+            height:auto;
+            display:inline-block;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block title %}Calibration Plots{% endblock %}
+{% block cali %}class="active"{% endblock %}
+
+{% block content %}
+<ul>
+  {% for attempt in attempt_list %}
+  <li style="font-size:18px"><h3>{{attempt.card.barcode}}</h3></li>
+  {% if attempt.has_image %}
+  {% for image in attempt.get_images %}
+  
+  <a href="../../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
+  {% endfor %}
+  {% else %}
+  NO IMAGES FOUND
+  {% endif %}
+    
+  <!-- if anyone sees this, help nesta -->
+    
+  {% endfor %}
+</ul>
+{% endblock %}

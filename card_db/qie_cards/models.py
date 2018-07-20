@@ -12,7 +12,7 @@ from card_db.settings import MEDIA_ROOT
 
 
 LOCATION_LENGTH = 100            # Constant for maximum location size
-MAX_COMMENT_LENGTH = 1000        # Constant for max comment length
+MAX_COMMENT_LENGTH = 10000        # Constant for max comment length
 
 
 

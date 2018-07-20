@@ -11,7 +11,7 @@ from .models import Run, QieCard, Tester, Test, Attempt, Location, QieShuntParam
 from .run_form import AttemptForm
 
 import custom.filters as filters
-
+import operator
 # Create your views here.
 
 from django.utils import timezone
@@ -232,9 +232,8 @@ def test_plots(request, run, test):
 
 def calibration(request):
 
-    attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("date_tested")
-    num_of_runs = len(attempt_list)
-    run_list = []
+    attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("-date_tested")
+
     date_list = []
     dict_date = {}
     for attempt in attempt_list:
@@ -249,7 +248,23 @@ def calibration(request):
             if a.cal_run not in dict_date[date]:
                 dict_date[date].append(a.cal_run)
 
-    return render(request, 'runs/calibration.html', {"calib_list": attempt_list ,"total_count":num_of_runs ,"dict_date":dict_date})
+    return render(request, 'runs/calibration.html', {"dict_date":dict_date, "dates":date_list})
+
+def cal_plots(request, date, run):
+    
+    split_date = date.split("-")
+    attempt_list = list(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run)).order_by("card__barcode"))
+    barcode_list = []
+    plot_list = []
+    for attempt in attempt_list:
+        if attempt.card.barcode not in barcode_list:
+            barcode_list.append(attempt.card.barcode)
+
+    for barcode in barcode_list:
+        plot_list.append(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run), card__barcode = barcode).last())
+    
+    
+    return render(request, 'runs/cal_plots.html', {"attempt_list":plot_list})
 
 
 
