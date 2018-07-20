@@ -13,12 +13,11 @@
 {% endblock %}
 
 {% block title %}Calibration Plots{% endblock %}
-{% block cali %}class="active"{% endblock %}
 
 {% block content %}
 <ul>
   {% for attempt in attempt_list %}
-  <li style="font-size:18px"><h3>{{attempt.card.barcode}}</h3></li>
+  <li style="font-size:18px"><h3><a href="../../../../cards/{{attempt.card.barcode}}/Calibration">{{attempt.card.barcode}}<!--: {{attempt.card.get_uid_split}}--></a></h3></li>
   {% if attempt.has_image %}
   {% for image in attempt.get_images %}
   
