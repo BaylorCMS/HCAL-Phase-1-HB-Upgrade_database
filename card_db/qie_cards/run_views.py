@@ -292,6 +292,7 @@ def cal_plots(request, date, run, card):
     
     split_date = date.split("-")
     attempt = Attempt.objects.filter(test_type__name="Calibration", card__barcode = card,  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run)).last()
+    testers = Tester.objects.all()
     #barcode_list = []
     #plot_list = []
     #for attempt in attempt_list:
@@ -302,7 +303,7 @@ def cal_plots(request, date, run, card):
     #plot_list.append(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run), card__barcode = barcode).last())
     
     
-    return render(request, 'runs/cal_plots.html', {"attempt":attempt})
+    return render(request, 'runs/cal_plots.html', {"attempt":attempt, "testers": testers})
 
 
 

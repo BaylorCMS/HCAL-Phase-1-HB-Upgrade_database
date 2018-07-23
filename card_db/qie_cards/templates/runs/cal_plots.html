@@ -15,12 +15,16 @@
 {% block title %}Calibration Plots{% endblock %}
 
 {% block content %}
-<ul>
-  <li style="font-size:18px"><h3><a href="../../../../cards/{{attempt.card.barcode}}/Calibration">{{attempt.card.barcode}}<!--: {{attempt.card.get_uid_split}}--></a></h3></li>
-  {% if attempt.has_image %}
+<div class="row" align="center" style="padding-left:50px; padding-right:50px">
+    <h3>{{attempt.card.barcode}}</h3>
+    <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+</div><br>
+{% if attempt.has_image %}
   <ul>
   {% for image in attempt.get_images %}  
-  <li style="list-style-type: none"><a href="../../../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../../../cards/media/{{attempt.image}}/{{image}}" style="width:50%"></a></li>
+  <br><span title="{{image}}"
+  <li style="list-style-type: none"><a href="../../../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../../../cards/media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:50%"></a></li>
+  </span>
   <br/>
   {% endfor %}
   </ul>
@@ -29,4 +33,36 @@
   {% endif %}
   <!-- if anyone sees this, help nesta -->
 </ul>
+<br/>
+<div align="center">
+  <form method="post" id="test_results">
+    {% csrf_token %}
+    Tester Name:
+    <br/>
+    <select name="testers" required style="color:black">
+      <option value="" selected="true" disabled="disabled">Select Name</option>
+      {% for tester in testers %}
+      <option value="{{tester.username}}">{{tester.username}}</option>
+      {% endfor %}
+    </select>
+    
+    <br/>
+    <br/>
+    <!--<textarea rows="4" cols="50" name="comments" placeholder="Place comments here..." style="color: black"></textarea>-->
+    <div style="width:35%">
+      <textarea class="form-control" placeholder="Place Comments Here...", required name="comments" rows="4"></textarea>
+    </div>
+    <br/>
+    <br/>
+    <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
+      PASS
+    </button>
+    <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
+      FAIL
+    </button>
+  </form>
+</div>
+<br/>
+<br/>
+<br/>
 {% endblock %}
