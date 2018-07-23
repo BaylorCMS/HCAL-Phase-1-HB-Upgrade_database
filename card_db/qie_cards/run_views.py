@@ -250,21 +250,62 @@ def calibration(request):
 
     return render(request, 'runs/calibration.html', {"dict_date":dict_date, "dates":date_list})
 
-def cal_plots(request, date, run):
+
+def cal_detail(request, date, run):
+    """ This displays the cards and tests  corresponding to a calibration run"""
+    split_date = date.split("-")
+    card_names   = list(Attempt.objects.filter(cal_run=run, date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by('card__barcode'))
+    # test_types = list(Attempt.objects.filter(run=run))
+    
+
+    cards = []
+    #tests = []
+    for attempt in card_names:
+        if attempt.card not in cards:
+            cards.append(attempt.card)
+    attempts_temp = []
+    for card in cards:
+    #    attemptList = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name='Plot Inspection').last()
+    #    if attemptList:
+    #        attempts.append(attemptList)
+
+        attempts_temp.append(Attempt.objects.filter(cal_run=run, card=card, date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).last())#, test_type__name ='Plot Inspection' ).last())
+    #attempts.order_by('card__barcode')
+    
+    attempts = []
+    for attempt in attempts_temp:
+        if attempt.test_type == Test.objects.get(name='Calibration Plot Inspection'):
+            attempts.append({"attempt":attempt, "valid":True})
+        else:
+            attempts.append({"attempt":attempt, "valid":False})
+
+   # for attempt in test_types:
+   #     if attempt.test_type not in tests:
+   #         tests.append(attempt.test_type)
+    
+
+    return render(request, 'runs/cal_detail.html', {'date': date, 'cal_run': run, 'card_list': cards, 'attempt_list': attempts})
+
+
+
+def cal_plots(request, date, run, card):
     
     split_date = date.split("-")
-    attempt_list = list(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run)).order_by("card__barcode"))
-    barcode_list = []
-    plot_list = []
-    for attempt in attempt_list:
-        if attempt.card.barcode not in barcode_list:
-            barcode_list.append(attempt.card.barcode)
+    attempt = Attempt.objects.filter(test_type__name="Calibration", card__barcode = card,  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run)).last()
+    #barcode_list = []
+    #plot_list = []
+    #for attempt in attempt_list:
+    #    if attempt.card.barcode not in barcode_list:
+    #        barcode_list.append(attempt.card.barcode)
 
-    for barcode in barcode_list:
-        plot_list.append(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run), card__barcode = barcode).last())
+    
+    #plot_list.append(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run), card__barcode = barcode).last())
     
     
-    return render(request, 'runs/cal_plots.html', {"attempt_list":plot_list})
+    return render(request, 'runs/cal_plots.html', {"attempt":attempt})
+
+
+
 
 
 

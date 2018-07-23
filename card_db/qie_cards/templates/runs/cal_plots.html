@@ -16,19 +16,17 @@
 
 {% block content %}
 <ul>
-  {% for attempt in attempt_list %}
   <li style="font-size:18px"><h3><a href="../../../../cards/{{attempt.card.barcode}}/Calibration">{{attempt.card.barcode}}<!--: {{attempt.card.get_uid_split}}--></a></h3></li>
   {% if attempt.has_image %}
-  {% for image in attempt.get_images %}
-  
-  <a href="../../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
+  <ul>
+  {% for image in attempt.get_images %}  
+  <li style="list-style-type: none"><a href="../../../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../../../cards/media/{{attempt.image}}/{{image}}" style="width:35%"></a></li>
+  <br/>
   {% endfor %}
+  </ul>
   {% else %}
   NO IMAGES FOUND
   {% endif %}
-    
   <!-- if anyone sees this, help nesta -->
-    
-  {% endfor %}
 </ul>
 {% endblock %}
