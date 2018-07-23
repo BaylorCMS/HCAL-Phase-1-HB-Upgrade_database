@@ -184,7 +184,7 @@ new_dir_name = os.path.basename(makeOutputPath(rawUID, destination))    # perman
 
 #new_dir_name = rawUID + "_QC_" + run    # what the new directories will be called i.e. 0x11111111_0x2124124124_QC_run350
 
-old_src_name = os.path.join(temp_card_dir, rawUID)    # where the temporary storage is for the UID directories
+old_src_name = os.path.dirname(filename) #os.path.join(temp_card_dir, rawUID)    # where the temporary storage is for the UID directories
 new_src_name = os.path.join(temp_card_dir, new_dir_name)    # where the permanent storage will be for the UID directories
 
 file_name = os.path.basename(file_name) # only grab the basename from the full path for the JSON file
