@@ -82,6 +82,8 @@ split_date.append(int(raw_date[0]))
 split_date.append(int(raw_date[1]))
 date = timezone.make_aware(datetime.datetime(split_date[0], split_date[1], split_date[2]))
 
+firefly_id = raw_date + "-" + str(run_num)
+
 prev_attempts = list(Attempt.objects.filter(card=card, test_type=cal_test))    # Get list of all old attempts for this card and test
 attempt_num = len(prev_attempts) + 1    # Increment the current attempt number by 1
 
@@ -93,7 +95,8 @@ temp_attempt = Attempt(card=card,
                        test_type=cal_test,
                        result=result,
                        cal_run=run_num,
-                       tester=Tester.objects.get(username=tester)
+                       tester=Tester.objects.get(username=tester),
+                       date_id=firefly_id
                        )
 temp_attempt.save()
 for pa in prev_attempts:
