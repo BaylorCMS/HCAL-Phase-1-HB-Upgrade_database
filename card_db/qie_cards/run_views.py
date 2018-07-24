@@ -231,22 +231,34 @@ def test_plots(request, run, test):
         
 
 def calibration(request):
+    
 
-    attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("-date_tested")
 
-    date_list = []
+
+    attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("-date_id")
+
+#    date_list = []
     dict_date = {}
     for attempt in attempt_list:
-        if  (attempt.date_tested.date()).strftime("%m-%d-%Y") not in date_list:
-            date_list.append((attempt.date_tested.date()).strftime("%m-%d-%Y"))
-            
-    for date in date_list:
-        dict_date[date] = []
-        split_date = date.split("-")
-        temp_list = list(Attempt.objects.filter(test_type__name="Calibration", date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by("cal_run"))
-        for a in temp_list:
-            if a.cal_run not in dict_date[date]:
-                dict_date[date].append(a.cal_run)
+        if attempt.date_id[:10] not in dict_date.keys():
+            firefly_id = attempt.date_id[:10]
+            dict_date[firefly_id] = []
+        if attempt.date_id[11:] not in dict_date[firefly_id]:
+            dict_date[firefly_id].append(attempt.date_id[11:])
+
+    date_list = list(dict_date.keys())
+    date_list = sorted(date_list, reverse=True)
+
+#        if  (attempt.date_tested.date()).strftime("%m-%d-%Y") not in date_list:
+#            date_list.append((attempt.date_tested.date()).strftime("%m-%d-%Y"))
+#            
+#    for date in date_list:
+#        dict_date[date] = []
+#        split_date = date.split("-")
+#        temp_list = list(Attempt.objects.filter(test_type__name="Calibration", date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by("cal_run"))
+#        for a in temp_list:
+#            if a.cal_run not in dict_date[date]:
+#                dict_date[date].append(a.cal_run)
 
     return render(request, 'runs/calibration.html', {"dict_date":dict_date, "dates":date_list})
 
@@ -254,9 +266,10 @@ def calibration(request):
 def cal_detail(request, date, run):
     """ This displays the cards and tests  corresponding to a calibration run"""
     split_date = date.split("-")
-    card_names   = list(Attempt.objects.filter(cal_run=run, date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by('card__barcode'))
+    #card_names   = list(Attempt.objects.filter(cal_run=run, date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).order_by('card__barcode'))
     # test_types = list(Attempt.objects.filter(run=run))
-    
+    firefly_id = date + "-" + str(run)
+    card_names = list(Attempt.objects.filter(cal_run=int(run), date_id=firefly_id).order_by("card__barcode"))
 
     cards = []
     #tests = []
@@ -264,7 +277,7 @@ def cal_detail(request, date, run):
         if attempt.card not in cards:
             cards.append(attempt.card)
     attempts_temp = []
-    firefly_id = date + "-" + str(run)
+    #firefly_id = date + "-" + str(run)
     for card in cards:
     #    attemptList = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name='Plot Inspection').last()
     #    if attemptList:
