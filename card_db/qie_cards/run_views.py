@@ -144,8 +144,14 @@ def card_plots(request, run, card):
                 post.date_tested = timezone.now()
                 post.attempt_number = attempt_number
                 post.save()
+                for attempt in attempt_list:
+                    attempt.revoked = True
+                    attempt.save()
+                set_card_status(QieCard.objects.get(barcode=card))
                 return HttpResponseRedirect('../')
         
+        
+
         if 'fail' in request.POST.keys():
             form = AttemptForm(request.POST)
             if form.is_valid():
@@ -160,13 +166,12 @@ def card_plots(request, run, card):
                 post.date_tested = timezone.now()
                 post.attempt_number = attempt_number
                 post.save()
+                for attempt in attempt_list:
+                    attempt.revoked = True
+                    attempt.save()
+                
+                set_card_status(QieCard.objects.get(barcode=card))
                 return HttpResponseRedirect('../')
-  
-        for attempt in attempt_list:
-            attempt.revoked = True
-            attempt.save()
-
-        set_card_status(card)
 
     else:
         form = AttemptForm()
