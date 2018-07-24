@@ -128,6 +128,18 @@
 function searchBarcode(e){
     query = document.getElementById("navbarInputBarcode").value;
     e.preventDefault();
+    var hex_code = "0x";
+    if(query.includes(hex_code)){
+        query = query.split(hex_code).join("")
+        underscore = "_"
+        if(query.includes(underscore)){
+            query = query.split(underscore).join("")
+        }
+        if(query.indexOf(' ') >= 0){
+            query = query.split(' ').join("")
+        }
+        document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+    }
     if(query.length <= 16){
         document.location.href = "{{ SITE_URL }}/cards/search/" + query;
     } 
