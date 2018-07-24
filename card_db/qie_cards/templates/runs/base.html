@@ -35,6 +35,11 @@
         overflow-x: hidden;
         padding-top: 70px;
       }
+      pad {
+          content: " ";
+          display: block;
+          margin: 50px;
+      }
     </style>
     <!-- Static navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -62,10 +67,22 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ SITE_URL }}/admin">Admin</a></li>
                 </ul>
-            {% endblock %} 
+            {% endblock %}
+                <form class="navbar-form navbar-right" action="#" role="search">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input class="form-control" id="navbarInputBarcode" type="search" placeholder="Search...">
+                      <span class="input-group-btn">
+                        <button type="submit" onclick="searchBarcode(event)" class="btn"><span class="fui-search"></span></button>
+                      </span>
+                    </div>
+                  </div>
+                </form> 
             </div>
         </div>
     </div>
+    <pad>
+     </pad>
    
     <div class="row" align="center">
         <div class="col-md-3"><br><img src="{% static "qie_cards/img/logos/FNAL-Logo-Black.png" %}" style="width:60%;height:60%;"></div>
@@ -82,7 +99,27 @@
 {% endblock %}
 
 {% block script %}
-
+<script>
+function searchBarcode(e){
+    query = document.getElementById("navbarInputBarcode").value;
+    e.preventDefault();
+    var hex_code = "0x";
+    if(query.includes(hex_code)){
+        query = query.split(hex_code).join("")
+        underscore = "_"
+        if(query.includes(underscore)){
+            query = query.split(underscore).join("")
+        }
+        if(query.indexOf(' ') >= 0){
+            query = query.split(' ').join("")
+        }
+        document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+    }
+    if(query.length <= 16){
+        document.location.href = "{{ SITE_URL }}/cards/search/" + query;
+    } 
+}
+</script>
 {% endblock %}
 
 </body>
