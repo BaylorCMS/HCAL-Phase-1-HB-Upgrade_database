@@ -264,17 +264,19 @@ def cal_detail(request, date, run):
         if attempt.card not in cards:
             cards.append(attempt.card)
     attempts_temp = []
+    firefly_id = date + "-" + str(run)
     for card in cards:
     #    attemptList = Attempt.objects.filter(card__barcode=card.barcode, run=run, test_type__name='Plot Inspection').last()
     #    if attemptList:
     #        attempts.append(attemptList)
-
-        attempts_temp.append(Attempt.objects.filter(cal_run=run, card=card, date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).last())#, test_type__name ='Plot Inspection' ).last())
+        
+        attempts_temp.append(Attempt.objects.filter(cal_run=run, card=card, date_id=firefly_id).last()) #date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1]).last())#, test_type__name ='Plot Inspection' ).last())
     #attempts.order_by('card__barcode')
     
     attempts = []
     for attempt in attempts_temp:
         if attempt.test_type == Test.objects.get(name='Calibration Plot Inspection'):
+            
             attempts.append({"attempt":attempt, "valid":True})
         else:
             attempts.append({"attempt":attempt, "valid":False})
@@ -282,6 +284,7 @@ def cal_detail(request, date, run):
    # for attempt in test_types:
    #     if attempt.test_type not in tests:
    #         tests.append(attempt.test_type)
+    
     
 
     return render(request, 'runs/cal_detail.html', {'date': date, 'cal_run': run, 'card_list': cards, 'attempt_list': attempts})
@@ -301,8 +304,54 @@ def cal_plots(request, date, run, card):
 
     
     #plot_list.append(Attempt.objects.filter(test_type__name="Calibration",  date_tested__year=split_date[2], date_tested__month=split_date[0], date_tested__day=split_date[1], cal_run=int(run), card__barcode = barcode).last())
-    
-    
+    if request.method == "POST":
+        firefly_id = date + "-" + str(run)
+        if 'pass' in request.POST.keys():
+            
+            prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
+                                                        cal_run=run, 
+                                                        test_type__name="Calibration Plot Inspection"))
+            attempt_num = len(prev_attempts) + 1
+            temp_attempt = Attempt(result=True,
+                                   tester=Tester.objects.get(username=request.POST.get('testers')),
+                                   comments=request.POST.get('comments'),
+                                   test_type=Test.objects.get(name="Calibration Plot Inspection"),
+                                   date_tested=timezone.now(),
+                                   cal_run=int(run),
+                                   attempt_number=attempt_num,
+                                   card=QieCard.objects.get(barcode=card),
+                                   date_id=firefly_id
+                                   )
+            temp_attempt.save()
+            for a in prev_attempts:
+                a.revoked = True
+                a.save()
+            set_card_status(QieCard.objects.get(barcode=card))
+        
+            return HttpResponseRedirect('../')        
+
+        if 'fail' in request.POST.keys():
+            prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
+                                                        cal_run=run, 
+                                                        test_type__name="Calibration Plot Inspection"))
+            attempt_num = len(prev_attempts) + 1
+            temp_attempt = Attempt(result=False,
+                                   tester=Tester.objects.get(username=request.POST.get('testers')),
+                                   comments=request.POST.get('comments'),
+                                   test_type=Test.objects.get(name="Calibration Plot Inspection"),
+                                   date_tested=timezone.now(),
+                                   cal_run=run,
+                                   attempt_number = attempt_num,
+                                   card=QieCard.objects.get(barcode=card),
+                                   date_id=firefly_id
+                                   )
+            temp_attempt.save()
+            for a in prev_attempts:
+                a.revoked = True
+                a.save()
+            set_card_status(QieCard.objects.get(barcode=card))
+            return HttpResponseRedirect('../')
+        
     return render(request, 'runs/cal_plots.html', {"attempt":attempt, "testers": testers})
 
 

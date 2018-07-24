@@ -63,7 +63,6 @@ table, td, th, thead {
       <tr>
 
         <td style="font-size:18px" align="center"><a href="{{attempt.attempt.card}}/">{{attempt.attempt.card}}</a>&emsp;({{attempt.attempt.card.get_uid_split}})</td>
-        
         {% if attempt.valid %}
         {% if attempt.attempt.get_status == "PASS" %}
         <td  class="okay" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>

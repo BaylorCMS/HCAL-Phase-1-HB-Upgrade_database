@@ -35,7 +35,7 @@
 </ul>
 <br/>
 <div align="center">
-  <form method="post" id="test_results">
+  <form method="post" id="cal_test_results">
     {% csrf_token %}
     Tester Name:
     <br/>
@@ -54,10 +54,10 @@
     </div>
     <br/>
     <br/>
-    <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
+    <button type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
       PASS
     </button>
-    <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
+    <button type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
       FAIL
     </button>
   </form>

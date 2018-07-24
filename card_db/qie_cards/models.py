@@ -299,7 +299,7 @@ class Attempt(models.Model):
 
     log_file        = models.FileField(upload_to=logs_location, default='default.png')          # The log file from whence this test was uploaded    
     log_comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the log file
-
+    date_id         = models.CharField(max_length=LOCATION_LENGTH, blank=True, default="", null=True)    # Unique Date ID for calibration test
     hidden_log_file = models.FileField(upload_to=logs_location, default='default.png')      # The verbose log file, only used for web-page generation
     result = models.NullBooleanField(default=None, blank=True, null=True)    # Whether the specific test passed or failed
 
