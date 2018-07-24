@@ -102,7 +102,7 @@
                         {% if attempt.cal_run > 0 %}
                         <td>{{attempt.cal_run}}</td>
                         {% elif attempt.test_type.name == "Plot Inspection" %}
-                        <td>{{attempt.run}}</td>
+                        <td><a href="../../runs/{{attempt.run}}">{{attempt.run}}</a></td>
                         {% endif %}
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
@@ -163,7 +163,7 @@
                     <tr>
                         <td> {{attempt.tester}} </td>
                         <td> {{attempt.date_tested}} </td>
-                        <td>{{attempt.run}}</td>
+                        <td><a href="../../runs/{{attempt.run}}">{{attempt.run}}</a></td>
 			{% if attempt.result %}
                         <td class="{{attempt.get_css_class}}"><b>Pass</b></td>
                         {% elif attempt.result == None %}
