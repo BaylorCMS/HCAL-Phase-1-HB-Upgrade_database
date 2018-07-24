@@ -69,20 +69,20 @@ except Test.DoesNotExist:
     cal_test = Test(name="Calibration", abbreviation="cal", required=True)
     cal_test.save()
 
-raw_date = data["date"]
+first_date = data["date"]
 run_num = data["run"]
 result = data["Result"]
 tester = data["Tester"]
 
 # Format the date
-raw_date = raw_date.split("-")
+raw_date = first_date.split("-")
 split_date = []
 split_date.append(int(raw_date[2]))
 split_date.append(int(raw_date[0]))
 split_date.append(int(raw_date[1]))
 date = timezone.make_aware(datetime.datetime(split_date[0], split_date[1], split_date[2]))
 
-firefly_id = raw_date + "-" + str(run_num)
+firefly_id = first_date + "-" + str(run_num)
 
 prev_attempts = list(Attempt.objects.filter(card=card, test_type=cal_test))    # Get list of all old attempts for this card and test
 attempt_num = len(prev_attempts) + 1    # Increment the current attempt number by 1
