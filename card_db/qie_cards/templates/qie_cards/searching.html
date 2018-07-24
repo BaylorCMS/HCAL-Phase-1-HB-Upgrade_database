@@ -24,7 +24,7 @@
       {% if unique_ids %}
         <h4>Unique IDs:</h4>
         {% for uid in unique_ids %}
-          <li style="padding-left: 3%; list-style-type: none;"><a href="../{{uid.barcode}}/"><h5>{{uid.uid}}</h5></a></li>
+          <li style="padding-left: 3%; list-style-type: none;"><a href="../{{uid.barcode}}/"><h5>{{uid.get_uid_split}}</h5></a></li>
         {% endfor %}
       {% endif %}
     </ul>
