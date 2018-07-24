@@ -346,6 +346,14 @@ def detail(request, card):
         status["css"] = "teststand"
 
 
+    # Getting run numbers to be displayed on the table for the cards
+    run_attempts = list(Attempt.objects.filter(card__barcode=card, test_type__name="gselScan").order_by("run"))
+    runs = []
+    for attempt in run_attempts:
+        if attempt.run not in runs:
+            runs.append(attempt.run)
+
+
     return render(request, 'qie_cards/detail.html', {'card': p,
                                                      'rm' : rm,
                                                      'rm_slot' : rm_slot,
@@ -353,6 +361,7 @@ def detail(request, card):
                                                      'attempts':attempts,
                                                      'locations':locations,
                                                      'status':status,
+                                                     'runs': runs
                                                     })
 
 #class CatalogView(generic.ListView):
