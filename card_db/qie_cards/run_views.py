@@ -328,7 +328,8 @@ def cal_plots(request, date, run, card):
             
             prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
                                                         cal_run=run, 
-                                                        test_type__name="Calibration Plot Inspection"))
+                                                        test_type__name="Calibration Plot Inspection",
+                                                        date_id=firefly_id))
             attempt_num = len(prev_attempts) + 1
             temp_attempt = Attempt(result=True,
                                    tester=Tester.objects.get(username=request.POST.get('testers')),
