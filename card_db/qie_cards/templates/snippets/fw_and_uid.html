@@ -19,3 +19,12 @@
   <td>{{card.get_bot_igloo_ver_hex}}</td>
   <td>({{card.get_bot_igloo_ver}})</td>
 </tr>
+<tr>
+  <td>Runs:</td>
+  {% if runs %}
+  <td>{% for run in runs %}<a href="../../runs/{{run}}">{{run}}</a>&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}</td>
+  {% else %}
+  <td>No Runs</td>
+  {% endif %}
+  <td></td>
+</tr>
