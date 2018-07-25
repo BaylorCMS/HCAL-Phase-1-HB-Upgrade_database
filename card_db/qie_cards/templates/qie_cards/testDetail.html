@@ -68,6 +68,7 @@
                 <form action="" method="post" id="overwrite_form">
                     {% csrf_token %}
                     <input value="" id="password" name="secret" hidden>
+                    <input value="" id="overwrite_comments" required placeholder="Comments..." name="secretive" hidden>
                     <button onclick="submitOverwrite()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
                         {% if not attempt.overwrite_pass %}
                         Force Pass
@@ -119,7 +120,7 @@
                     <tr>
                         <td><b>Comments:</b></td>
                         {% if attempt.times_passed != 0 or attempt.times_failed != 0 %}
-                        <td colspan="5"> {{attempt.comments | default:"None"}} </td>
+                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>JSON File:</b></td> 
@@ -136,7 +137,7 @@
                         <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to commands for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                         {% else %}
-                        <td colspan="3"> {{attempt.comments | default:"None"}} </td>
+                        <td colspan="3" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -176,7 +177,9 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <td colspan="5"> {{attempt.comments | default:"None"}} </td>
+                        <pre>
+                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        </pre>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -222,9 +225,33 @@
 <br/>
 <script>
 function submitOverwrite(){
-    var pass = window.prompt("Tell me a secret:","Secret...");
-    document.getElementById("password").value = pass;
-    document.getElementById("overwrite_form").submit();
+    var redo = true;
+    while(redo){
+        var pass = window.prompt("Tell me a secret:","Secret...");
+            if(pass === null){
+                return;
+            } else if(pass === "pseudo" || pass === "pseudopod") {
+                redo = false;
+                var coms = window.prompt("Write me comments:", "Comments...");
+                if(coms === "" || coms === "Comments..." || coms === null){
+                    var comments_written = false;
+                } else {
+                    var comments_written = true;
+                }
+                while(comments_written === false){
+                    var coms = window.prompt("You have to write me a comment.", "Comments.");
+                    if(coms !== "" && coms !== "Comments..." && coms !== "Comments." && coms !== null){
+                        comments_written = true;
+                    }
+                }
+                document.getElementById("password").value = pass;
+                document.getElementById("overwrite_comments").value = coms;
+            
+                document.getElementById("overwrite_form").submit();
+            } else {
+                window.alert("Incorrect Password. Please Try Again.");
+        }
+    }
 }
 </script>
 {% endblock %}
