@@ -237,9 +237,6 @@ def test_plots(request, run, test):
 
 def calibration(request):
     
-
-
-
     attempt_list = Attempt.objects.filter( test_type__name="Calibration" ).order_by("-date_id")
 
 #    date_list = []
@@ -253,6 +250,8 @@ def calibration(request):
 
     date_list = list(dict_date.keys())
     date_list = sorted(date_list, reverse=True)
+    for date in dict_date.keys():
+        dict_date[date] = sorted(dict_date[date])
 
 #        if  (attempt.date_tested.date()).strftime("%m-%d-%Y") not in date_list:
 #            date_list.append((attempt.date_tested.date()).strftime("%m-%d-%Y"))
