@@ -98,6 +98,15 @@ table, td, th {
             <td></td>
         </tr>
         {% include "snippets/fw_and_uid.html" %}
+        <tr>
+          <td>Runs:</td>
+          {% if runs %}
+          <td>{% for run in runs %}<a href="../../runs/{{run}}">{{run}}</a>&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}</td>
+          {% else %}
+          <td>No Runs</td>
+          {% endif %}
+          <td></td>
+        </tr>
         </div>
     </tbody>
 </table>
