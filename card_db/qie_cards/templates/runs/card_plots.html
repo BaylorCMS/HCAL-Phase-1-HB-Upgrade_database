@@ -1,6 +1,7 @@
 {% extends "runs/base.html" %}
 {% block title %}DQM: {{card}}{% endblock %}
 {% block content %}
+    
 <ul>
   {% for test in test_list %}
     {% if test.name != 'Plot Inspection' %}
@@ -30,33 +31,32 @@
     {% endif %}
   {% endfor %}
 </ul>
-<br/>
+
 <div align="center">
-  <form method="post" id="test_results">
-    {% csrf_token %}
-    Tester Name:
-    <br/>
-    <select name="testers" required style="color:black">
-      <option value="" selected="true" disabled="disabled">Select Name</option>
-      {% for tester in testers %}
-      <option value="{{tester.username}}">{{tester.username}}</option>
-      {% endfor %}
-    </select>
-    
-    <br/>
-    <br/>
+    <form method="post" id="test_results">
+      {% csrf_token %}
+      Tester Name:
+      <br/>
+      <select name="testers" required style="color:black">
+        <option value="" selected="true" disabled="disabled">Select Name</option>
+        {% for tester in testers %}
+        <option value="{{tester.username}}">{{tester.username}}</option>
+        {% endfor %}
+      </select>
+      
+      <br/>
+      <br/>
     <!--<textarea rows="4" cols="50" name="comments" placeholder="Place comments here..." style="color: black"></textarea>-->
-    <div style="width:35%">
-    {{ form.comments }}
+    <div style="width:17%; height:70%; position:fixed; top:327px; right:10px" >
+      {{ form.comments }}
     </div>
-    <br/>
-    <br/>
-    <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
-      PASS
-    </button>
-    <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
-      FAIL
-    </button>
+  
+  <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
+    PASS
+  </button>
+  <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
+    FAIL
+  </button>
   </form>
 </div>
 <br/>
