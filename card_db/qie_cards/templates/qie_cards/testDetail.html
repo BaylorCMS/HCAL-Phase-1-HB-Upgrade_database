@@ -68,7 +68,7 @@
                 <form action="" method="post" id="overwrite_form">
                     {% csrf_token %}
                     <input value="" id="password" name="secret" hidden>
-                    <input value="" id="overwrite_comments" required placeholder="Comments..." name="secretive" hidden>
+                    <input value="" id="overwrite_comments" placeholder="Comments..." name="secretive" hidden>
                     <button onclick="submitOverwrite()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
                         {% if not attempt.overwrite_pass %}
                         Force Pass
@@ -177,9 +177,7 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <pre>
                         <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
-                        </pre>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
