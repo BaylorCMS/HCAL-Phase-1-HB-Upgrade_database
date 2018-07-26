@@ -82,11 +82,11 @@ $(window).scroll(function() {
         var footertotop = totop.offset().top;
     }
     var adtobottom=$('#floating-sidebar').position().bottom;
-    if(currentScroll < footertotop+50){
+    if(currentScroll < footertotop - 270){
         $('#floating-sidebar').css({position:"absolute", paddingLeft:"0px", top:footertotop+149, right:"10px", height:"40%", width:"27%"});
         document.getElementById("comment_area").rows = 14;
         //$('#com_spacing').css({height:"168px", width:"30%"});
-    } else if(currentScroll >= footertotop+50 && (window.innerHeight + window.pageYOffset) < document.getElementById("size_div").offsetHeight + 600) {
+    } else if(currentScroll >= footertotop - 270 && (window.innerHeight + window.pageYOffset) < document.getElementById("size_div").offsetHeight + 600) {
         $('#floating-sidebar').css({position:"fixed", paddingLeft:"0px", top:"40%", right:"10px", height:"40%", width:"27%"});
         //$('#com_spacing').css({visibility:"hidden", height:"168px", width:"30%"});
         document.getElementById("comment_area").rows = 14;

@@ -81,11 +81,11 @@ $(window).scroll(function() {
         var footertotop = totop.offset().top;
     }
     var adtobottom=$('#floating-sidebar').position().bottom;
-    if(currentScroll < footertotop){
+    if(currentScroll < footertotop - 370){
         $('#floating-sidebar').css({position:"absolute", paddingLeft:"0px", top:footertotop+59, right:"10px", height:"40%", width:"17%"});
         document.getElementById("comment_area").rows = 14;
         //$('#com_spacing').css({height:"168px", width:"30%"});
-    } else if(currentScroll >= footertotop && (window.innerHeight + window.pageYOffset) < document.getElementById("size_div").offsetHeight + 600) {
+    } else if(currentScroll >= footertotop - 370 && (window.innerHeight + window.pageYOffset) < document.getElementById("size_div").offsetHeight + 600) {
         $('#floating-sidebar').css({position:"fixed", paddingLeft:"0px", top:"40%", right:"10px", height:"40%", width:"17%"});
         //$('#com_spacing').css({visibility:"hidden", height:"168px", width:"30%"});
         document.getElementById("comment_area").rows = 14;
