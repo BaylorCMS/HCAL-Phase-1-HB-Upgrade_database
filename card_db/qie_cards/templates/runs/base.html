@@ -98,7 +98,6 @@
 <h1>Default Content</h1>
 {% endblock %}
 
-{% block script %}
 <script>
 function searchBarcode(e){
     query = document.getElementById("navbarInputBarcode").value;
@@ -120,7 +119,7 @@ function searchBarcode(e){
     } 
 }
 </script>
-{% endblock %}
+{% block script %}{% endblock %}
 
 </body>
 </html>
