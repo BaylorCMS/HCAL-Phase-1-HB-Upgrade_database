@@ -67,7 +67,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'card_db.context_processors.site',
             ],
-            'timeout': 30,
         },
     },
 ]
