@@ -32,7 +32,10 @@ def getUID(uid):
     """Gets the Unique ID to be used in finding the associated card"""
     
     split_id = uid.split("_")
-    uniqueid = split_id[0][2:] + split_id[1][2:]
+    if "x" in split_id[0]:
+        uniqueid = split_id[0][2:] + split_id[1][2:]
+    else:
+        uniqueid = split_id[1][2:]
     while len(uniqueid) < 16:
         uniqueid = "0" + uniqueid
 

@@ -72,7 +72,7 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 2 ]; then
     echo -e "${STATUS}Uploading Register Tests${DEF}"
 
     if ls $regCardDir/0x* &> /dev/null; then
-        for dir in $regCardDir/0x*; do
+        for dir in $regCardDir/0*; do
             [ -d "${dir}" ] || continue
             qieuid="$(basename "${dir}")"    # list of UID directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
