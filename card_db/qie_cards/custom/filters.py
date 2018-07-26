@@ -236,7 +236,7 @@ def getFailedCardStats(cards, tests, attempts):
     for attempt in attempts:
         if not attempt.revoked:
             cardInd = cardsToInd[attempt.card_id]
-            if attempt.result == False:
+            if attempt.result == False and attempt.overwrite_pass == False:
                 failed[attempt.test_type_id][cardInd] = True
 
     testStat = []
