@@ -4,7 +4,7 @@ from .models import Attempt, Tester
 
 class AttemptForm(forms.ModelForm):
     #tester_choice = forms.MultipleChoiceField()
-    comments = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Place Comments Here...','rows':14}))
+    comments = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'id':'comment_area', 'placeholder': 'Place Comments Here...','rows':14}))
     class Meta:
         model = Attempt
         fields = ['comments',]
