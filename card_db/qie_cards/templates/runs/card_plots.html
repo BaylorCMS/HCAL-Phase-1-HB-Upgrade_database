@@ -11,7 +11,7 @@
       {% if test == attempt.test_type %}
         {% if attempt.has_image %}
           {% for image in attempt.get_images %}
-            <a href="../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
+            <a href="../../../cards/media/{{attempt.image}}/{{image}}" target="_blank"><img src="../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
           {% endfor %}
         {% endif %}
             
