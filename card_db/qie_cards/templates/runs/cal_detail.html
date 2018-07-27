@@ -51,7 +51,7 @@ table, td, th, thead {
     <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 <div style="padding-left:25px;">
-  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:45%;">
+  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:73%;">
     <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1"> 
       <tr>
         <th style="font-size:20px; padding-left:18%" align="center">Qie Cards</th>
@@ -73,7 +73,7 @@ table, td, th, thead {
         <td style="font-size:18px" class="warn"align="center">REMAINING</td>
         {% endif  %}
         <td style="font-size:18px" align="right"><a href="../../../../cards/{{attempt.attempt.card}}/Calibration">Link to Calibration Details</a></td>
-        
+        <td style="font-size:18px" align="right"><a href="../../../../cards/{{attempt.attempt.card}}/Calibration%20Plot%20Inspection">Link to Inspection Details</a></td>
       </tr>
       {%endfor%}
     </tbody>  
