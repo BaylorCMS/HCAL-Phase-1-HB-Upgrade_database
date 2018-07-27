@@ -418,14 +418,19 @@ def error(request):
 
     return render(request, 'qie_cards/error.html')
 
+def plots_page(request):
+    # ->media/summary_plots/plots/.
+    path_dir = path.join(MEDIA_ROOT, "summary_plots", "plots")
+    dirlist = sorted(listdir(path_dir))
+    return render(request, "qie_cards/plots.html", {"plots": dirlist})
 
-class PlotView(generic.ListView):
-    """ This displays various plots of data """
-    
-    template_name = 'qie_cards/plots.html'
-    context_object_name= 'tests'
-    def get_queryset(self):
-        return list(Test.objects.all())
+#class PlotView(generic.ListView):
+#    """ This displays various plots of data """
+#    
+#    template_name = 'qie_cards/plots.html'
+#    context_object_name= 'tests'
+#    def get_queryset(self):
+#        return list(Test.objects.all())
 
 CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8},
                   "Bot": {"0": 9, "1": 10, "2": 11, "3": 12, "4": 13, "5": 14, "6": 15, "7": 16}}
