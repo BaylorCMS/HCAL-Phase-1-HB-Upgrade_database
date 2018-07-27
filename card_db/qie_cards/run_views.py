@@ -245,8 +245,8 @@ def calibration(request):
         if attempt.date_id[:10] not in dict_date.keys():
             firefly_id = attempt.date_id[:10]
             dict_date[firefly_id] = []
-        if attempt.date_id[11:] not in dict_date[firefly_id]:
-            dict_date[firefly_id].append(attempt.date_id[11:])
+        if int(attempt.date_id[11:]) not in dict_date[firefly_id]:
+            dict_date[firefly_id].append(int(attempt.date_id[11:]))
 
     date_list = list(dict_date.keys())
     date_list = sorted(date_list, reverse=True)
