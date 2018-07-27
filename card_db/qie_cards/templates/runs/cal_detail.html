@@ -47,15 +47,15 @@ table, td, th, thead {
 
 {% block content %}
 <div class="row" align="center" style="padding-left:50px; padding-right:50px">
-    <h3>Run: {{run}}</h3>
+    <h3>{{date}} | Run: {{cal_run}}</h3>
     <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div><br>
 <div style="padding-left:25px;">
-  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:45%;">
+  <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:73%;">
     <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1"> 
       <tr>
         <th style="font-size:20px; padding-left:18%" align="center">Qie Cards</th>
-        <th style="font-size:20px; padding-left:4%;">Plot Inspection</th>
+        <th style="font-size:20px; padding-left:2%;">Calibration Plot Inspection</th>
       </tr>
     </thead>
     <tbody>
@@ -63,7 +63,6 @@ table, td, th, thead {
       <tr>
 
         <td style="font-size:18px" align="center"><a href="{{attempt.attempt.card}}/">{{attempt.attempt.card}}</a>&emsp;({{attempt.attempt.card.get_uid_split}})</td>
-        
         {% if attempt.valid %}
         {% if attempt.attempt.get_status == "PASS" %}
         <td  class="okay" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
@@ -73,20 +72,11 @@ table, td, th, thead {
         {% else %}
         <td style="font-size:18px" class="warn"align="center">REMAINING</td>
         {% endif  %}
-        <td style="font-size:18px" align="right"><a href="../../cards/{{attempt.attempt.card}}/">Link to Card Details</a></td>
-        
+        <td style="font-size:18px" align="right"><a href="../../../../cards/{{attempt.attempt.card}}/Calibration">Link to Calibration Details</a></td>
+        <td style="font-size:18px" align="right"><a href="../../../../cards/{{attempt.attempt.card}}/Calibration%20Plot%20Inspection">Link to Inspection Details</a></td>
       </tr>
       {%endfor%}
     </tbody>  
   </table>
 </div>
-<div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
-<div style="padding-left:25px;">
-  <h3>Test Type:</h3>
-</div>
-<ul>
-  {% for test in test_list%}
-  <li style="font-size:18px"><a href="{{test.name}}/">{{test.name}}</a></li>
-  {%endfor%}
-</ul>
 {% endblock %}

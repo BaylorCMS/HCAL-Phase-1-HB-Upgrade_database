@@ -47,11 +47,11 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 1 ]; then
             qieuid="$(basename "${dir}")"    # list of uid directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
             uidjsonFile=${dir}/${qieuid}_QC.json
+            sleep 1s
             python $scriptLoc/upload_qc.py $uidjsonFile 2> $logLoc/${qieuid}_qc.log
-        
             # Erase log files if there was no error
             if [ $? -eq 0 ]; then
-                echo -e "    ${SUCCESS}Card Uploaded Succesfully"
+                echo -e "    ${SUCCESS}Card Uploaded Successfully"
                 rm $logLoc/${qieuid}_qc.log 
             else
                 echo -e "    ${FAIL}ERROR: ${DEF} See log file: ${logLoc}/${qieuid}_qc.log"
@@ -71,14 +71,14 @@ if [ "$1" -eq 3 ] || [ "$1" -eq 2 ]; then
 
     echo -e "${STATUS}Uploading Register Tests${DEF}"
 
-    if ls $regCardDir/0x* &> /dev/null; then
-        for dir in $regCardDir/0x*; do
+    if ls $regCardDir/0* &> /dev/null; then
+        for dir in $regCardDir/0*; do
             [ -d "${dir}" ] || continue
             qieuid="$(basename "${dir}")"    # list of UID directories
             echo -e "    ${ACTION}Processing Card with UID: ${DEF}${qieuid}"
             regjsonFile=${dir}/results.json
+            sleep 1s
             python $scriptLoc/upload_reg.py $regjsonFile 2> $logLoc/${qieuid}_reg.log
-
             # Erase log files if there was no error
             if [ $? -eq 0 ]; then
                 echo -e "    ${SUCCESS}Card Uploaded Succesfully"

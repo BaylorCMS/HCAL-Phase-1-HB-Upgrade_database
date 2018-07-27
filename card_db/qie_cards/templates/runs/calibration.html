@@ -1,0 +1,55 @@
+{% extends "runs/base.html" %}
+{% load static %}
+{% block head %}
+    <link href="{% static "qie_cards/css/catalog.css" %}" rel="stylesheet">
+    <style>
+        .divider{
+            width:200px;
+            height:auto;
+            display:inline-block;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block title %}DQM Calibration{% endblock %}
+{% block cali %}class="active"{% endblock %}
+
+{% block content %}
+
+ <div class="row" align="center" style="padding-left:50px; padding-right:50px">
+   <h3>
+      Calibration 
+   </h3>
+   <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
+ </div>
+ <br><br>
+
+ <div class="row" style="padding-left:50px;padding-right:50px">
+   {% for d in dates %}
+     {% if dict_date %}
+       {% for date,runs in dict_date.items %}
+         {% if date == d %}
+         <button class="btn btn-primary" onclick="document.getElementById('{{date}}').classList.toggle('hide')"><h6>{{date}}</h6></button>
+         <br>
+         <div id="{{date}}" class="hide">
+           <br>
+           <div class="splitColumns">
+             <ul>
+               {% for run in runs %}
+               <li style="font-size:22px"><a href="calibration/{{date}}/{{run}}">{{run}}</a></li>
+               {% endfor %}
+               
+             </ul>
+           </div>
+         </div>
+         <br>
+         {% endif %}
+       {% endfor %}       
+     {% else %}
+         <h1>This database contains no calibration runs.</h1>
+     {% endif %}
+   {% endfor %}
+ </div>
+{% endblock %}
+

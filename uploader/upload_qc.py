@@ -13,6 +13,7 @@ import json
 import django
 import shutil
 from datetime import datetime
+from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
@@ -48,6 +49,7 @@ def makeOutputPath(uID, destination):
 @transaction.atomic
 def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
     """This functions saves info in the attempt at saves it in the database"""
+
     for test in attemptdict.keys():
         attemptdict[test].log_file = json_file
         attemptdict[test].hidden_log_file = json_file
@@ -56,8 +58,10 @@ def uploadAttempt(attemptdict, json_file, media, chan_passed, chan_failed):
         attemptdict[test].num_channels_failed = chan_failed[test]
         attemptdict[test].result = bool(chan_failed[test] == 0)
         if chan_passed[test] + chan_failed[test] != 16:
-            attemtdict[test].result = False
+            attemptdict[test].result = False
+
         attemptdict[test].save()
+    
     
 
 @transaction.atomic
@@ -178,7 +182,7 @@ if comments != "":
         comment += "\n"
     comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": "
     comment += data["Comments"]
-    qiecard.comments = comment
+    qiecard.comments += comment
     qiecard.save()
 
 ################
@@ -235,4 +239,4 @@ json_file = os.path.join("uploads/qieCards/", qiecard.barcode, os.path.basename(
 
 uploadAttempt(attemptlist, json_file, media, channels_passed, channels_failed)
 
-
+set_card_status(qiecard)

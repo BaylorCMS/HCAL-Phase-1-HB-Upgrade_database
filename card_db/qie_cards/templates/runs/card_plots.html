@@ -1,6 +1,8 @@
 {% extends "runs/base.html" %}
 {% block title %}DQM: {{card}}{% endblock %}
 {% block content %}
+{% block head %}<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> {% endblock %}    
+<div id="size_div">
 <ul>
   {% for test in test_list %}
     {% if test.name != 'Plot Inspection' %}
@@ -9,15 +11,15 @@
       {% if test == attempt.test_type %}
         {% if attempt.has_image %}
           {% for image in attempt.get_images %}
-            <a href="../../../cards/media/{{attempt.image}}/{{image}}"><img src="../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
+            <a href="../../../cards/media/{{attempt.image}}/{{image}}" target="_blank"><img src="../../../cards/media/{{attempt.image}}/{{image}}" style="width:20%"></a>
           {% endfor %}
         {% endif %}
             
         {% if data != ""%}
         <br/>
         <br/>
-          <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.attempt_number}}').classList.toggle('hide')">Show Data</button>
-          <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.attempt_number}}"> {{data}} </p>
+          <button class="btn btn-primary" onclick="document.getElementById('data_{{attempt.test_type}}').classList.toggle('hide')">Show Data</button>
+          <p style="white-space: pre-wrap;" class="hide" id="data_{{attempt.test_type}}"> {{data}} </p>
         {% else %}            
           <p> This Attempt Has No Data</p>
         {% endif %}
@@ -30,36 +32,80 @@
     {% endif %}
   {% endfor %}
 </ul>
-<br/>
+</div>
 <div align="center">
-  <form method="post" id="test_results">
-    {% csrf_token %}
-    Tester Name:
-    <br/>
-    <select name="testers" required style="color:black">
-      <option value="" selected="true" disabled="disabled">Select Name</option>
-      {% for tester in testers %}
-      <option value="{{tester.username}}">{{tester.username}}</option>
-      {% endfor %}
-    </select>
-    
-    <br/>
-    <br/>
+    <form method="post" id="test_results">
+      {% csrf_token %}
+      Tester Name:
+      <br/>
+      <select name="testers" required style="color:black">
+        <option value="" selected="true" disabled="disabled">Select Name</option>
+        {% for tester in testers %}
+        <option value="{{tester.username}}">{{tester.username}}</option>
+        {% endfor %}
+      </select>
+      
+      <br/>
+      <br/>
     <!--<textarea rows="4" cols="50" name="comments" placeholder="Place comments here..." style="color: black"></textarea>-->
-    <div style="width:35%">
-    {{ form.comments }}
+    <div style="position: static; top:49.5%; right:10px; height:70%; width:17%" id="floating-sidebar">
+      {{ form.comments }}
     </div>
-    <br/>
-    <br/>
-    <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
-      PASS
-    </button>
-    <button  type="submit" class="btn btn-primary" style="margin-left:40px; padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
-      FAIL
-    </button>
+    <div id="com_spacing" style="visibility:hidden; width:30%; height:168px;"></div>
+  <br/>
+  <div align="center">
+  <button  type="submit" class="btn btn-primary" style="margin-right:40px; padding-right:50px;padding-left:50px;" name="pass">
+    PASS
+  </button>
+  <button  type="submit" class="btn btn-primary" style="padding-right:50px;padding-left:50px;background-color:#E74C3C" name="fail" >
+    FAIL
+  </button>
+  </div>
   </form>
 </div>
 <br/>
 <br/>
 <br/>
 {% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(window).scroll(function() { 
+    var target = $('#floating-sidebar');
+    if(target.length){
+        var targetScroll = target.offset().top;
+    }
+    var currentScroll = $('html').scrollTop() || $('body').scrollTop();
+    var totop = $('#size_div');
+    if(totop.length){
+        var footertotop = totop.offset().top;
+    }
+    var adtobottom=$('#floating-sidebar').position().bottom;
+    if(currentScroll < footertotop - 370){
+        $('#floating-sidebar').css({position:"absolute", paddingLeft:"0px", top:footertotop+59, right:"10px", height:"40%", width:"17%"});
+        document.getElementById("comment_area").rows = 14;
+        //$('#com_spacing').css({height:"168px", width:"30%"});
+    } else if(currentScroll >= footertotop - 370 && (window.innerHeight + window.pageYOffset) < document.getElementById("size_div").offsetHeight + 600) {
+        $('#floating-sidebar').css({position:"fixed", paddingLeft:"0px", top:"40%", right:"10px", height:"40%", width:"17%"});
+        //$('#com_spacing').css({visibility:"hidden", height:"168px", width:"30%"});
+        document.getElementById("comment_area").rows = 14;
+    } else {
+        $('#floating-sidebar').css({position:"relative", paddingLeft:"15px", top:"90%", width:"30%", height:"50%"});
+        $('#com_spacing').css({position:"absolute"});
+        document.getElementById("comment_area").rows = 7;
+        document.getElementById("comment_area").align="center";
+    }
+});
+</script>
+<script>
+$(document).ready(function(){
+    var totop = $('#size_div');
+    if(totop.length){
+        var footertotop = totop.offset().top;
+    }
+    $('#floating-sidebar').css({position:"absolute", paddingLeft:"0px", top:footertotop+59, right:"10px", height:"40%", width:"17%"});
+})
+</script>
+
+{% endblock %}
+

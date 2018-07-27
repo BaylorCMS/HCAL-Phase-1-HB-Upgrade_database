@@ -12,7 +12,7 @@ from card_db.settings import MEDIA_ROOT
 
 
 LOCATION_LENGTH = 100            # Constant for maximum location size
-MAX_COMMENT_LENGTH = 1000        # Constant for max comment length
+MAX_COMMENT_LENGTH = 10000        # Constant for max comment length
 
 
 
@@ -284,6 +284,7 @@ class Attempt(models.Model):
     attempt_number  = models.IntegerField(default=0)                        # The number of this attempt on this card
     tester      = models.ForeignKey(Tester, on_delete=models.PROTECT, blank=True)       # the person who enterd this attempt
     run         = models.CharField(max_length=4, default="0", blank=True, null=True)        # The run this attempt is associated with
+    cal_run     = models.IntegerField(default=0, blank=True, null=True)                       # The run associated with a calibration test
     date_tested = models.DateTimeField('date tested', blank=True)       # The date this test finished
     num_channels_passed  = models.IntegerField(default=0)           # The number of channels this test passed
     num_channels_failed  = models.IntegerField(default=0)           # The number of channels this test failed
@@ -298,7 +299,7 @@ class Attempt(models.Model):
 
     log_file        = models.FileField(upload_to=logs_location, default='default.png')          # The log file from whence this test was uploaded    
     log_comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")   # Any comments pertaining to the log file
-
+    date_id         = models.CharField(max_length=LOCATION_LENGTH, blank=True, default="", null=True)    # Unique Date ID for calibration test
     hidden_log_file = models.FileField(upload_to=logs_location, default='default.png')      # The verbose log file, only used for web-page generation
     result = models.NullBooleanField(default=None, blank=True, null=True)    # Whether the specific test passed or failed
 
@@ -315,7 +316,10 @@ class Attempt(models.Model):
     def has_log(self):
         """ This returns whether the attempt has a log folder """
         return (not self.log_file == "default.png")
-
+    
+    def has_hidden_log(self):
+        return (not self.hidden_log_file == "default.png")
+    
     def get_status(self):
         if self.revoked:
             return "REVOKED"
@@ -348,6 +352,9 @@ class Attempt(models.Model):
             top_dirlist = sorted(dirlist[0:8])
             bot_dirlist = sorted(dirlist[8:])
             dirlist = top_dirlist + bot_dirlist
+            return dirlist
+        elif self.cal_run > 0:
+            dirlist = sorted(os.listdir(path))
             return dirlist
 
     def __str__(self):

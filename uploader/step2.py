@@ -19,6 +19,7 @@ import os
 import json
 import django
 from shutil import copyfile
+from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
@@ -93,6 +94,7 @@ card = loadCard(cardData, qie)
 path = moveJsonFile(qie, fileName)
 
 test_list = ["Checksum", "SupplyI", "PrgmChk"]
+
 for test in test_list:
     try:
         temp_test = Test.objects.get(abbreviation=test)
@@ -118,6 +120,7 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+
     elif cardData[test] == "N/Aed":
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -131,6 +134,7 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       ) 
+
     else:
         temp_attempt = Attempt(card=card,
 	                       plane_loc="default",
@@ -144,9 +148,14 @@ for test in test_list:
 	                       log_file=path,
 	                       hidden_log_file=path,
 	                       )
+
 	
     for attempt in prev_attempts:
         attempt.revoked = True
         attempt.save()
 	
     temp_attempt.save()
+
+set_card_status(card)
+
+

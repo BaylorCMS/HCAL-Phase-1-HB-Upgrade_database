@@ -13,7 +13,43 @@ import custom.filters as filters
 
 from django.utils import timezone
 from django.http import HttpResponse, Http404
+from django.db import transaction
 from card_db.settings import MEDIA_ROOT, CACHE_DATA 
+
+
+@transaction.atomic
+def set_card_status(qiecard):
+    tests = Test.objects.all()
+    status = {}
+    status["total"] = len(tests.filter(required=True))
+    status["passed"] = 0
+    failedAny = False
+    no_result = False
+
+    for test in tests:
+        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
+        if attemptList:
+            last = attemptList[len(attemptList) - 1]
+            if not last.revoked and test.required:
+                if last.overwrite_pass:
+                    status["passed"] += 1
+                elif last.passed():
+                    status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
+                else:
+                    failedAny = True
+
+    if status["total"] == status["passed"]:
+        qiecard.status = True
+    elif failedAny:
+        qiecard.status = False
+    elif no_result:
+        qiecard.status = None
+    else:
+        qiecard.status = None
+
+    qiecard.save()
 
 
 class CatalogView(generic.ListView):
@@ -346,6 +382,14 @@ def detail(request, card):
         status["css"] = "teststand"
 
 
+    # Getting run numbers to be displayed on the table for the cards
+    run_attempts = list(Attempt.objects.filter(card__barcode=card, test_type__name="gselScan").order_by("run"))
+    runs = []
+    for attempt in run_attempts:
+        if attempt.run not in runs:
+            runs.append(attempt.run)
+
+
     return render(request, 'qie_cards/detail.html', {'card': p,
                                                      'rm' : rm,
                                                      'rm_slot' : rm_slot,
@@ -353,6 +397,7 @@ def detail(request, card):
                                                      'attempts':attempts,
                                                      'locations':locations,
                                                      'status':status,
+                                                     'runs': runs
                                                     })
 
 #class CatalogView(generic.ListView):
@@ -413,7 +458,11 @@ def testDetail(request, card, test):
         if(request.POST.get('secret') == "pseudo" or request.POST.get('secret') == "pseudopod"):
             attempt = Attempt.objects.get(pk=request.POST.get('overwrite_pass'))
             attempt.overwrite_pass = not attempt.overwrite_pass
+            if attempt.comments != "":
+                attempt.comments += "\n"
+            attempt.comments += "Forced Pass Comments: " + str(request.POST.get('secretive'))
             attempt.save()
+            set_card_status(QieCard.objects.get(barcode=card))
     
     attemptList = list(Attempt.objects.filter(card=p, test_type=curTest).order_by("attempt_number").reverse())
     attemptData = []
@@ -434,9 +483,9 @@ def testDetail(request, card, test):
                         num_list.append(CHANNEL_MAPPING[position][channel[-1]])
                         new_chan = Channel(number=CHANNEL_MAPPING[position][channel[-1]])
                         channel_list.append(new_chan)      
-
+                        
                 num_list.sort()
-
+                    
                 o_channel_list = {}
                 for i in num_list:
                     channel = getChannel(i, channel_list)
@@ -452,6 +501,15 @@ def testDetail(request, card, test):
                             data += "PASS"
                         data += "\n"    
                     data += "\n"
+        elif attempt.cal_run > 0:
+            if not str(attempt.log_file) == "default.png":
+                inFile = open(path.join(MEDIA_ROOT, str(attempt.log_file)), "r")
+                tempDict = json.load(inFile)
+                for key in tempDict["Comments"].keys():
+                    data += str(key) + ": \n"
+                    data += str(tempDict["Comments"][key])
+                    data += "\n"
+                    
                     
         attemptData.append((attempt, data))
             
@@ -533,6 +591,7 @@ def search(request):
 
 
 def searchbar(request, query):
+    query=query.lower()
     try:
         barcodes = list(QieCard.objects.filter(barcode__endswith=query))
     except QieCard.DoesNotExist:

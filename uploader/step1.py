@@ -20,6 +20,7 @@ import json
 import django
 from shutil import copyfile
 from django.utils import timezone
+from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
 django.setup()
@@ -29,7 +30,7 @@ from card_db.settings import MEDIA_ROOT
 
 def loadCard(cardData, overwrite):
     """ Loads in QIE card information """
-    comments =  cardData["TestComment"]
+    new_comments =  cardData["TestComment"]
     barcode =   cardData["Barcode"]
 
     # find or create the qie card for the database
@@ -38,7 +39,7 @@ def loadCard(cardData, overwrite):
             card = QieCard.objects.get(barcode=barcode)
         except:
             sys.exit('QIE card with barcode "%s" is not in the database' % cardData["Barcode"])
-        card.comments = "<Rejected-->" + card.comments + "<--Rejected>\n" + comments
+        card.comments = "<Rejected-->" + card.comments + "<--Rejected>\n" + new_comments
     else:
         qie = QieCard.objects.filter(barcode=barcode)
 
@@ -46,7 +47,7 @@ def loadCard(cardData, overwrite):
             sys.exit('QIE card with barcode "%s" is already in the database' % cardData["Barcode"])
         else:
             card = QieCard(barcode=barcode,
-                           comments=comments
+                           comments=new_comments
                            )
 
     return card
@@ -54,7 +55,6 @@ def loadCard(cardData, overwrite):
 def loadTests(qie, tester, date, testData, path, overwrite):
     """ Loads in all test results """
     attempts = []
-    
     for test in testData.keys():
         try:
             temp_test = Test.objects.get(abbreviation=test)
@@ -161,3 +161,5 @@ if not overwrite:
 
 for attempt in attempts:
     attempt.save()
+
+set_card_status(qie)

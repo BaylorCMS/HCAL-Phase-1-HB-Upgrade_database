@@ -53,8 +53,8 @@ table, td, th {
 <div class="row" align="center" style="padding-left:50px; padding-right:50px">
     <h3>
         QIE Card Overview
-        <div class="divider"></div>
-        <a href="calibration" class="btn btn-primary">To Calibration Data</a>
+<!--        <div class="divider"></div>
+        <a href="calibration" class="btn btn-primary">To Calibration Data</a>-->
     </h3>
     <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C"></div>
 </div>
@@ -98,6 +98,15 @@ table, td, th {
             <td></td>
         </tr>
         {% include "snippets/fw_and_uid.html" %}
+        <tr>
+          <td>Runs:</td>
+          {% if runs %}
+          <td>{% for run in runs %}<a href="../../runs/{{run}}">{{run}}</a>&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}</td>
+          {% else %}
+          <td>No Runs</td>
+          {% endif %}
+          <td></td>
+        </tr>
         </div>
     </tbody>
 </table>
