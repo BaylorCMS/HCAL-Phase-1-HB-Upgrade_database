@@ -61,10 +61,11 @@
         {% for attempt, data in attempts %}
         <br>
         <div class="row">
-            <div style="float:left;width:60%">
+            <div style="float:left; width:60%">
                 <h4 class="{{attempt.get_css_class}}">Attempt: {{attempt.attempt_number}} ({{attempt.get_status}})</h4>
             </div>
-            <div style="float:left">
+            <div style="float:left; width: 240px;">
+              <div style="float:left; width: 100px;">
                 <form action="" method="post" id="overwrite_form">
                     {% csrf_token %}
                     <input value="" id="password" name="secret" hidden>
@@ -77,6 +78,21 @@
                         {% endif %}
                     </button>
                 </form> 
+            </div>
+            <div style="float: right; width: 80px;">
+                <form action="" method="post" id="rev_form">
+                    {% csrf_token %}
+                    <input value="" id="rev_pass" name="rev_secret" hidden>
+                    <input value="" id="rev_comments" placeholder="Comments..." name="secretive_rev" hidden>
+                    <button onclick="overwriteRevoke()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="revoke">
+                        {% if not attempt.revoked %}
+                        Revoke
+                        {% else %}
+                        Remove Revoke
+                        {% endif %}
+                    </button>
+                </form> 
+            </div>
             </div>
         </div>
         <div style="padding-left:50px;">
@@ -246,6 +262,37 @@ function submitOverwrite(){
                 document.getElementById("overwrite_comments").value = coms;
             
                 document.getElementById("overwrite_form").submit();
+            } else {
+                window.alert("Incorrect Password. Please Try Again.");
+        }
+    }
+}
+</script>
+<script>
+function overwriteRevoke(){
+    var redo = true;
+    while(redo){
+        var pass = window.prompt("Tell me a secret:","Secret...");
+            if(pass === null){
+                return;
+            } else if(pass === "pseudo" || pass === "pseudopod") {
+                redo = false;
+                var coms = window.prompt("Write me comments:", "Comments...");
+                if(coms === "" || coms === "Comments..." || coms === null){
+                    var comments_written = false;
+                } else {
+                    var comments_written = true;
+                }
+                while(comments_written === false){
+                    var coms = window.prompt("You have to write me a comment.", "Comments.");
+                    if(coms !== "" && coms !== "Comments..." && coms !== "Comments." && coms !== null){
+                        comments_written = true;
+                    }
+                }
+                document.getElementById("rev_pass").value = pass;
+                document.getElementById("rev_comments").value = coms;
+            
+                document.getElementById("rev_form").submit();
             } else {
                 window.alert("Incorrect Password. Please Try Again.");
         }

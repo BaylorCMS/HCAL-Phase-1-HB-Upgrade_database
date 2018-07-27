@@ -469,6 +469,18 @@ def testDetail(request, card, test):
             attempt.save()
             set_card_status(QieCard.objects.get(barcode=card))
     
+    if(request.POST.get('revoke')):
+        if(request.POST.get('rev_secret') == "pseudo" or request.POST.get('rev_secret') == "pseudopod"):
+            attempt = Attempt.objects.get(pk=request.POST.get('revoke'))
+            attempt.revoked = not attempt.revoked
+            if attempt.comments != "":
+                attempt.comments += "\n"
+            attempt.comments += "Revoked Comments: " + str(request.POST.get('secretive_rev'))
+            attempt.save()
+            set_card_status(QieCard.objects.get(barcode=card))
+            
+
+    
     attemptList = list(Attempt.objects.filter(card=p, test_type=curTest).order_by("attempt_number").reverse())
     attemptData = []
     for attempt in attemptList:
