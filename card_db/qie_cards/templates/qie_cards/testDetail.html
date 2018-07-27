@@ -66,11 +66,11 @@
             </div>
             <div style="float:left; width: 240px;">
               <div style="float:left; width: 100px;">
-                <form action="" method="post" id="overwrite_form">
+                <form action="" method="post" id="overwrite_form_{{attempt.pk}}">
                     {% csrf_token %}
-                    <input value="" id="password" name="secret" hidden>
-                    <input value="" id="overwrite_comments" placeholder="Comments..." name="secretive" hidden>
-                    <button onclick="submitOverwrite()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
+                    <input value="" id="password_{{attempt.pk}}" name="secret" hidden>
+                    <input value="" id="overwrite_comments_{{attempt.pk}}" placeholder="Comments..." name="secretive" hidden>
+                    <button onclick="submitOverwrite({{attempt.pk}})" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
                         {% if not attempt.overwrite_pass %}
                         Force Pass
                         {% else %}
@@ -80,11 +80,11 @@
                 </form> 
             </div>
             <div style="float: right; width: 80px;">
-                <form action="" method="post" id="rev_form">
+                <form action="" method="post" id="rev_form_{{attempt.pk}}">
                     {% csrf_token %}
-                    <input value="" id="rev_pass" name="rev_secret" hidden>
-                    <input value="" id="rev_comments" placeholder="Comments..." name="secretive_rev" hidden>
-                    <button onclick="overwriteRevoke()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="revoke">
+                    <input value="" id="rev_pass_{{attempt.pk}}" name="rev_secret" hidden>
+                    <input value="" id="rev_comments_{{attempt.pk}}" placeholder="Comments..." name="secretive_rev" hidden>
+                    <button onclick="overwriteRevoke({{attempt.pk}})" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="revoke">
                         {% if not attempt.revoked %}
                         Revoke
                         {% else %}
@@ -238,7 +238,8 @@
 </div>
 <br/>
 <script>
-function submitOverwrite(){
+function submitOverwrite(pk){
+    var attempt_pk = String(pk)
     var redo = true;
     while(redo){
         var pass = window.prompt("Tell me a secret:","Secret...");
@@ -258,10 +259,10 @@ function submitOverwrite(){
                         comments_written = true;
                     }
                 }
-                document.getElementById("password").value = pass;
-                document.getElementById("overwrite_comments").value = coms;
+                document.getElementById("password_" + attempt_pk).value = pass;
+                document.getElementById("overwrite_comments_" + attempt_pk).value = coms;
             
-                document.getElementById("overwrite_form").submit();
+                document.getElementById("overwrite_form_" + attempt_pk).submit();
             } else {
                 window.alert("Incorrect Password. Please Try Again.");
         }
@@ -269,7 +270,8 @@ function submitOverwrite(){
 }
 </script>
 <script>
-function overwriteRevoke(){
+function overwriteRevoke(pk){
+    var attempt_pk = String(pk)
     var redo = true;
     while(redo){
         var pass = window.prompt("Tell me a secret:","Secret...");
@@ -289,10 +291,10 @@ function overwriteRevoke(){
                         comments_written = true;
                     }
                 }
-                document.getElementById("rev_pass").value = pass;
-                document.getElementById("rev_comments").value = coms;
+                document.getElementById("rev_pass_" + attempt_pk).value = pass;
+                document.getElementById("rev_comments_" + attempt_pk).value = coms;
             
-                document.getElementById("rev_form").submit();
+                document.getElementById("rev_form_" + attempt_pk).submit();
             } else {
                 window.alert("Incorrect Password. Please Try Again.");
         }
