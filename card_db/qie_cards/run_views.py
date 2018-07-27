@@ -326,9 +326,7 @@ def cal_plots(request, date, run, card):
         if 'pass' in request.POST.keys():
             
             prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
-                                                        cal_run=run, 
-                                                        test_type__name="Calibration Plot Inspection",
-                                                        date_id=firefly_id))
+                                                        test_type__name="Calibration Plot Inspection"))
             attempt_num = len(prev_attempts) + 1
             temp_attempt = Attempt(result=True,
                                    tester=Tester.objects.get(username=request.POST.get('testers')),
@@ -350,7 +348,6 @@ def cal_plots(request, date, run, card):
 
         if 'fail' in request.POST.keys():
             prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
-                                                        cal_run=run, 
                                                         test_type__name="Calibration Plot Inspection"))
             attempt_num = len(prev_attempts) + 1
             temp_attempt = Attempt(result=False,
