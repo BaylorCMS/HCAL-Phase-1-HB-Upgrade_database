@@ -388,7 +388,8 @@ def detail(request, card):
         comment = ""
         if not p.comments == "":
             comment += "\n"
-        comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": " + request.POST.get('comment')
+        cur_date = timezone.localtime(timezone.now())
+        comment += str(cur_date.date()) + " " + str(cur_date.hour) + "." + str(cur_date.minute) + ": " + request.POST.get('comment')
         p.comments += comment
         p.save()
 
