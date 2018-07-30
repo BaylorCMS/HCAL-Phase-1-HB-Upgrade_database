@@ -13,7 +13,7 @@ from django.utils import timezone
 from card_db.settings import MEDIA_ROOT
 from django.db import transaction
 
-path_to_pics = os.path.join(os.getcwd(), "qiecard_pics")
+path_to_pics = os.path.join("/home/django/testing_database_hb/uploader", "qiecard_pics")
 file_name = os.path.join(path_to_pics, os.listdir(path_to_pics)[0])
 
 code = os.path.splitext(os.path.basename(file_name))[0]
@@ -48,4 +48,5 @@ shutil.move(file_name, os.path.join(MEDIA_ROOT, "uploads", "qieCards", qiecard.b
 temp_attempt.image = os.path.join("uploads", "qieCards", qiecard.barcode, os.path.basename(file_name))
 temp_attempt.save()
 set_card_status(qiecard)
+print "Card Uploaded Succesfully"
 
