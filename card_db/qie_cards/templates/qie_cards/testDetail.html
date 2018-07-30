@@ -136,7 +136,7 @@
                     <tr>
                         <td><b>Comments:</b></td>
                         {% if attempt.times_passed != 0 or attempt.times_failed != 0 %}
-                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="5" style="white-space: pre;"><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>JSON File:</b></td> 
@@ -153,7 +153,7 @@
                         <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to commands for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                         {% else %}
-                        <td colspan="3" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="3" style="white-space: pre;"><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -193,7 +193,7 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="5" style="white-space: pre;"><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -209,7 +209,11 @@
                 </tbody>
             </table>
             {% if attempt.has_image %}
-              {% if attempt.cal_run > 0 %}
+              {% if ".jpg" in attempt.get_image %}
+                 <span title="{{image}}" align="center">
+                   <a href="../media/{{attempt.image}}" target="_blank"><img src="../media/{{attempt.image}}" alt="{{image}}" style="width:40%;"></a>
+                 </span>
+              {% elif attempt.cal_run > 0 %}
                 {% for image in attempt.get_images %}
                 <span title="{{image}}">
                 <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:14%"></a>
@@ -217,9 +221,9 @@
                 {% endfor %}
               {% else %}
                 {% for image in attempt.get_images %}
-                <span title="{{image}}">
-                <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:11%"></a>
-                </span>
+                  <span title="{{image}}">
+                    <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:11%"></a>
+                  </span>
                 {% endfor %}
               {% endif %}
             {% endif %}
