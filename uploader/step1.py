@@ -28,17 +28,6 @@ django.setup()
 from qie_cards.models import Test, Tester, Attempt, Location, QieCard
 from card_db.settings import MEDIA_ROOT
 
-def makeOutputPath(uID, destination):
-    path = os.path.join(destination, uID + "_QC")
-    if os.path.exists(path):
-        extension = 2
-        while os.path.exists(destination + "/{0}_QC_v{1}".format(uID, extension)):
-            extension += 1
-        path = os.path.join(destination, "{0}_QC_v{1}".format(uID, extension))
-    return path
-
-
-
 def loadCard(cardData, overwrite):
     """ Loads in QIE card information """
     new_comments =  cardData["TestComment"]
