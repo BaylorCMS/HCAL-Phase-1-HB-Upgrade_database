@@ -559,6 +559,7 @@ def testDetail(request, card, test):
         attemptData.append((attempt, data))
             
     firstTest = []
+    
 
     return render(request, 'qie_cards/testDetail.html', {'card': p,
                                                          'test': curTest,
