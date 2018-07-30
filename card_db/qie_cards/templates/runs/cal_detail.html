@@ -54,15 +54,17 @@ table, td, th, thead {
   <table id="cardstatus" class="table table-bordered" cellspacing="0" style="width:73%;">
     <thead class="thead-default" style="color:#2C3E50;background-color:#ECF0F1"> 
       <tr>
-        <th style="font-size:20px; padding-left:18%" align="center">Qie Cards</th>
-        <th style="font-size:20px; padding-left:2%;">Calibration Plot Inspection</th>
+        <th style="font-size:20px; text-align: center;" align="center">Qie Cards</th>
+        <th style="font-size:20px; text-align: center" align="center">Unique ID</th>
+        <th style="font-size:20px; text-align: center" align="center">Calibration Plot Inspection</th>
       </tr>
     </thead>
     <tbody>
       {% for attempt in attempt_list %}
       <tr>
 
-        <td style="font-size:18px" align="center"><a href="{{attempt.attempt.card}}/">{{attempt.attempt.card}}</a>&emsp;({{attempt.attempt.card.get_uid_split}})</td>
+        <td style="font-size:18px" align="center"><a href="{{attempt.attempt.card}}/">{{attempt.attempt.card}}</a></td>
+        <td style="font-size:18px" align="center">({{attempt.attempt.card.get_uid_split}})</td>
         {% if attempt.valid %}
         {% if attempt.attempt.get_status == "PASS" %}
         <td  class="okay" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
