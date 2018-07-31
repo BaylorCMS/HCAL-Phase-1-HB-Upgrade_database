@@ -47,8 +47,8 @@ def loadCard(cardData, qie):
     qie.igloo_bot_minor_ver     = cardData["IglooMinVerB"]
     return qie
     
-def moveJsonFile(qie, fileName):
-    """ Moves the json for this upload to permanent storage """
+def moveFile(qie, fileName):
+    """ Moves file (json, log, etc) for this upload to permanent storage """
     url = os.path.join("uploads/qieCards/", qie.barcode)
     path = os.path.join(MEDIA_ROOT, url)
     if not os.path.exists(path):
@@ -59,9 +59,9 @@ def moveJsonFile(qie, fileName):
     return os.path.join(url, os.path.basename(fileName))
 
 # Load the .json into a dictionary
-fileName = sys.argv[1]
+jsonFileName = sys.argv[1]
 
-infile = open(fileName, "r")
+infile = open(jsonFileName, "r")
 cardData = json.load(infile)
 
 # Upload data to the database
@@ -97,7 +97,12 @@ except:
 
 card = loadCard(cardData, qie)
 
-path = moveJsonFile(qie, fileName)
+programmingLog = "temp_logs/{0}/card.log".format(uid)
+flashproLog = "temp_logs/{0}/igloo_flashpro.log".format(uid)
+
+jsonPath = moveFile(qie, jsonFileName)
+programmingPath = moveFile(qie, programmingLog)
+flashproPath = moveFile(qie, flashproLog)
 test_list = ["Igloos_Programmed"]
 
 for test in test_list:
@@ -122,8 +127,8 @@ for test in test_list:
 	                       result=1,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
     elif cardData[test] == "N/A":
@@ -136,8 +141,8 @@ for test in test_list:
 	                       result=None,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
     else:
@@ -150,8 +155,8 @@ for test in test_list:
 	                       result=0,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
 	
