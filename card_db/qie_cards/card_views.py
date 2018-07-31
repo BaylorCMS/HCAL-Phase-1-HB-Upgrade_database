@@ -557,7 +557,10 @@ def testDetail(request, card, test):
                     data += "\n"
                     
         if "\n" in attempt.comments:
-            comment_style = "white-space:pre;"
+            if len(attempt.comments) > 125:
+                comment_style = "word-wrap:break-word;"
+            else:
+                comment_style = "white-space:pre;"
         else:
             comment_style = "word-wrap:break-word;"
         attemptData.append((attempt, data, comment_style))
