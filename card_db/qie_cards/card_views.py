@@ -513,6 +513,7 @@ def testDetail(request, card, test):
     attemptData = []
     for attempt in attemptList:
         data = ""
+        comment_style = ""
         num_list = []
         num_var_list = {}
         if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
@@ -555,8 +556,11 @@ def testDetail(request, card, test):
                     data += str(tempDict["Comments"][key])
                     data += "\n"
                     
-                    
-        attemptData.append((attempt, data))
+        if "\n" in attempt.comments:
+            comment_style = "white-space:pre;"
+        else:
+            comment_style = "word-wrap:break-word;"
+        attemptData.append((attempt, data, comment_style))
             
     firstTest = []
     
