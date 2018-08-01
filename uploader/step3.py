@@ -18,7 +18,7 @@ import sys
 import os
 import json
 import django
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
@@ -104,8 +104,9 @@ except:
 
 card = loadCard(cardData, qie)
 
-programmingLog = "temp_logs/{0}/card.log".format(uid)
-flashproLog = "temp_logs/{0}/igloo_flashpro.log".format(uid)
+cardLogDir = "temp_logs/{0}".format(uid)
+programmingLog = "{0}/card.log".format(cardLogDir)
+flashproLog = "{0}/igloo_flashpro.log".format(cardLogDir)
 
 jsonPath = moveFile(qie, jsonFileName)
 programmingPath = moveFile(qie, programmingLog)
@@ -175,4 +176,9 @@ for test in test_list:
 
 
 set_card_status(card)
+
+# remove temporary log files
+rmtree(cardLogDir, ignore_errors=True)
+
+
 
