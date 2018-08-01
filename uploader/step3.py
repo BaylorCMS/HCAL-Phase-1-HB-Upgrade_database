@@ -49,10 +49,14 @@ def loadCard(cardData, qie):
     
 def moveFile(qie, fileName):
     """ Moves file (json, log, etc) for this upload to permanent storage """
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    fileName = os.path.join(dir_path, fileName)
+    if not os.path.exists(fileName):
+        exit("Cannot move file because file does not exist: {0}".format(fileName))
     url = os.path.join("uploads/qieCards/", qie.barcode)
     path = os.path.join(MEDIA_ROOT, url)
     if not os.path.exists(path):
-        exit("Database does not contain this card's log folder")
+        exit("Database does not contain this card's log folder: {0}".format(path))
     extension = 1
     while os.path.isfile(os.path.join(path,  str(extension) + os.path.basename(fileName))):
         extension += 1
@@ -72,12 +76,10 @@ cardData = json.load(infile)
 barcode = cardData["Barcode"]
 uid = cardData["Unique_ID"]
 
-print "    Barcode: {0}".format(barcode)
-print "    Unique ID: {0}".format(uid)
-
 if barcode == "": 
     try:
         qie = QieCard.objects.get(uid=getUID(uid))
+        barcode = qie.barcode
     except:
         sys.exit('QIE card with uid "%s" is not in the database' % getUID(uid))
 else:
@@ -85,6 +87,9 @@ else:
         qie = QieCard.objects.get(barcode=barcode)
     except:
         sys.exit('QIE card with barcode "%s" is not in the database' % barcode)
+
+print "    Barcode: {0}".format(barcode)
+print "    Unique ID: {0}".format(uid)
 
 #load time of test
 date = cardData["DateRun"] + "-06:00"
