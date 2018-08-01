@@ -54,11 +54,11 @@ def moveJsonFile(qie, fileName):
     if not os.path.exists(path):
         exit("Database does not contain this card's log folder")
     extension = 1
-    while os.path.isfile(os.path.join(path, str(extension) + os.path.basename(filename))):
+    while os.path.isfile(os.path.join(path, str(extension) + os.path.basename(fileName))):
         extension += 1
     newPath = os.path.join(path, str(extension) + os.path.basename(fileName))
     copyfile(fileName, newPath)
-    return os.path.join(url, os.path.basename(fileName))
+    return os.path.join(url, str(extension) + os.path.basename(fileName))
 
 # Load the .json into a dictionary
 fileName = sys.argv[1]

@@ -448,9 +448,19 @@ def error(request):
 
 def plots_page(request):
     # ->media/summary_plots/plots/.
+    tests = ["capID0pedestal", "capID1pedestal", "capID2pedestal", "capID3pedestal", 
+             "gselScan", "iQiScan", "pedestal", "pedestalScan", "phaseScan"]
     path_dir = path.join(MEDIA_ROOT, "summary_plots", "plots")
-    dirlist = sorted(listdir(path_dir))
-    return render(request, "qie_cards/plots.html", {"plots": dirlist})
+    dirlist = listdir(path_dir)
+    sorted_dirlist = []
+    for test in tests:
+        test_list = []
+        for plot in dirlist:
+            if test in str(plot):
+                test_list.append(plot)
+        sorted_dirlist += test_list
+
+    return render(request, "qie_cards/plots.html", {"plots": sorted_dirlist})
 
 #class PlotView(generic.ListView):
 #    """ This displays various plots of data """
@@ -513,6 +523,7 @@ def testDetail(request, card, test):
     attemptData = []
     for attempt in attemptList:
         data = ""
+        comment_style = ""
         num_list = []
         num_var_list = {}
         if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
@@ -554,9 +565,22 @@ def testDetail(request, card, test):
                     data += str(key) + ": \n"
                     data += str(tempDict["Comments"][key])
                     data += "\n"
-                    
-                    
-        attemptData.append((attempt, data))
+        elif attempt.test_type.name == "Igloos_Programmed":
+            if not str(attempt.hidden_log_file) == "default.png":
+                try:
+                    with open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r") as inFile:
+                        data = inFile.read()
+                except IOError:
+                    data = ""
+
+        if "\n" in attempt.comments:
+            if len(attempt.comments) > 125:
+                comment_style = "word-wrap:break-word;"
+            else:
+                comment_style = "white-space:pre;"
+        else:
+            comment_style = "word-wrap:break-word;"
+        attemptData.append((attempt, data, comment_style))
             
     firstTest = []
     
