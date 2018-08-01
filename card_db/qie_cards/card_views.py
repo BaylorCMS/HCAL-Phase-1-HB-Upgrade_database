@@ -448,9 +448,19 @@ def error(request):
 
 def plots_page(request):
     # ->media/summary_plots/plots/.
+    tests = ["capID0pedestal", "capID1pedestal", "capID2pedestal", "capID3pedestal", 
+             "gselScan", "iQiScan", "pedestal", "pedestalScan", "phaseScan"]
     path_dir = path.join(MEDIA_ROOT, "summary_plots", "plots")
-    dirlist = sorted(listdir(path_dir))
-    return render(request, "qie_cards/plots.html", {"plots": dirlist})
+    dirlist = listdir(path_dir)
+    sorted_dirlist = []
+    for test in tests:
+        test_list = []
+        for plot in dirlist:
+            if test in str(plot):
+                test_list.append(plot)
+        sorted_dirlist += test_list
+
+    return render(request, "qie_cards/plots.html", {"plots": sorted_dirlist})
 
 #class PlotView(generic.ListView):
 #    """ This displays various plots of data """
@@ -555,7 +565,14 @@ def testDetail(request, card, test):
                     data += str(key) + ": \n"
                     data += str(tempDict["Comments"][key])
                     data += "\n"
-                    
+        elif attempt.test_type.name == "Igloos_Programmed":
+            if not str(attempt.hidden_log_file) == "default.png":
+                try:
+                    with open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r") as inFile:
+                        data = inFile.read()
+                except IOError:
+                    data = ""
+
         if "\n" in attempt.comments:
             if len(attempt.comments) > 125:
                 comment_style = "word-wrap:break-word;"
