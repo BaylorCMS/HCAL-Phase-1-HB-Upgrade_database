@@ -31,8 +31,11 @@ REMAIN = 0      # Card had attempts, yet all were revoked
 DEFAULT = -1    # Card had no attempts
 
 # Uploads all required data from the database
+print "Getting Tests"
 tests = list(Test.objects.all())
+print "Getting Attempts"
 attempts = list(Attempt.objects.order_by("date_tested"))
+print "Getting Cards"
 cards = list(QieCard.objects.all())
 
 testStates = {} # Stores the states of each test for each card
@@ -52,8 +55,9 @@ for attempt in attempts:
     curState = testStates[str(attempt.test_type_id)][attempt.card_id]["state"]
     
     # Determine how to change the state of the card
-    if not curState == FAILED and attempt.card.test_stand == False:
-        if (attempt.result or attempt.overwrite_pass) and not attempt.revoked:
+    if attempt.card.test_stand == False or attempt.card.test_stand == None:
+        
+        if (attempt.result == True or attempt.overwrite_pass) and not attempt.revoked:
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = PASSED
        
@@ -61,12 +65,14 @@ for attempt in attempts:
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = FAILED
        
-        elif (attempt.revoked) and curState == DEFAULT:
+        elif attempt.revoked and curState == DEFAULT:
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = REMAIN
-    elif not curState == FAILED and attempt.card.test_stand != False:
+
+    elif attempt.card.test_stand != False:
         testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
         testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = REMAIN        
+
 print "Writing to JSON file"
 # Dump the json into the proper location
 with open("/home/django/testing_database_hb/media/cached_data/plots.json", 'w') as f:
