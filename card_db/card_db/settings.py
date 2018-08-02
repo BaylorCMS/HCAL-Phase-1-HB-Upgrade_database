@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'OPTIONS': {
-            'timeout': 60,
+            'timeout': 5000,
          }
     }
 }
@@ -127,7 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static-he/'
+STATIC_URL = '/static-hb/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Toggle whether data caching is on 
