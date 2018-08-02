@@ -28,8 +28,9 @@ urlpatterns = [
     url(r'^search/(?P<query>.*)$', views.searchbar, name='searchbar'),
     url(r'^error$', views.error, name='error'),
     url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT,'show_indexes':True}),
-#    url(r'^plots$', views.PlotView.as_view(), name='plots'),
+    url(r'^timeplots$', views.PlotView.as_view(), name='old_plots'),
     url(r'^plots$', views.plots_page, name='plots'),
+#    url(r'^timeplots$', views.old_plots, name='old_plots'),
     url(r'^field$', views.fieldView, name='fieldView'),
     url(r'.*', views.error, name='error')
 ]
