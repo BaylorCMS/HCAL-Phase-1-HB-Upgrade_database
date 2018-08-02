@@ -178,7 +178,13 @@ for test in test_list:
 set_card_status(card)
 
 # remove temporary log files
-rmtree(cardLogDir, ignore_errors=True)
+dir_path = os.path.dirname(os.path.realpath(__file__))
+card_path = os.path.join(dir_path, cardLogDir)
+if os.path.exists(card_path):
+    rmtree(card_path, ignore_errors=True)
+else:
+    print "card path does not exist: {0}".format(card_path)
+
 
 
 
