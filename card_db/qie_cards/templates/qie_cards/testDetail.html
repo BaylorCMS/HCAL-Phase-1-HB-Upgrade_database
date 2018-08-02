@@ -104,6 +104,9 @@
                         <th>Date</th>
                         {% if attempt.cal_run > 0 or attempt.test_type.name == "Plot Inspection" %}
                         <th>Run Number</th>
+                        {% if attempt.cal_run > 0 %}
+                        <th>Calibration Date</th>
+                        {% endif %}
                         {% endif %}
                         <th>Result</th>
                         {% if attempt.times_passed != 0 or attempt.times_failed != 0 %}
@@ -118,6 +121,7 @@
                         <td> {{attempt.date_tested}} </td>
                         {% if attempt.cal_run > 0 %}
                         <td>{{attempt.cal_run}}</td>
+                        <td>{{attempt.date_id}}</td>
                         {% elif attempt.test_type.name == "Plot Inspection" %}
                         <td><a href="../../runs/{{attempt.run}}">{{attempt.run}}</a></td>
                         {% endif %}
@@ -152,6 +156,19 @@
                         <td><b>Commands:</b></td>
                         <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to commands for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
+                        {% elif attempt.cal_run > 0 %}
+                        <td colspan="4" style={{c_style}}><p>{{attempt.comments | default:"None"}}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Image:</b></td> 
+                        <td colspan="4">{% if attempt.has_image %}<a href="../media/{{attempt.image}}">Go to Images for {{attempt.test_type}}</a>
+                                        {% else %} No image {% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Log Files:</b></td>
+                        <td colspan="4">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to Log File for {{attempt.test_type}}</a>
+                                        {% else %} No file {% endif %}</td>                        
+                    </tr>
                         {% else %}
                         <td colspan="3" style={{c_style}}><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
