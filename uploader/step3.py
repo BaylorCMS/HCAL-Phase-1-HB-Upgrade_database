@@ -18,7 +18,7 @@ import sys
 import os
 import json
 import django
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from card_stats import set_card_status
 
 sys.path.insert(0, '/home/django/testing_database_hb/card_db')
@@ -47,21 +47,27 @@ def loadCard(cardData, qie):
     qie.igloo_bot_minor_ver     = cardData["IglooMinVerB"]
     return qie
     
-def moveJsonFile(qie, fileName):
-    """ Moves the json for this upload to permanent storage """
+def moveFile(qie, fileName):
+    """ Moves file (json, log, etc) for this upload to permanent storage """
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    fileName = os.path.join(dir_path, fileName)
+    if not os.path.exists(fileName):
+        exit("Cannot move file because file does not exist: {0}".format(fileName))
     url = os.path.join("uploads/qieCards/", qie.barcode)
     path = os.path.join(MEDIA_ROOT, url)
     if not os.path.exists(path):
-        exit("Database does not contain this card's log folder")
-        
-    newPath = os.path.join(path, os.path.basename(fileName))
+        exit("Database does not contain this card's log folder: {0}".format(path))
+    extension = 1
+    while os.path.isfile(os.path.join(path,  str(extension) + os.path.basename(fileName))):
+        extension += 1
+    newPath = os.path.join(path,  str(extension) + os.path.basename(fileName))
     copyfile(fileName, newPath)
-    return os.path.join(url, os.path.basename(fileName))
+    return os.path.join(url, str(extension) + os.path.basename(fileName))
 
 # Load the .json into a dictionary
-fileName = sys.argv[1]
+jsonFileName = sys.argv[1]
 
-infile = open(fileName, "r")
+infile = open(jsonFileName, "r")
 cardData = json.load(infile)
 
 # Upload data to the database
@@ -69,12 +75,10 @@ cardData = json.load(infile)
 barcode = cardData["Barcode"]
 uid = cardData["Unique_ID"]
 
-print "    Barcode: {0}".format(barcode)
-print "    Unique ID: {0}".format(uid)
-
 if barcode == "": 
     try:
         qie = QieCard.objects.get(uid=getUID(uid))
+        barcode = qie.barcode
     except:
         sys.exit('QIE card with uid "%s" is not in the database' % getUID(uid))
 else:
@@ -82,6 +86,9 @@ else:
         qie = QieCard.objects.get(barcode=barcode)
     except:
         sys.exit('QIE card with barcode "%s" is not in the database' % barcode)
+
+print "    Barcode: {0}".format(barcode)
+print "    Unique ID: {0}".format(uid)
 
 #load time of test
 date = cardData["DateRun"] + "-06:00"
@@ -97,7 +104,13 @@ except:
 
 card = loadCard(cardData, qie)
 
-path = moveJsonFile(qie, fileName)
+cardLogDir = "temp_logs/{0}".format(uid)
+programmingLog = "{0}/card.log".format(cardLogDir)
+flashproLog = "{0}/igloo_flashpro.log".format(cardLogDir)
+
+jsonPath = moveFile(qie, jsonFileName)
+programmingPath = moveFile(qie, programmingLog)
+flashproPath = moveFile(qie, flashproLog)
 test_list = ["Igloos_Programmed"]
 
 for test in test_list:
@@ -122,8 +135,8 @@ for test in test_list:
 	                       result=1,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
     elif cardData[test] == "N/A":
@@ -136,8 +149,8 @@ for test in test_list:
 	                       result=None,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
     else:
@@ -150,8 +163,8 @@ for test in test_list:
 	                       result=0,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=path,
-	                       hidden_log_file=path,
+	                       log_file=programmingPath,
+	                       hidden_log_file=flashproPath,
 	                       )
 
 	
@@ -163,4 +176,15 @@ for test in test_list:
 
 
 set_card_status(card)
+
+# remove temporary log files
+dir_path = os.path.dirname(os.path.realpath(__file__))
+card_path = os.path.join(dir_path, cardLogDir)
+if os.path.exists(card_path):
+    rmtree(card_path, ignore_errors=True)
+else:
+    print "card path does not exist: {0}".format(card_path)
+
+
+
 

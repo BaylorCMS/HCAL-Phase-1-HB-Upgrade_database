@@ -245,8 +245,8 @@ def calibration(request):
         if attempt.date_id[:10] not in dict_date.keys():
             firefly_id = attempt.date_id[:10]
             dict_date[firefly_id] = []
-        if attempt.date_id[11:] not in dict_date[firefly_id]:
-            dict_date[firefly_id].append(attempt.date_id[11:])
+        if int(attempt.date_id[11:]) not in dict_date[firefly_id]:
+            dict_date[firefly_id].append(int(attempt.date_id[11:]))
 
     date_list = list(dict_date.keys())
     date_list = sorted(date_list, reverse=True)
@@ -326,9 +326,7 @@ def cal_plots(request, date, run, card):
         if 'pass' in request.POST.keys():
             
             prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
-                                                        cal_run=run, 
-                                                        test_type__name="Calibration Plot Inspection",
-                                                        date_id=firefly_id))
+                                                        test_type__name="Calibration Plot Inspection"))
             attempt_num = len(prev_attempts) + 1
             temp_attempt = Attempt(result=True,
                                    tester=Tester.objects.get(username=request.POST.get('testers')),
@@ -350,7 +348,6 @@ def cal_plots(request, date, run, card):
 
         if 'fail' in request.POST.keys():
             prev_attempts = list(Attempt.objects.filter(card__barcode=card, 
-                                                        cal_run=run, 
                                                         test_type__name="Calibration Plot Inspection"))
             attempt_num = len(prev_attempts) + 1
             temp_attempt = Attempt(result=False,

@@ -58,18 +58,19 @@
 <div class="row" style="padding-left:25px;">
     <div class="col-md-12">
         <!--<h3>{{test}}</h3>-->
-        {% for attempt, data in attempts %}
+        {% for attempt, data, c_style in attempts %}
         <br>
         <div class="row">
-            <div style="float:left;width:60%">
+            <div style="float:left; width:60%">
                 <h4 class="{{attempt.get_css_class}}">Attempt: {{attempt.attempt_number}} ({{attempt.get_status}})</h4>
             </div>
-            <div style="float:left">
-                <form action="" method="post" id="overwrite_form">
+            <div style="float:left; width: 240px;">
+              <div style="float:left; width: 100px;">
+                <form action="" method="post" id="overwrite_form_{{attempt.pk}}">
                     {% csrf_token %}
-                    <input value="" id="password" name="secret" hidden>
-                    <input value="" id="overwrite_comments" placeholder="Comments..." name="secretive" hidden>
-                    <button onclick="submitOverwrite()" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
+                    <input value="" id="password_{{attempt.pk}}" name="secret" hidden>
+                    <input value="" id="overwrite_comments_{{attempt.pk}}" placeholder="Comments..." name="secretive" hidden>
+                    <button onclick="submitOverwrite({{attempt.pk}})" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="overwrite_pass">
                         {% if not attempt.overwrite_pass %}
                         Force Pass
                         {% else %}
@@ -77,6 +78,21 @@
                         {% endif %}
                     </button>
                 </form> 
+            </div>
+            <div style="float: right; width: 80px;">
+                <form action="" method="post" id="rev_form_{{attempt.pk}}">
+                    {% csrf_token %}
+                    <input value="" id="rev_pass_{{attempt.pk}}" name="rev_secret" hidden>
+                    <input value="" id="rev_comments_{{attempt.pk}}" placeholder="Comments..." name="secretive_rev" hidden>
+                    <button onclick="overwriteRevoke({{attempt.pk}})" type="submit" class="btn btn-primary" value="{{attempt.pk}}" name="revoke">
+                        {% if not attempt.revoked %}
+                        Revoke
+                        {% else %}
+                        Remove Revoke
+                        {% endif %}
+                    </button>
+                </form> 
+            </div>
             </div>
         </div>
         <div style="padding-left:50px;">
@@ -120,7 +136,7 @@
                     <tr>
                         <td><b>Comments:</b></td>
                         {% if attempt.times_passed != 0 or attempt.times_failed != 0 %}
-                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="5" style={{c_style}}><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>JSON File:</b></td> 
@@ -137,7 +153,7 @@
                         <td colspan="5">{% if attempt.has_log %}<a href="../media/{{attempt.log_file}}">Go to commands for {{attempt.test_type}}</a>
                                         {% else %} No file {% endif %}</td>
                         {% else %}
-                        <td colspan="3" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="3" style={{c_style}}><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -177,7 +193,7 @@
                     </tr>
                     <tr>
                         <td><b>Comments:</b></td>
-                        <td colspan="5" style="white-space:pre;"><p>{{attempt.comments | default:"None"}}</p></td>
+                        <td colspan="5" style={{c_style}}><p>{{attempt.comments | default:"None"}}</p></td>
                     </tr>
                     <tr>
                         <td><b>Image:</b></td> 
@@ -193,7 +209,11 @@
                 </tbody>
             </table>
             {% if attempt.has_image %}
-              {% if attempt.cal_run > 0 %}
+              {% if ".jpg" in attempt.get_image %}
+                 <span title="{{image}}" align="center">
+                   <a href="../media/{{attempt.image}}" target="_blank"><img src="../media/{{attempt.image}}" alt="{{image}}" style="width:40%;"></a>
+                 </span>
+              {% elif attempt.cal_run > 0 %}
                 {% for image in attempt.get_images %}
                 <span title="{{image}}">
                 <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:14%"></a>
@@ -201,9 +221,9 @@
                 {% endfor %}
               {% else %}
                 {% for image in attempt.get_images %}
-                <span title="{{image}}">
-                <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:11%"></a>
-                </span>
+                  <span title="{{image}}">
+                    <a href="../media/{{attempt.image}}/{{image}}" target="_blank"><img src="../media/{{attempt.image}}/{{image}}" alt="{{image}}" style="width:11%"></a>
+                  </span>
                 {% endfor %}
               {% endif %}
             {% endif %}
@@ -222,7 +242,8 @@
 </div>
 <br/>
 <script>
-function submitOverwrite(){
+function submitOverwrite(pk){
+    var attempt_pk = String(pk)
     var redo = true;
     while(redo){
         var pass = window.prompt("Tell me a secret:","Secret...");
@@ -242,10 +263,42 @@ function submitOverwrite(){
                         comments_written = true;
                     }
                 }
-                document.getElementById("password").value = pass;
-                document.getElementById("overwrite_comments").value = coms;
+                document.getElementById("password_" + attempt_pk).value = pass;
+                document.getElementById("overwrite_comments_" + attempt_pk).value = coms;
             
-                document.getElementById("overwrite_form").submit();
+                document.getElementById("overwrite_form_" + attempt_pk).submit();
+            } else {
+                window.alert("Incorrect Password. Please Try Again.");
+        }
+    }
+}
+</script>
+<script>
+function overwriteRevoke(pk){
+    var attempt_pk = String(pk)
+    var redo = true;
+    while(redo){
+        var pass = window.prompt("Tell me a secret:","Secret...");
+            if(pass === null){
+                return;
+            } else if(pass === "pseudo" || pass === "pseudopod") {
+                redo = false;
+                var coms = window.prompt("Write me comments:", "Comments...");
+                if(coms === "" || coms === "Comments..." || coms === null){
+                    var comments_written = false;
+                } else {
+                    var comments_written = true;
+                }
+                while(comments_written === false){
+                    var coms = window.prompt("You have to write me a comment.", "Comments.");
+                    if(coms !== "" && coms !== "Comments..." && coms !== "Comments." && coms !== null){
+                        comments_written = true;
+                    }
+                }
+                document.getElementById("rev_pass_" + attempt_pk).value = pass;
+                document.getElementById("rev_comments_" + attempt_pk).value = coms;
+            
+                document.getElementById("rev_form_" + attempt_pk).submit();
             } else {
                 window.alert("Incorrect Password. Please Try Again.");
         }

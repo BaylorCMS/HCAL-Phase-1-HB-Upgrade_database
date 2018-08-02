@@ -27,12 +27,25 @@ def set_card_status(qiecard):
     no_result = False
 
     for test in tests:
-        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
+        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk, revoked=False).order_by("attempt_number")
+        rev_attempts = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
         if attemptList:
             last = attemptList[len(attemptList) - 1]
             if not last.revoked and test.required:
                 if last.overwrite_pass:
                     status["passed"] += 1
+                elif last.passed():
+                    status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
+                else:
+                    failedAny = True
+        elif rev_attempts:
+            last = rev_attempts[len(rev_attempts)-1]
+            if not last.revoked and test.required:
+                if last.overwrite_pass:
+                    status["passed"] += 1
+                    forcedAny = True
                 elif last.passed():
                     status["passed"] += 1
                 elif last.empty_test():
@@ -309,9 +322,23 @@ def detail(request, card):
     no_result = False
 
     for test in tests:
-        attemptList = Attempt.objects.filter(card=p.pk, test_type=test.pk).order_by("attempt_number")
+        attemptList = Attempt.objects.filter(card=p.pk, test_type=test.pk, revoked=False).order_by("attempt_number")
+        rev_attempts = Attempt.objects.filter(card=p.pk, test_type=test.pk).order_by("attempt_number")
         if attemptList:
             last = attemptList[len(attemptList)-1]
+            if not last.revoked and test.required:
+                if last.overwrite_pass:
+                    status["passed"] += 1
+                    forcedAny = True
+                elif last.passed():
+                    status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
+                else:
+                    failedAny = True
+            attempts.append({"attempt":last, "valid": True, "required": test.required})            
+        elif rev_attempts:
+            last = rev_attempts[len(rev_attempts)-1]
             if not last.revoked and test.required:
                 if last.overwrite_pass:
                     status["passed"] += 1
@@ -361,7 +388,8 @@ def detail(request, card):
         comment = ""
         if not p.comments == "":
             comment += "\n"
-        comment += str(timezone.now().date()) + " " + str(timezone.now().hour) + "." + str(timezone.now().minute) + ": " + request.POST.get('comment')
+        cur_date = timezone.localtime(timezone.now())
+        comment += str(cur_date.date()) + " " + str(cur_date.hour) + "." + str(cur_date.minute) + ": " + request.POST.get('comment')
         p.comments += comment
         p.save()
 
@@ -418,14 +446,29 @@ def error(request):
 
     return render(request, 'qie_cards/error.html')
 
+def plots_page(request):
+    # ->media/summary_plots/plots/.
+    tests = ["capID0pedestal", "capID1pedestal", "capID2pedestal", "capID3pedestal", 
+             "gselScan", "iQiScan", "pedestal", "pedestalScan", "phaseScan"]
+    path_dir = path.join(MEDIA_ROOT, "summary_plots", "plots")
+    dirlist = listdir(path_dir)
+    sorted_dirlist = []
+    for test in tests:
+        test_list = []
+        for plot in dirlist:
+            if test in str(plot):
+                test_list.append(plot)
+        sorted_dirlist += test_list
 
-class PlotView(generic.ListView):
-    """ This displays various plots of data """
-    
-    template_name = 'qie_cards/plots.html'
-    context_object_name= 'tests'
-    def get_queryset(self):
-        return list(Test.objects.all())
+    return render(request, "qie_cards/plots.html", {"plots": sorted_dirlist})
+
+#class PlotView(generic.ListView):
+#    """ This displays various plots of data """
+#    
+#    template_name = 'qie_cards/plots.html'
+#    context_object_name= 'tests'
+#    def get_queryset(self):
+#        return list(Test.objects.all())
 
 CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8},
                   "Bot": {"0": 9, "1": 10, "2": 11, "3": 12, "4": 13, "5": 14, "6": 15, "7": 16}}
@@ -464,10 +507,23 @@ def testDetail(request, card, test):
             attempt.save()
             set_card_status(QieCard.objects.get(barcode=card))
     
+    if(request.POST.get('revoke')):
+        if(request.POST.get('rev_secret') == "pseudo" or request.POST.get('rev_secret') == "pseudopod"):
+            attempt = Attempt.objects.get(pk=request.POST.get('revoke'))
+            attempt.revoked = not attempt.revoked
+            if attempt.comments != "":
+                attempt.comments += "\n"
+            attempt.comments += "Revoked Comments: " + str(request.POST.get('secretive_rev'))
+            attempt.save()
+            set_card_status(QieCard.objects.get(barcode=card))
+            
+
+    
     attemptList = list(Attempt.objects.filter(card=p, test_type=curTest).order_by("attempt_number").reverse())
     attemptData = []
     for attempt in attemptList:
         data = ""
+        comment_style = ""
         num_list = []
         num_var_list = {}
         if attempt.num_channels_passed != 0 or attempt.num_channels_failed != 0:
@@ -509,11 +565,25 @@ def testDetail(request, card, test):
                     data += str(key) + ": \n"
                     data += str(tempDict["Comments"][key])
                     data += "\n"
-                    
-                    
-        attemptData.append((attempt, data))
+        elif attempt.test_type.name == "Igloos_Programmed":
+            if not str(attempt.hidden_log_file) == "default.png":
+                try:
+                    with open(path.join(MEDIA_ROOT, str(attempt.hidden_log_file)), "r") as inFile:
+                        data = inFile.read()
+                except IOError:
+                    data = ""
+
+        if "\n" in attempt.comments:
+            if len(attempt.comments) > 125:
+                comment_style = "word-wrap:break-word;"
+            else:
+                comment_style = "white-space:pre;"
+        else:
+            comment_style = "word-wrap:break-word;"
+        attemptData.append((attempt, data, comment_style))
             
     firstTest = []
+    
 
     return render(request, 'qie_cards/testDetail.html', {'card': p,
                                                          'test': curTest,

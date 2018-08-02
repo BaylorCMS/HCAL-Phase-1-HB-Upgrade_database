@@ -39,7 +39,10 @@ def loadCard(cardData, overwrite):
             card = QieCard.objects.get(barcode=barcode)
         except:
             sys.exit('QIE card with barcode "%s" is not in the database' % cardData["Barcode"])
-        card.comments = "<Rejected-->" + card.comments + "<--Rejected>\n" + new_comments
+        if card.comments != "":
+            card.comments = "Overwritten: " + card.comments + "\n" + new_comments
+        else:
+            card.comments = new_comments
     else:
         qie = QieCard.objects.filter(barcode=barcode)
 

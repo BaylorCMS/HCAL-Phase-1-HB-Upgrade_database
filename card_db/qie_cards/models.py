@@ -313,6 +313,10 @@ class Attempt(models.Model):
         """ This returns whether the attempt has a specified image """
         return (not self.image == "default.png")
 
+    def get_image(self):
+        """This returns the string representation of the image"""
+        return str(self.image)
+
     def has_log(self):
         """ This returns whether the attempt has a log folder """
         return (not self.log_file == "default.png")
@@ -355,6 +359,13 @@ class Attempt(models.Model):
             return dirlist
         elif self.cal_run > 0:
             dirlist = sorted(os.listdir(path))
+            return dirlist
+        elif ".jpg" in path:
+            directory = os.listdir(os.path.dirname(path))
+            dirlist = []
+            for f in directory:
+                if ".jpg" in f:
+                    dirlist.append(f)
             return dirlist
 
     def __str__(self):

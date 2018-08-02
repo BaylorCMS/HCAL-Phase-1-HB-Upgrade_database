@@ -17,12 +17,25 @@ def set_card_status(qiecard):
     no_result = False
 
     for test in tests:
-        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
+        attemptList = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk, revoked=False).order_by("attempt_number")
+        rev_attempts = Attempt.objects.filter(card=qiecard.pk, test_type = test.pk).order_by("attempt_number")
         if attemptList:
             last = attemptList[len(attemptList) - 1]
             if not last.revoked and test.required:
                 if last.overwrite_pass:
                     status["passed"] += 1
+                elif last.passed():
+                    status["passed"] += 1
+                elif last.empty_test():
+                    no_result = True
+                else:
+                    failedAny = True
+        elif rev_attempts:
+            last = rev_attempts[len(rev_attempts)-1]
+            if not last.revoked and test.required:
+                if last.overwrite_pass:
+                    status["passed"] += 1
+                    forcedAny = True
                 elif last.passed():
                     status["passed"] += 1
                 elif last.empty_test():
