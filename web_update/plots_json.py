@@ -55,23 +55,23 @@ for attempt in attempts:
     curState = testStates[str(attempt.test_type_id)][attempt.card_id]["state"]
     
     # Determine how to change the state of the card
-    if attempt.card.test_stand == False or attempt.card.test_stand == None:
-        
+
+    if not curState == FAILED: 
         if (attempt.result == True or attempt.overwrite_pass) and not attempt.revoked:
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = PASSED
-       
+            
         elif attempt.result == False and not attempt.revoked:   
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = FAILED
-       
+            
         elif attempt.revoked and curState == DEFAULT:
             testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
             testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = REMAIN
-
-    elif attempt.card.test_stand != False:
-        testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
-        testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = REMAIN        
+        
+#    else:
+#        testStates[str(attempt.test_type_id)][attempt.card_id]["date"] = calendar.timegm(attempt.date_tested.timetuple())
+#        testStates[str(attempt.test_type_id)][attempt.card_id]["state"] = REMAIN        
 
 print "Writing to JSON file"
 # Dump the json into the proper location
