@@ -31,6 +31,14 @@
         -moz-border-radius: 4px;
         -webkit-border-radius: 4px;
     }
+    .fpassed{
+        color:#2C3E50;
+        background-color:#77E83F;
+    }
+    .ffailed{
+        color:#2C3E50;
+        background-color:#ED7015;
+    }
 table.info {
     width : 1200px;
     table-layout : auto;
@@ -68,6 +76,10 @@ table, td, th, thead {
         {% if attempt.valid %}
         {% if attempt.attempt.get_status == "PASS" %}
         <td  class="okay" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
+        {% elif attempt.attempt.get_status == "REVOKED: PASSED" %}
+        <td  class="fpassed" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
+        {% elif attempt.attempt.get_status == "REVOKED: FAILED" %}
+        <td  class="ffailed" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
         {% else %}
         <td  class="bad" style="font-size:18px" align="center">{{attempt.attempt.get_status}}</td>
         {% endif  %} 

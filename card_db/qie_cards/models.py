@@ -326,7 +326,12 @@ class Attempt(models.Model):
     
     def get_status(self):
         if self.revoked:
-            return "REVOKED"
+            if self.result:
+                return "REVOKED: PASSED"
+            elif self.result == None:
+                return "REVOKED: NONE"
+            else:
+                return "REVOKED: FAILED"
         elif self.overwrite_pass:
             return "PASS (FORCED)"
         elif self.result:

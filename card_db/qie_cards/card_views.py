@@ -452,23 +452,27 @@ def plots_page(request):
              "gselScan", "iQiScan", "pedestal", "pedestalScan", "phaseScan"]
     path_dir = path.join(MEDIA_ROOT, "summary_plots", "plots")
     dirlist = listdir(path_dir)
-    sorted_dirlist = []
+    old_sorted_dirlist = []
     for test in tests:
         test_list = []
         for plot in dirlist:
             if test in str(plot):
                 test_list.append(plot)
-        sorted_dirlist += test_list
-
+        old_sorted_dirlist += test_list
+    sorted_dirlist = []
+    for item in old_sorted_dirlist:
+        if item not in sorted_dirlist:
+            sorted_dirlist.append(item)
+    
     return render(request, "qie_cards/plots.html", {"plots": sorted_dirlist})
 
-#class PlotView(generic.ListView):
-#    """ This displays various plots of data """
-#    
-#    template_name = 'qie_cards/plots.html'
-#    context_object_name= 'tests'
-#    def get_queryset(self):
-#        return list(Test.objects.all())
+class PlotView(generic.ListView):
+    """ This displays various plots of data """
+    
+    template_name = 'qie_cards/plots_old.html'
+    context_object_name= 'tests'
+    def get_queryset(self):
+        return list(Test.objects.all())
 
 CHANNEL_MAPPING= {"Top": {"0": 1, "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8},
                   "Bot": {"0": 9, "1": 10, "2": 11, "3": 12, "4": 13, "5": 14, "6": 15, "7": 16}}
@@ -680,4 +684,6 @@ def searchbar(request, query):
         num_items += len(uids)
 
     return render(request, 'qie_cards/searching.html', {'barcodes': barcodes, 'unique_ids': uids, 'num_items': num_items, 'query': query})
+
+
 
