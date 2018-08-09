@@ -14,11 +14,16 @@
 ###################################################
 #               Set Initial Data                  #
 ###################################################
-if [[ $1 = "-w" ]]; then 
+
+osOption=$1
+stepNumber=$2
+
+if [[ $osOption = "-w" ]]; then 
     colors=false
 else
     colors=true
 fi
+
 
 if $colors ; then
     echo -e "\e[1;34mSetting initial data"
@@ -59,42 +64,43 @@ echo "json files: $(ls $jsonStore/*.json)"
 ###########################################################
 #           Register Tests for Steps 1, 2, 3              #
 ###########################################################
-for i in `seq 1 3`;
-do
-    jsonTag="step"$i"_raw.json" # quotes for "$i" are required
-    script="step$i.py"
-    echo -e "${STATUS}Uploading step $i tests"
-    
-    echo "json files for step $i: $(ls $jsonStore/*$jsonTag)"
+#for i in `seq 1 3`;
+#do
+# no longer loop over steps 1,2,3; now only upload specified step
+i=$stepNumber
+jsonTag="step"$i"_raw.json" # quotes for "$i" are required
+script="step$i.py"
+echo -e "${STATUS}Uploading step $i tests"
 
-    # detemine if there are step$i_raw.json files
-    if ls $jsonStore/*$jsonTag &> /dev/null
-    then
-        # upload each step$i_raw.json file to the database
-        fileList=$(ls $jsonStore/*$jsonTag)   # list of step$i_raw.json
-        for file in $fileList
-        do
-            echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
-            python $scriptLoc/$script $file 2> $file.log
-            
-    
-            if [ $? -eq 0 ]
-            then
-                echo -e "      ${SUCCESS}Success"
-                rm $file*
-            else
-                echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
-                error_log=$( cat $file.log )
-                echo -e "      ${FAIL}${error_log}${DEF}"
-            fi
-        done
-    else
-        echo -e "    ${SUCCESS}No step $i tests to upload"
-    fi
-    
-    echo -e "${STATUS}New step $i tests uploaded"
-    echo ""
-done
+echo "json files for step $i: $(ls $jsonStore/*$jsonTag)"
+
+# detemine if there are step$i_raw.json files
+if ls $jsonStore/*$jsonTag &> /dev/null
+then
+    # upload each step$i_raw.json file to the database
+    fileList=$(ls $jsonStore/*$jsonTag)   # list of step$i_raw.json
+    for file in $fileList
+    do
+        echo -e "    ${ACTION}Processing${DEF} $(basename $file)"
+        python $scriptLoc/$script $file 2> $file.log
+        
+
+        if [ $? -eq 0 ]
+        then
+            echo -e "      ${SUCCESS}Success"
+            rm $file*
+        else
+            echo -e "      ${FAIL}ERROR${DEF} (see $(basename $file).log)"
+            error_log=$( cat $file.log )
+            echo -e "      ${FAIL}${error_log}${DEF}"
+        fi
+    done
+else
+    echo -e "    ${SUCCESS}No step $i tests to upload"
+fi
+
+echo -e "${STATUS}New step $i tests uploaded"
+echo ""
 
 
 # Move log files to proper folder
