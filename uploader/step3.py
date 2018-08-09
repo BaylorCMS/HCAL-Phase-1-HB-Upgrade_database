@@ -109,8 +109,8 @@ programmingLog = "{0}/card.log".format(cardLogDir)
 flashproLog = "{0}/igloo_flashpro.log".format(cardLogDir)
 
 jsonPath = moveFile(qie, jsonFileName)
-programmingPath = moveFile(qie, programmingLog)
-flashproPath = moveFile(qie, flashproLog)
+#programmingPath = moveFile(qie, programmingLog)
+#flashproPath = moveFile(qie, flashproLog)
 test_list = ["Igloos_Programmed"]
 
 for test in test_list:
@@ -135,8 +135,10 @@ for test in test_list:
 	                       result=1,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=programmingPath,
-	                       hidden_log_file=flashproPath,
+	                       #log_file=programmingPath,
+	                       #hidden_log_file=flashproPath,
+	                       log_file=jsonPath,
+	                       hidden_log_file=jsonPath,
 	                       )
 
     elif cardData[test] == "N/A":
@@ -149,8 +151,10 @@ for test in test_list:
 	                       result=None,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=programmingPath,
-	                       hidden_log_file=flashproPath,
+	                       #log_file=programmingPath,
+	                       #hidden_log_file=flashproPath,
+	                       log_file=jsonPath,
+	                       hidden_log_file=jsonPath,
 	                       )
 
     else:
@@ -178,12 +182,12 @@ for test in test_list:
 set_card_status(card)
 
 # remove temporary log files
-dir_path = os.path.dirname(os.path.realpath(__file__))
-card_path = os.path.join(dir_path, cardLogDir)
-if os.path.exists(card_path):
-    rmtree(card_path, ignore_errors=True)
-else:
-    print "card path does not exist: {0}".format(card_path)
+#dir_path = os.path.dirname(os.path.realpath(__file__))
+#card_path = os.path.join(dir_path, cardLogDir)
+#if os.path.exists(card_path):
+#    rmtree(card_path, ignore_errors=True)
+#else:
+#    print "card path does not exist: {0}".format(card_path)
 
 
 
