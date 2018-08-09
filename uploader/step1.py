@@ -163,6 +163,7 @@ if not overwrite:
     location.save()
 
 for attempt in attempts:
+    attempt.comments = cardData["TestComment"]
     attempt.save()
 
 set_card_status(qie)
