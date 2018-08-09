@@ -167,8 +167,10 @@ for test in test_list:
 	                       result=0,
 	                       temperature=-999,
 	                       humidity=-999,
-	                       log_file=programmingPath,
-	                       hidden_log_file=flashproPath,
+	                       #log_file=programmingPath,
+	                       #hidden_log_file=flashproPath,
+	                       log_file=jsonPath,
+	                       hidden_log_file=jsonPath,
 	                       )
 
 	
