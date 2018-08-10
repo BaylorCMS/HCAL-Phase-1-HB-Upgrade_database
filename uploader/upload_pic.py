@@ -21,7 +21,7 @@ code = os.path.splitext(os.path.basename(file_name))[0]
 try:
     qiecard = QieCard.objects.get(barcode=str(code))
 except ObjectDoesNotExist:
-    sys.exit("Card with barcode does not exist in the database.")
+    sys.exit("Card with barcode %s does not exist in the database. \n Please clean up area." % code)
 
 try:
     test = Test.objects.get(name="Card Picture")
