@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qf7d+2)^)r3hbr42&^fe*xb)v39-@*c43)y)392_p%o-=8!14^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
 	'localhost',
@@ -83,7 +83,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'OPTIONS': {
             'timeout': 5000,
-         }
+        },
+        'CONN_MAX_AGE': 600,
     }
 }
 
@@ -132,6 +133,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Toggle whether data caching is on 
 # (slower update, but faster webpage load time)
+
+CACHES = {
+   'default': {
+      'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+      'LOCATION': 'card_db_cache',
+   }
+}
+
+# MIDDLEWARE_CLASSES += (
+#    'django.middleware.cache.UpdateCacheMiddleware',
+#    'django.middleware.common.CommonMiddleware',
+#    'django.middleware.cache.FetchFromCacheMiddleware',
+# )
+
+CACHE_MIDDLEWARE_ALIAS = "default"
+CACHE_MIDDLEWARE_SECONDS = 600
 
 CACHE_DATA = False
 

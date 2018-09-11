@@ -18,4 +18,4 @@
 #/usr/local/bin/python2.7 /home/django/testing_database_hb/web_update/summary_json.py
 /usr/local/bin/python2.7 /home/django/testing_database_hb/web_update/plots_json.py
 #/usr/local/bin/python2.7 /home/django/testing_database_hb/web_update/stats_json.py
-/usr/local/bin/python2.7 /home/django/testing_database_hb/media/summary_plots/dqmplots.py
+#/usr/local/bin/python2.7 /home/django/testing_database_hb/media/summary_plots/dqmplots.py
