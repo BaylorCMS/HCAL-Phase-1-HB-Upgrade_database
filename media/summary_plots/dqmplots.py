@@ -7,6 +7,8 @@ from string import *
 from ROOT import *
 import django
 import json
+
+import random
 sys.path.insert(0,'/home/django/testing_database_hb/card_db')
 django.setup()
 
@@ -254,7 +256,10 @@ for v in variables:
     if (v.name == "slope"):
         i = 1
         total = total + 1
+        hvsqie.Fill(random.randint(1,16),v.value)
+        
         for elem in logdata:
+            break
             if (i == 2):
                 qie = 16
                 for side in logdata[elem]:
@@ -279,7 +284,7 @@ for v in variables:
         if (repeat == False):
             empty = empty + 1
     print("iteration # "+str(n))
-Print ("Slopes finished: "+str(total)+" total, "+str(empty)+" with no match, "+str(bad)+" duplicate matches.")
+print ("Slopes finished: "+str(total)+" total, "+str(empty)+" with no match, "+str(bad)+" duplicate matches.")
 
 print 'Drawing histograms...'
 # Make a canvas and set its margins
