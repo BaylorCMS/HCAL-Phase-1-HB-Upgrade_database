@@ -6,9 +6,6 @@ import os,sys
 from string import *
 from ROOT import *
 import django
-import json
-
-import gc
 sys.path.insert(0,'/home/django/testing_database_hb/card_db')
 django.setup()
 
@@ -38,7 +35,7 @@ def draw1(h, hp, hf, hn, vn, vt):
     #h.SetMinimum(0)
     h.SetTitle("")
     h.GetXaxis().SetTitle(vn)
-    #h.GetXa`xis().CenterTitle()
+    #h.GetXaxis().CenterTitle()
     h.GetXaxis().SetTitleOffset(1.25)
     h.GetXaxis().SetTitleSize(0.055)
     h.GetXaxis().SetTitleFont(42)
@@ -80,45 +77,6 @@ def draw1(h, hp, hf, hn, vn, vt):
     l.Draw("same")
     SetOwnership(l, 0 )
 
-def draw2(hvsqie, hn, vn, vt):
-    hvsqie.SetTitle("")
-    hvsqie.GetXaxis().SetTitle("Channel #")
-   #hvsqie.GetXaxis().CenterTitle()
-    hvsqie.GetXaxis().SetTitleOffset(1.25)
-    hvsqie.GetXaxis().SetTitleSize(0.055)
-    hvsqie.GetXaxis().SetTitleFont(42)
-    hvsqie.GetXaxis().SetLabelOffset(0.012)
-    hvsqie.GetXaxis().SetLabelSize(0.050)
-    hvsqie.GetXaxis().SetLabelFont(42)
-    hvsqie.GetXaxis().SetNdivisions(8, 5, 0)
-    hvsqie.GetYaxis().SetTitle(vn)
-   #hvsqie.GetYaxis().CenterTitle()
-   #hvsqie.GetYaxis().SetTitleOffset(1.05)
-    hvsqie.GetYaxis().SetTitleSize(0.055)
-    hvsqie.GetYaxis().SetTitleFont(42)
-   #hvsqie.GetYaxis().SetNdivisions(0, 0, 0)
-    hvsqie.Draw('colz')
-
-    nbins = h.GetNbinsX()
-    # Make the title
-    t = TLatex(0.65, 0.84, vt)
-    if (h.GetMaximumBin() > nbins/2):
-        t = TLatex(0.13, 0.84, vt)
-    t.SetTextSize(0.042)
-    t.SetTextFont(42)
-    t.SetNDC()
-    t.Draw("same")
-    SetOwnership(t, 0)
-
-    # Make the histogram legend
-    l = TLegend(0.61, 0.66, 0.88, 0.82)
-    if (h.GetMaximumBin() > nbins/2):
-        l = TLegend(0.13, 0.66, 0.40, 0.82)
-    l.SetBorderSize(0)
-    l.SetFillStyle(0000)
-    l.AddEntry(hvsqie, 'all', 'l')
-    l.Draw("same")
-    SetOwnership(l, 0 )
 
 # Sezen's clean ROOT style:
 gROOT.SetStyle('Plain')
@@ -139,7 +97,6 @@ from qie_cards.models import Test, Tester, Variable, QieCard, Channel, Attempt
 print 'Processing variables... Selecting variables resulting from the latest attempts.'
 variables = list(Variable.objects.filter(attempt__revoked=False))
 nvariables = len(variables)
-variables = variables[:nvariables*9/10]
 print 'Number of variables accessed:', len(variables)
 
 # Find the test names and variables names
@@ -167,36 +124,44 @@ print 'Preparing histograms...'
 
 # Find the histogram x-axis minima and maxima
 vmin = []
-for nt in xrange(len(vtests)):
+for nt in range(len(vtests)):
     vmin0 = []
-    for nv in xrange(len(varnames)):
+    for nv in range(len(varnames)):
         vmin0.append(9999.)
     vmin.append(vmin0)
 
 vmax = []
-for nt in xrange(len(vtests)):
+for nt in range(len(vtests)):
     vmax0 = []
-    for nv in xrange(len(varnames)):
+    for nv in range(len(varnames)):
         vmax0.append(-9999.)
     vmax.append(vmax0)
 
-print "Looping variables..."
-gc.collect()
+
 n = 0
 for v in variables:
-    va = str(v.attempt.test_type)
-    val = float(v.value)
-    for nt in xrange(len(vtests)):
-        for nv in xrange(len(varnames)):
-            n = n + 1
-            print '\r' + str(n),
+    va = v.attempt
+    va = str(va.test_type)
+    val = atof(v.value)
+    n = n + 1
+    #if n == 20000: break
+    for nt in range(len(vtests)):
+        for nv in range(len(varnames)):
             if v.name == varnames[nv] and va == vtests[nt]:
+                #print v[0], nv, varnames[nv], nt, v[1], vtests[nt], v[2], vmin[nt][nv], vmax[nt][nv]
                 if val <= vmin[nt][nv]: 
                     vmin[nt][nv] = val
                 if val >= vmax[nt][nv]: 
                     vmax[nt][nv] = val
-gc.collect()
-print "Booking histograms..."
+
+
+#print 'vmin:\n'
+#for v in vmin:
+#    print v
+#print 'vmax:\n'
+#for v in vmax:
+#    print v
+
 
 # Map histogram names to histograms and properties
 vars = {}
@@ -211,11 +176,8 @@ for nv in range(len(varnames)):
         h = TH1D(hn, hn, nbin, vmin[nt][nv]-r*vdiff, vmax[nt][nv]+r*vdiff)
         hp = TH1D(hn+'_p', hn+'_p', nbin, vmin[nt][nv]-r*vdiff, vmax[nt][nv]+r*vdiff)
         hf = TH1D(hn+'_f', hn+'_f', nbin, vmin[nt][nv]-r*vdiff, vmax[nt][nv]+r*vdiff)
-        hvsqie = TH2D(hn+'_tp', hn+'_tp', 18, 0, 17, nbin, vmin[nt][nv]-r*vdiff, vmax[nt][nv]+r*vdiff)
-        vars[hn] = h, hp, hf, hvsqie, str(varnames[nv]), str(vtests[nt]), vmin[nt][nv], vmax[nt][nv]
-del vmin
-del vmax        
-gc.collect()
+        vars[hn] = h, hp, hf, str(varnames[nv]), str(vtests[nt]), vmin[nt][nv], vmax[nt][nv]
+        
 hnames = []
 for hn in sorted(vars.iterkeys()):
     hnames.append(hn)
@@ -225,54 +187,21 @@ print 'Number of histograms prepared:', len(hnames)
 print "Filling histograms..."
 n = 0
 m = 0
-log = ""
-
-empty = 0
-bad = 0
-total = 0
 for v in variables:
     va = v.attempt
     n = n + 1
     hn = 'h_'+str(v.name)+'_'+str(va)
-    h, hp, hf, hvsqie, vn, vt, vmin, vmax = vars[hn]
-    #if hn not in hnames or v.value < vmin-10*abs(vmin) or v.value > vmax+10*abs(vmax):
-    #    print hn, v.value
-    #    m = m + 1
+    h, hp, hf, vn, vt, vmin, vmax = vars[hn]
+    if hn not in hnames or v.value < vmin-10*abs(vmin) or v.value > vmax+10*abs(vmax):
+        print hn, v.value
+        m = m + 1
     h.Fill(v.value)
     if v.test_pass == 1:
         hp.Fill(v.value)
     else:
         hf.Fill(v.value)
-    if (log != v.attempt.hidden_log_file):
-        log = v.attempt.log_file
-        with open("/home/django/testing_database_hb/media/"+str(log)) as f:
-            logdata = json.load(f)
-    repeat = False
-    if (v.name == "slope"):
-        total = total + 1
-        #hvsqie.Fill(random.randint(1,16),v.value)
-        uid = logdata["Unique_ID"]
-        for side in logdata[uid]:
-            for chan in logdata[uid][side]:
-                for test in logdata[uid][side][chan]:
-                    if "slope" in logdata[uid][side][chan][test]:
-                        if (logdata[uid][side][chan][test]["slope"][0] == v.value):
-                            if (repeat == False):
-                                qie = int(chan[len(chan)-1:])
-                                qie = qie + (int(chan[chan.find("Fib_")+4:chan.find("_Ch")]) % 2)*8
-                                hvsqie.Fill(qie, v.value)
-                                #print (str(uid)+"/"+str(side)+"/"+str(side)+"/"+str(chan)+"/"+"slope: "+str(v.value)+" at qie "+str(qie))
-                                repeat = True
-                            else: 
-                                bad = bad + 1
-                                #print ("\n!!!!!ERROR!!!!!")
-                                #print (str(uid)+"/"+str(side)+"/"+str(side)+"/"+str(chan)+"/"+"slope: "+str(v.value)+" at qie "+str(qie))
-                                #print ("Is a repeat of a previous element\n")
-                            
-        if (repeat == False):
-            empty = empty + 1
-    print '\r' + str(100*n/len(variables)) + '%',
-print ("Slopes finished: "+str(total)+" total, "+str(empty)+" with no match, "+str(bad)+" duplicate matches.")
+    #if n % 100 == 0: print n
+    #if n == 20000: break
 
 print 'Drawing histograms...'
 # Make a canvas and set its margins
@@ -283,9 +212,7 @@ c.SetLogy(1)
 
 
 for hn in sorted(vars.iterkeys()):
-    #if ((hn / vars.iterkeys().length())%1 == 0):
-    #    print (hn/vars.iterkeys().length() + '%')
-    h, hp, hf, hvsqie, vn, vt, vmin, vmax = vars[hn]
+    h, hp, hf, vn, vt, vmin, vmax = vars[hn]
     if h.Integral() == 0: continue
     #print h.GetName(), h.GetXaxis().GetXmin(), h.GetXaxis().GetXmax()
     #print hp.GetName(), hp.GetXaxis().GetXmin(), hp.GetXaxis().GetXmax()
@@ -293,7 +220,5 @@ for hn in sorted(vars.iterkeys()):
     draw1(h, hp, hf, hn, vn, vt)
     # Save the file
     c.Print('plots/'+hn+'.png')
-    draw2(hvsqie, hn, vn, vt)
-    c.Print('plots/'+hn+'_q.png')
 
 print 'Histograms saved to the plots directory.'
