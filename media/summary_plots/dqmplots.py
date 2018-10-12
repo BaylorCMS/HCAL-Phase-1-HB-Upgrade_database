@@ -293,7 +293,9 @@ for hn in sorted(vars.iterkeys()):
     draw1(h, hp, hf, hn, vn, vt)
     # Save the file
     c.Print('plots/'+hn+'.png')
-    draw2(hvsqie, hn, vn, vt)
-    c.Print('plots/'+hn+'_q.png')
+    if "slope" in hn:
+        draw2(hvsqie, hn, vn, vt)
+        c.Print('plots/'+hn+'_q.png')
 
 print 'Histograms saved to the plots directory.'
+sys.exit()
