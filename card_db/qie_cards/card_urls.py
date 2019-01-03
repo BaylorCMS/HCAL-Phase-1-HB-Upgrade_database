@@ -32,5 +32,4 @@ urlpatterns = [
     url(r'^plots$', views.plots_page, name='plots'),
 #    url(r'^timeplots$', views.old_plots, name='old_plots'),
     url(r'^field$', views.fieldView, name='fieldView'),
-    url(r'.*', views.error, name='error')
 ]
