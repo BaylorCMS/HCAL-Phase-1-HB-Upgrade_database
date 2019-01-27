@@ -416,14 +416,14 @@ class ReadoutModule(models.Model):
     date        = models.DateTimeField('Date Received', default=timezone.now)   # The date on which the RM was received
     rm_number   = models.IntegerField('RM №', default=-1)                       # The number of the RM
 #    card_pack_number    = models.IntegerField('CardPack №', default=-1)         # The cardpack number of the RM
-    rm_uid  = models.CharField(max_length=27, blank=True, default="")           # The RM UID created from the UIDs of the 4 QIE cards in the RM
+    rm_uid  = models.CharField('RM Unique ID', max_length=27, blank=True, default="")           # The RM UID created from the UIDs of the 4 QIE cards in the RM
     card_1  = models.ForeignKey(QieCard, verbose_name='QIE card 1 №', related_name="rm_1", on_delete=models.PROTECT)    # The QIE Card in Slot 1 of the RM 
     card_2  = models.ForeignKey(QieCard, verbose_name='QIE card 2 №', related_name="rm_2", on_delete=models.PROTECT)    # The QIE Card in Slot 2 of the RM
     card_3  = models.ForeignKey(QieCard, verbose_name='QIE card 3 №', related_name="rm_3", on_delete=models.PROTECT)    # The QIE Card in Slot 3 of the RM
     card_4  = models.ForeignKey(QieCard, verbose_name='QIE card 4 №', related_name="rm_4", on_delete=models.PROTECT)    # The QIE Card in Slot 4 of the RM
     mtp_optical_cable   = models.CharField('Optical Cable ID №', max_length=50, default="", blank=True)                  # MTP Optical cable number used in RM
     mezzanine_board_num = models.CharField('Mezzanine Board №', max_length=50, default="", blank=True)
-    sipm_control_card   = models.IntegerField('1 SiPM Control Card №', default=-1, blank=True)                    # SiPM Control Card number used in RM
+    sipm_control_card   = models.IntegerField('SiPM Control Card №', default=-1, blank=True)                    # SiPM Control Card number used in RM
     
 #    lv_assembly = models.IntegerField('LV Assembly Number', default=-1)                                                 # Low Voltage Assembly of 6 DC-DC converters for RM
 
