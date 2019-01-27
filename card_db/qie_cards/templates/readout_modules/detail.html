@@ -48,10 +48,6 @@ table, td, th {
             <td>{{rm.rm_number}}</td>
         </tr>
         <tr>
-            <td>CardPack №:</td>
-            <td>{{rm.card_pack_number}}</td>
-        </tr>
-        <tr>
             <td>RM Unique ID:</td>
             <td>{{rm.rm_uid}}</td>
         </tr>
@@ -76,60 +72,52 @@ table, td, th {
             <td>{{rm.mtp_optical_cable}}</td>
         </tr>
         <tr>
+            <td>Mezzanine Board Number:</td>
+            <td>{{rm.mezzanine_board_num}}
+        </tr>
+        <tr>
             <td>SiPM Control Card №:</td>
             <td><a href="{{ SITE_URL }}/sipm/{{rm.sipm_control_card}}">{{rm.sipm_control_card}}</a></td>
         </tr>
         <tr>
-            <td>LV Assembly №:</td>
-            <td>{{rm.lv_assembly}}</td>
-        </tr>
-        <tr>
-            <td>Thermal Assembly №:</td>
-            <td>{{rm.therm_assembly}}</td>
-        </tr>
-        <tr>
-            <td>SiPM Array (BV1-8) №:</td>
+            <td>SiPM Array #1 №:</td>
             <td>{{rm.sipm_array_1}}</td>
         </tr>
         <tr>
-            <td>Mixed SiPM array (BV9-16) №:</td>
-        <td>{{rm.mixed_sipm_array}}</td>
-        </tr>
-        <tr>
-            <td>SiPM Array (BV17-24) №:</td>
+            <td>SiPM Array #2 №:</td>
             <td>{{rm.sipm_array_2}}</td>
         </tr>
         <tr>
-            <td>SiPM Array (BV25-32) №:</td>
+            <td>SiPM Array #3 №:</td>
             <td>{{rm.sipm_array_3}}</td>
         </tr>
         <tr>
-            <td>SiPM Array (BV33-40) №:</td>
+            <td>SiPM Array #4 №:</td>
             <td>{{rm.sipm_array_4}}</td>
         </tr>
         <tr>
-            <td>SiPM Array (BV41-48) №:</td>
+            <td>SiPM Array #5 №:</td>
             <td>{{rm.sipm_array_5}}</td>
         </tr>
         <tr>
-            <td>SiPM Mounting Board Type:</td>
-            <td>{{rm.sipm_mounting}}</td>
+            <td>SiPM Array #6 №:</td>
+            <td>{{rm.sipm_array_6}}</td>
         </tr>
         <tr>
-            <td>ODU type:</td>
+            <td>SiPM Array #7 №:</td>
+            <td>{{rm.sipm_array_7}}</td>
+        </tr>
+        <tr>
+            <td>SiPM Array #8 №:</td>
+            <td>{{rm.sipm_array_8}}</td>
+        </tr>
+        <tr>
+            <td>ODU Type:</td>
             <td>{{rm.odu_type}}</td>
         </tr>
         <tr>
             <td>ODU №:</td>
             <td>{{rm.odu_number}}</td>
-        </tr>
-        <tr>
-            <td>White Box №:</td>
-            <td>{{rm.minsk}}</td>
-        </tr>
-        <tr>
-            <td>DC-DC Converter 5V Output</td>
-            <td>{{rm.dcdc_output}}</td>
         </tr>
         </div>
     </tbody>
@@ -172,7 +160,7 @@ table, td, th {
   <a target="_blank"  href="{{rm.upload.url}}"><img src="{{rm.upload.url}}" style="width:35%;height:35%;"></a>
 </center>
 <br><br>
-
+<!--
 <div class="row" align="center" style="padding-left:50px; padding-right:50px;width: 100%">
     <h3>Bias Voltages</h3>
     <div id="breakLine" style="height:2px;width:100%;background-color:#E74C3C;"></div>
@@ -384,5 +372,5 @@ table, td, th {
         </div>
     </tbody>
 </table>
-</center>
+</center>-->
 {% endblock %}
