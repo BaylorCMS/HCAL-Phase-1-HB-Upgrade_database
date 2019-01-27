@@ -60,12 +60,13 @@ class ReadoutAdmin(admin.ModelAdmin):
     """ Provides the layout for ReadoutModule editing """
     
     fieldsets = [
-        (None, {'fields': ['assembler', 'date', 'rm_number', 'comments']}),
+        (None, {'fields': ['assembler', 'date', 'rm_number', 'comments', 'rm_uid']}),
         ("Card Pack", {'fields':['card_1',
                                  'card_2',
                                  'card_3',
                                  'card_4',
                                  'mtp_optical_cable',
+                                 'mezzanine_board_num',
                                 ]}),
         ("SiPM Assembly", {'fields':['sipm_array_1',
                                      'sipm_array_2',
@@ -75,6 +76,7 @@ class ReadoutAdmin(admin.ModelAdmin):
                                      'sipm_array_6',
                                      'sipm_array_7',
                                      'sipm_array_8',
+                                     'sipm_control_card',
                                      'odu_type',
                                      'odu_number', 
                                     ]}),
