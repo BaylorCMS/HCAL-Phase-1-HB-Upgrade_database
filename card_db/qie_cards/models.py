@@ -415,32 +415,36 @@ class ReadoutModule(models.Model):
     assembler   = models.CharField('Assembler', max_length=50, default="")      # The name of the assembler of the RM
     date        = models.DateTimeField('Date Received', default=timezone.now)   # The date on which the RM was received
     rm_number   = models.IntegerField('RM №', default=-1)                       # The number of the RM
-    card_pack_number    = models.IntegerField('CardPack №', default=-1)         # The cardpack number of the RM
+#    card_pack_number    = models.IntegerField('CardPack №', default=-1)         # The cardpack number of the RM
     rm_uid  = models.CharField(max_length=27, blank=True, default="")           # The RM UID created from the UIDs of the 4 QIE cards in the RM
     card_1  = models.ForeignKey(QieCard, verbose_name='QIE card 1 №', related_name="rm_1", on_delete=models.PROTECT)    # The QIE Card in Slot 1 of the RM 
     card_2  = models.ForeignKey(QieCard, verbose_name='QIE card 2 №', related_name="rm_2", on_delete=models.PROTECT)    # The QIE Card in Slot 2 of the RM
     card_3  = models.ForeignKey(QieCard, verbose_name='QIE card 3 №', related_name="rm_3", on_delete=models.PROTECT)    # The QIE Card in Slot 3 of the RM
     card_4  = models.ForeignKey(QieCard, verbose_name='QIE card 4 №', related_name="rm_4", on_delete=models.PROTECT)    # The QIE Card in Slot 4 of the RM
-    mtp_optical_cable   = models.CharField('1 MTP to 8 LC optical cable №', max_length=50, default="")                  # MTP Optical cable number used in RM
-    sipm_control_card   = models.IntegerField('1 SiPM Control Card with BV mezzanine №', default=-1)                    # SiPM Control Card number used in RM
+    mtp_optical_cable   = models.CharField('Optical Cable ID №', max_length=50, default="", blank=True)                  # MTP Optical cable number used in RM
+    mezzanine_board_num = models.CharField('Mezzanine Board №', max_length=50, default="", blank=True)
+    sipm_control_card   = models.IntegerField('1 SiPM Control Card №', default=-1, blank=True)                    # SiPM Control Card number used in RM
     
-    lv_assembly = models.IntegerField('LV Assembly Number', default=-1)                                                 # Low Voltage Assembly of 6 DC-DC converters for RM
+#    lv_assembly = models.IntegerField('LV Assembly Number', default=-1)                                                 # Low Voltage Assembly of 6 DC-DC converters for RM
 
-    therm_assembly  = models.IntegerField('Thermal Assembly Number', default=-1)                                        # Thermal assembly number for RM
+#    therm_assembly  = models.IntegerField('Thermal Assembly Number', default=-1)                                        # Thermal assembly number for RM
 
-    sipm_array_1    = models.IntegerField('SiPM Array S10943-4732 № (BV1-8)', default=-1)                               # SiPM Array 1 for BV 1-8
-    sipm_array_2    = models.IntegerField('SiPM Array S10943-4732 № (BV17-24)', default=-1)                             # SiPM Array 2 for BV 17-24
-    sipm_array_3    = models.IntegerField('SiPM Array S10943-4732 № (BV25-32)', default=-1)                             # SiPM Array 3 for BV 25-32
-    sipm_array_4    = models.IntegerField('SiPM Array S10943-4732 № (BV33-40)', default=-1)                             # SiPM Array 4 for BV 33-40
-    sipm_array_5    = models.IntegerField('SiPM Array S10943-4732 № (BV41-48)', default=-1)                             # SiPM Array 5 for BV 41-48
-    mixed_sipm_array    = models.IntegerField('Mixed SiPM array S10943-4733 № (BV9-16)', default=-1)                    # SiPM Array Mixed for BV 9-16
-    sipm_mounting   = models.CharField('SiPM Mounting Board Type', choices=MOUNTING_OPTIONS, max_length=3, default="")  # SiPM Mounting Board for RM
-    odu_type    = models.CharField('ODU type', choices=ODU_TYPE_OPTIONS, max_length=3, default="")                      # ODU (Optical Decoder Unit) type for RM
-    odu_number  = models.IntegerField('ODU №', default=-1)                                                              # ODU (Optical Decoder Unit) number for RM
+    sipm_array_1    = models.CharField('SiPM Array #1', default="", blank=True, max_length=10)                             # SiPM Array 1 for BV 1-8 S10943-4732
+    sipm_array_2    = models.CharField('SiPM Array #2', default="", blank=True, max_length=10)                             # SiPM Array 2 for BV 17-24
+    sipm_array_3    = models.CharField('SiPM Array #3', default="", blank=True, max_length=10)                             # SiPM Array 3 for BV 25-32
+    sipm_array_4    = models.CharField('SiPM Array #4', default="", blank=True, max_length=10)                             # SiPM Array 4 for BV 33-40
+    sipm_array_5    = models.CharField('SiPM Array #5', default="", blank=True, max_length=10)                             # SiPM Array 5 for BV 41-48
+    sipm_array_6    = models.CharField('SiPM Array #6', default="", blank=True, max_length=10)                             # SiPM Array 6
+    sipm_array_7    = models.CharField('SiPM Array #7', default="", blank=True, max_length=10)                             # SiPM Array 7 
+    sipm_array_8    = models.CharField('SiPM Array #8', default="", blank=True, max_length=10)                             # SiPM Array 8 
+#    mixed_sipm_array    = models.IntegerField('Mixed SiPM array S10943-4733 № (BV9-16)', default=-1)                    # SiPM Array Mixed for BV 9-16
+#    sipm_mounting   = models.CharField('SiPM Mounting Board Type', choices=MOUNTING_OPTIONS, max_length=3, default="")  # SiPM Mounting Board for RM
+    odu_type    = models.CharField('ODU type', choices=ODU_TYPE_OPTIONS, max_length=3, default="", blank=True)                      # ODU (Optical Decoder Unit) type for RM
+    odu_number  = models.IntegerField('ODU №', default=-1, blank=True)                                                              # ODU (Optical Decoder Unit) number for RM
     
-    minsk       = models.IntegerField('White box with RM mechanics from Minsk №', default=-1)
+#    minsk       = models.IntegerField('White box with RM mechanics from Minsk №', default=-1)
     
-    dcdc_output = models.CharField('Output of 5V DC-DC', max_length=50, default="")                                     # Measured voltage of 5V output of DC-DC converter
+#    dcdc_output = models.CharField('Output of 5V DC-DC', max_length=50, default="")                                     # Measured voltage of 5V output of DC-DC converter
     upload      = models.FileField('Image Upload', upload_to='readout_module/', default='default.png')                  # Image of RM assembly form
     comments    = models.TextField(max_length=MAX_COMMENT_LENGTH, blank=True, default="")                               # Initial comments given when uploading RM to database
 
