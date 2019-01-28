@@ -412,8 +412,8 @@ class ReadoutModule(models.Model):
                         ("2/4", "2/4"),
                        ]
     
-    assembler   = models.CharField('Assembler', max_length=50, default="")      # The name of the assembler of the RM
-    date        = models.DateTimeField('Date Received', default=timezone.now)   # The date on which the RM was received
+    assembler   = models.CharField('User', max_length=50, default="", blank=True)      # The name of the assembler of the RM
+    date        = models.DateTimeField('Date', default=timezone.now)   # The date on which the RM was received
     rm_number   = models.IntegerField('RM №', default=-1)                       # The number of the RM
 #    card_pack_number    = models.IntegerField('CardPack №', default=-1)         # The cardpack number of the RM
     rm_uid  = models.CharField('RM Unique ID', max_length=27, blank=True, default="")           # The RM UID created from the UIDs of the 4 QIE cards in the RM
